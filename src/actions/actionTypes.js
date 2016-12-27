@@ -1,1 +1,2 @@
-export const SAY_HELLO_SUCCESS = 'hello';
+export const LOAD_GRAPH_SUCCESS = 'LOAD_GRAPH_SUCCESS';
+export const ADD_NODE_SUCCESS = 'ADD_NODE_SUCCESS';
