@@ -1,3 +1,7 @@
 import expect from 'expect';
 
-expect(1).toEqual(1);
+describe('Smoke tests', function() {
+  it('Should show up on the console', function() {
+    expect(1).toEqual(1);
+  });
+});

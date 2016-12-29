@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import {Table} from 'react-bootstrap';
 
-const SelectInput = ({data}) => {
+const SelectedNode = ({data}) => {
   return (
     <Table striped bordered condensed hover>
       <thead>
@@ -32,8 +32,8 @@ const SelectInput = ({data}) => {
   );
 };
 
-SelectInput.propTypes = {
+SelectedNode.propTypes = {
   data: PropTypes.object.isRequired
 };
 
-export default SelectInput;
+export default SelectedNode;

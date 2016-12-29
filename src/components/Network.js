@@ -2,6 +2,7 @@ import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import visCss from '../../node_modules/vis/dist/vis.css';
+import * as css from '../css/app.scss';
 import * as graphManipulationActions from '../actions/graphManipulationActions';
 import * as vis from 'vis';
 import SelectedEntity from './SelectedEntity';
