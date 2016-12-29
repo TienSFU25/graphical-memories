@@ -1,8 +1,12 @@
 import {combineReducers} from 'redux';
-import graph from './graphReducer';
+import selectedEntity from './selectedEntityReducer';
+import visNetwork from './visNetworkReducer';
+import networkData from './rawNetworkDataReducer';
 
 const rootReducer = combineReducers({
-  graph
+  selectedEntity,
+  visNetwork,
+  networkData
 });
 
 export default rootReducer;

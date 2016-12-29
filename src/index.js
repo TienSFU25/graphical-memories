@@ -7,10 +7,10 @@ import { Router, browserHistory } from 'react-router';
 import routes from './routes';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../node_modules/toastr/build/toastr.min.css';
-import {loadGraph} from './actions/loadGraphActions';
+import loadGraph from './actions/loadGraphActions';
 
 const store = initializeStore();
-store.dispatch(loadGraph('./data/simple.js'));
+store.dispatch(loadGraph());
 
 render(
   <Provider store={store}>

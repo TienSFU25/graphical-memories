@@ -1,17 +1,29 @@
 import * as types from './actionTypes';
 import loadGraphFromFile from '../api/loadGraphFromFileApi';
+import jsonToVisNetwork from '../dataMappers/jsonToVisNetwork';
 
-export function loadGraphSuccess(graph) {
+function loadGraphSuccess(networkData) {
+  networkData.isFresh = true;
+
   return {
     type: types.LOAD_GRAPH_SUCCESS,
-    graph
+    networkData
   };
 }
 
-export function loadGraph(fileName) {
+function selectNothing() {
+  return {
+    type: types.SELECT_NOTHING
+  };
+}
+
+export default function loadGraph(fileName, networkContainer) {
   return function(dispatch) {
     return loadGraphFromFile(fileName).then(graph => {
-      dispatch(loadGraphSuccess(graph));
+      let visNetworkData = jsonToVisNetwork(graph);
+
+      dispatch(loadGraphSuccess({ visNetworkData }));
+      dispatch(selectNothing());
     }).catch(err => {
       throw(err);
     });

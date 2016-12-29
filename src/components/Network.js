@@ -1,85 +1,48 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import jsonToVisNetwork from '../dataMappers/jsonToVisNetwork';
 import visCss from '../../node_modules/vis/dist/vis.css';
 import * as graphManipulationActions from '../actions/graphManipulationActions';
 import * as vis from 'vis';
+import SelectedEntity from './SelectedEntity';
+import {Row, Col} from 'react-bootstrap';
 
 class Network extends React.Component {
   constructor(props) {
     super(props);
-
-    // this.state = {
-    //   nodes: new vis.DataSet([]),
-    //   edges: new vis.DataSet([])
-    // };
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    // var shouldUpdate = this.state.nodes.length !== nextState.nodes.length;
-    // debugger;
-
-    // return shouldUpdate;
-    return true;
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    // debugger;
-    // let container = this.network;
-
-    // let options = {
-    //   manipulation: true
-    // };
-
-    // let visDataSet = {
-    //   nodes: nextState.nodes,
-    //   edges: nextState.edges
-    // };
-
-    // var that = this;
-
-    // let network = new vis.Network(container, visDataSet, {
-    //   manipulation: {
-    //     addNode: (nodeData, callback) => {
-
-    //       let oldVisNodes= this.state.nodes;
-    //       this.props.actions.addNode(nodeData, callback);
-    //       debugger;
-    //       // this.setState({
-    //       //   visDataSet: oldVisDataSet
-    //       // });
-    //     },
-    //     editNode: (nodeData, callback) => {
-    //       console.log(nodeData);
-    //     }
-    //   }
-    // });
   }
 
   componentWillReceiveProps(nextProps) {
-    // debugger;
-    if (nextProps) {
-      let container = this.network;
-
+    if (nextProps.networkData.isFresh) {
       let options = {
-        manipulation: true
-      };
-
-      let network = new vis.Network(container, nextProps.graph, {
+        interaction: {dragNodes: true},
+        physics: {
+            enabled: false
+        },
         manipulation: {
           addNode: (nodeData, callback) => {
             this.props.actions.addNode(nodeData, callback);
-            debugger;
-            // this.setState({
-            //   visDataSet: oldVisDataSet
-            // });
           },
           editNode: (nodeData, callback) => {
-            console.log(nodeData);
+            callback(nodeData);
           }
         }
+      };
+
+      let network = new vis.Network(this.networkContainer, nextProps.networkData.visNetworkData, options);
+
+      network.on('click', (params) => {
+        this.props.actions.selectEntity(params, network);
       });
+
+      network.on('dragEnd', (params) => {
+        // assume only the node got dragged for now
+        let id = params.nodes[0];
+
+        this.props.actions.selectNode(id, network);
+      });
+
+      this.props.actions.initializeNetworkSuccess(network);
     }
   }
 
@@ -87,18 +50,26 @@ class Network extends React.Component {
     return (
       <div>
         <div>This is the network</div>
-        <div ref={(thisDiv) => this.network = thisDiv} />
+        <Row>
+          <Col xs={7} md={7}>
+            <div ref={(thisDiv) => this.networkContainer = thisDiv} id="mynetwork"/>
+          </Col>
+          <Col xs={5} md={5}>
+            <SelectedEntity />
+          </Col>
+        </Row>
       </div>
     );
   }
 }
 
-function mapStateToProps(state) {
-  let graph = state.graph;
-  // let visNetworkData = jsonToVisNetwork(graph);
+Network.propTypes = {
+  actions: PropTypes.object.isRequired
+};
 
+function mapStateToProps(state) {
   return {
-    graph
+    networkData: state.networkData
   };
 }
 

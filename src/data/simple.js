@@ -19,6 +19,15 @@ export const graph = {
       "size": 10.0
     },
     {
+      "label": "Photography",
+      "x": 302.08004760742188,
+      "y": -130.90811157226562,
+      "id": "5",
+      "attributes": {},
+      "color": "rgb(237,248,251)",
+      "size": 10.0
+    },
+    {
       "label": "Tien",
       "x": 57.935482025146484,
       "y": 69.4444351196289,
@@ -78,6 +87,15 @@ export const graph = {
       "attributes": {},
       "color": "rgb(0,0,0)",
       "size": 1.0
+    },
+    {
+      "source": "1.0",
+      "target": "5",
+      "id": "4",
+      "length": 5,
+      "attributes": {},
+      "color": "rgb(0,0,0)",
+      "size": 2.0
     }
   ]
 };
