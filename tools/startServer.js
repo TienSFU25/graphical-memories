@@ -10,14 +10,22 @@ const port = 3000;
 const app = express();
 const compiler = webpack(config);
 
+app.use('*', function(req, res, next) {
+  // console.log(req.path);
+  console.log(req.originalUrl);
+  next();
+});
+
 app.use(require('webpack-dev-middleware')(compiler, {
   noInfo: true,
   publicPath: config.output.publicPath
 }));
 
-app.use(require('webpack-hot-middleware')(compiler));
+// app.use(require('webpack-hot-middleware')(compiler));
 
 app.get('*', function(req, res) {
+  console.log("actually got here");
+  console.log("--------------->");
   res.sendFile(path.join( __dirname, '../src/index.html'));
 });
 

@@ -13,6 +13,7 @@
   "author": "Tien Vu",
   "license": "MIT",
   "dependencies": {
+    "@types/react-router": "^2.0.41",
     "babel-polyfill": "6.8.0",
     "bluebird": "^3.4.7",
     "bootstrap": "3.3.6",
@@ -29,6 +30,7 @@
     "vis": "^4.17.0"
   },
   "devDependencies": {
+    "awesome-typescript-loader": "^3.0.0-beta.17",
     "babel-cli": "6.8.0",
     "babel-core": "6.8.0",
     "babel-loader": "6.2.4",
@@ -64,6 +66,7 @@
     "rimraf": "2.5.2",
     "sass-loader": "^4.1.1",
     "style-loader": "0.13.1",
+    "typescript": "^2.1.4",
     "url-loader": "0.5.7",
     "webpack": "1.13.0",
     "webpack-dev-middleware": "1.6.1",

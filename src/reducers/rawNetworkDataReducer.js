@@ -1,4 +1,4 @@
-import * as types from '../actions/actionTypes';
+import * as types from '../actions/actionTypes.ts';
 import initialState from './initialState';
 
 export default function rawNetworkDataReducer(state = initialState.networkData, action) {

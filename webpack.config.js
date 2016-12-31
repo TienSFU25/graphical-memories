@@ -16,8 +16,9 @@ export default {
     publicPath: '/',
     filename: 'bundle.js'
   },
-  devServer: {
-    contentBase: path.resolve(__dirname, 'src')
+  resolve: {
+      // Add '.ts' and '.tsx' as resolvable extensions.
+      extensions: ["", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
@@ -26,6 +27,7 @@ export default {
   module: {
     loaders: [
       {test: /\.js$/, include: path.join(__dirname, 'src'), loaders: ['babel']},
+      {test: /\.tsx?$/, loader: 'awesome-typescript-loader'},
       {test: /(\.css)$/, loaders: ['style', 'css']},
       {test: /(\.scss)$/, loaders: ['style', 'css', 'sass']},
       {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file'},
