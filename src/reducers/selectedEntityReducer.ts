@@ -1,12 +1,13 @@
-import {ActionTypes} from '../actions/actionTypes';
+import { ActionTypes, NodeAction } from '../actions/actionTypes';
 import initialState from './initialState';
+import { EntityType, SelectedEntity } from '../types';
 
-export default function selectedEntityReducer(state = initialState.selectedEntity, action) {
+export default function selectedEntityReducer(state: SelectedEntity = initialState.selectedEntity, action: NodeAction) {
   switch (action.type) {
     case ActionTypes.SELECT_NOTHING: {
       return Object.assign({}, state,
         {
-          type: 'Nothing',
+          type: EntityType.Nothing,
           id: 0
         });
     }
@@ -14,25 +15,24 @@ export default function selectedEntityReducer(state = initialState.selectedEntit
       return state;
     }
     case ActionTypes.EDIT_NODE: {
-      return state;
-      // return Object.assign({}, state,
-      //   {
-      //     type: 'Node',
-      //     id: 2,
-      //     data: state.visNetwork.body.data.nodes.get(action.nodeData.id)
-      //   });
+      return Object.assign({}, state,
+        {
+          type: EntityType.Node,
+          id: 2,
+          data: action.nodeData
+        });
     }
     case ActionTypes.SELECT_NETWORK: {
       return Object.assign({}, state,
         {
-          type: 'Network',
+          type: EntityType.Network,
           id: 1
         });
     }
     case ActionTypes.SELECT_NODE: {
       return Object.assign({}, state,
         {
-          type: 'Node',
+          type: EntityType.Node,
           id: 2,
           data: action.nodeData
         });

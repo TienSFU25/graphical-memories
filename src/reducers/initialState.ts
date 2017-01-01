@@ -1,14 +1,17 @@
-let state = {
+import { ReduxStore, EntityType } from '../types';
+import { DataSet, Node, Edge } from 'vis';
+
+const state = {
   selectedEntity: {
-    type: 'Nothing',
+    type: EntityType.Nothing,
     id: 0,
     data: null
   },
   visNetwork: null,
   networkData: {
     isFresh: false,
-    nodes: [],
-    edges: []
+    nodes: new DataSet<Node>([]),
+    edges: new DataSet<Edge>([])
   }
 };
 

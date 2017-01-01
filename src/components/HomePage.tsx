@@ -2,11 +2,10 @@ import * as React from 'react';
 import Network from './Network';
 import {Jumbotron} from 'react-bootstrap';
 
-class HomePage extends React.Component<any, any> {
-  constructor(props) {
-    super(props);
-  }
+interface HomePageProps {}
+interface HomePageState {}
 
+class HomePage extends React.Component<HomePageProps, HomePageState> {
   render() {
     return (
       <div>

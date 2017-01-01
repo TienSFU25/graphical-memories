@@ -1,11 +1,7 @@
-import { ActionTypes } from './actionTypes';
+import { ActionTypes, LoadGraphAction } from './actionTypes';
 import { Action } from 'redux';
 import loadGraphFromFile from '../api/loadGraphFromFileApi';
 import jsonToVisNetwork from '../dataMappers/jsonToVisNetwork';
-
-interface LoadGraphAction extends Action {
-  networkData: any;
-}
 
 function loadGraphSuccess(networkData): LoadGraphAction {
   networkData.isFresh = true;

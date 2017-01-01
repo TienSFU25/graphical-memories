@@ -1,10 +1,6 @@
-import { ActionTypes } from './actionTypes';
+import { ActionTypes, NodeAction } from './actionTypes';
 import { Action, ActionCreator, ActionCreatorsMapObject } from 'redux';
 import { Node, Network } from 'vis';
-
-interface NodeAction extends Action {
-  readonly nodeData: Node
-}
 
 export function addNode(nodeData: Node, callback: Function): NodeAction {
   callback(nodeData);
