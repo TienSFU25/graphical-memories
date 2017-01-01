@@ -7,8 +7,8 @@ export default {
   noInfo: false,
   entry: [
     'eventsource-polyfill', // necessary for hot reloading with IE
-    'webpack-hot-middleware/client?reload=true', //note that it reloads the page if hot module reloading fails.
-    path.resolve(__dirname, 'src/index')
+    // 'webpack-hot-middleware=client?reload=true', //note that it reloads the page if hot module reloading fails.
+    './src/index.tsx'
   ],
   target: 'web',
   output: {
@@ -26,8 +26,8 @@ export default {
   ],
   module: {
     loaders: [
-      {test: /\.js$/, include: path.join(__dirname, 'src'), loaders: ['babel']},
-      {test: /\.tsx?$/, loader: 'awesome-typescript-loader'},
+      {test: /\.js$/, include: ('./src'), loaders: ['babel']},
+      {test: /\.tsx?$/, loader: 'babel-loader?presets[]=react!ts-loader'},
       {test: /(\.css)$/, loaders: ['style', 'css']},
       {test: /(\.scss)$/, loaders: ['style', 'css', 'sass']},
       {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file'},

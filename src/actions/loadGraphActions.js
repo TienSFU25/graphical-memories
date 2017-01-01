@@ -17,9 +17,9 @@ function selectNothing() {
   };
 }
 
-export default function loadGraph(fileName, networkContainer) {
+export default function loadGraph() {
   return function(dispatch) {
-    return loadGraphFromFile(fileName).then(graph => {
+    return loadGraphFromFile().then(graph => {
       let visNetworkData = jsonToVisNetwork(graph);
 
       dispatch(loadGraphSuccess({ visNetworkData }));

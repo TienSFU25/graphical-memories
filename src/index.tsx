@@ -1,5 +1,5 @@
 import 'babel-polyfill';
-import React from 'react';
+import * as React from 'react';
 import { render } from 'react-dom';
 import initializeStore from './store/initializeStore';
 import { Provider } from 'react-redux';
@@ -10,11 +10,14 @@ import '../node_modules/toastr/build/toastr.min.css';
 import loadGraph from './actions/loadGraphActions';
 
 const store = initializeStore();
-store.dispatch(loadGraph());
+// store.dispatch(loadGraph());
 
-render(
-  <Provider store={store}>
-    <Router history={browserHistory} routes={routes} />
-  </Provider>,
-  document.getElementById('app')
-);
+// console.log(render);
+render(<div>bar</div>, document.getElementById('app'));
+console.log(1234);
+// render(
+//   <Provider store={store}>
+//     <Router history={browserHistory} routes={routes} />
+//   </Provider>,
+//   document.getElementById('app')
+// );
