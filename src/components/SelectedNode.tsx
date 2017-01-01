@@ -1,4 +1,5 @@
-import React, {PropTypes} from 'react';
+import * as React from 'react';
+import {PropTypes} from 'react';
 import {Table} from 'react-bootstrap';
 
 const SelectedNode = ({data}) => {
@@ -32,8 +33,8 @@ const SelectedNode = ({data}) => {
   );
 };
 
-SelectedNode.propTypes = {
-  data: PropTypes.object.isRequired
-};
+// SelectedNode.propTypes = {
+//   data: PropTypes.object.isRequired
+// };
 
 export default SelectedNode;

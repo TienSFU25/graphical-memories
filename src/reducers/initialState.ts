@@ -1,10 +1,8 @@
-import * as vis from 'vis';
-
-export default {
+let state = {
   selectedEntity: {
     type: 'Nothing',
     id: 0,
-    data: {}
+    data: null
   },
   visNetwork: null,
   networkData: {
@@ -13,3 +11,5 @@ export default {
     edges: []
   }
 };
+
+export default state;

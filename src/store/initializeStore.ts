@@ -4,13 +4,11 @@ import rootReducer from '../reducers/rootReducer';
 import thunk from 'redux-thunk';
 import initialState from '../reducers/initialState';
 
-console.log(rootReducer);
-
 export default function configureStore() {
-  // return createStore(
-    // rootReducer,
-    // initialState,
-    // applyMiddleware(thunk)
+  return createStore(
+    rootReducer,
+    initialState,
+    applyMiddleware(thunk)
     // applyMiddleware(thunk, reduxImmutableStateInvariant())
-  // );
+  );
 }

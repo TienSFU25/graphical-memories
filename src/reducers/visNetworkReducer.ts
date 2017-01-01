@@ -1,4 +1,4 @@
-import * as types from '../actions/actionTypes.ts';
+import * as types from '../actions/actionTypes';
 import initialState from './initialState';
 
 export default function graphReducer(state = initialState.visNetwork, action) {

@@ -1,10 +1,9 @@
-import React, {PropTypes} from 'react';
-// import Header from './common/Header';
+import * as React from 'react';
 import Network from './Network';
 import {connect} from 'react-redux';
 import {Jumbotron} from 'react-bootstrap';
 
-class HomePage extends React.Component {
+class HomePage extends React.Component<any, any> {
   constructor(props) {
     super(props);
   }

@@ -1,4 +1,4 @@
-import * as types from '../actions/actionTypes.ts';
+import * as types from '../actions/actionTypes';
 import initialState from './initialState';
 
 export default function selectedEntityReducer(state = initialState.selectedEntity, action) {
@@ -14,12 +14,13 @@ export default function selectedEntityReducer(state = initialState.selectedEntit
       return state;
     }
     case types.EDIT_NODE: {
-      return Object.assign({}, state,
-        {
-          type: 'Node',
-          id: 2,
-          data: state.visNetwork.body.data.nodes.get(action.nodeData.id)
-        });
+      return state;
+      // return Object.assign({}, state,
+      //   {
+      //     type: 'Node',
+      //     id: 2,
+      //     data: state.visNetwork.body.data.nodes.get(action.nodeData.id)
+      //   });
     }
     case types.SELECT_NETWORK: {
       return Object.assign({}, state,

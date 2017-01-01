@@ -1,10 +1,11 @@
-import React, {PropTypes} from 'react';
+import * as React from 'react';
+import {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import SelectedNetwork from './SelectedNetwork';
 import SelectedNode from './SelectedNode';
 
-class Network extends React.Component {
+class Network extends React.Component<any, any> {
   constructor(props) {
     super(props);
   }

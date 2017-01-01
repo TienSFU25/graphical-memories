@@ -10,14 +10,11 @@ import '../node_modules/toastr/build/toastr.min.css';
 import loadGraph from './actions/loadGraphActions';
 
 const store = initializeStore();
-// store.dispatch(loadGraph());
+store.dispatch(loadGraph());
 
-// console.log(render);
-render(<div>bar</div>, document.getElementById('app'));
-console.log(1234);
-// render(
-//   <Provider store={store}>
-//     <Router history={browserHistory} routes={routes} />
-//   </Provider>,
-//   document.getElementById('app')
-// );
+render(
+  <Provider store={store}>
+    <Router history={browserHistory} routes={routes} />
+  </Provider>,
+  document.getElementById('app')
+);

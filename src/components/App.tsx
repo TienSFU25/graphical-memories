@@ -1,8 +1,13 @@
-import React, {PropTypes} from 'react';
+import * as React from 'react';
+import {PropTypes} from 'react';
 // import Header from './common/Header';
 import {connect} from 'react-redux';
 
-class App extends React.Component {
+interface AppProps {
+  children: Object
+}
+
+class App extends React.Component<AppProps, any> {
   render() {
     return (
       <div className="container-fluid">
@@ -11,9 +16,5 @@ class App extends React.Component {
     );
   }
 }
-
-App.propTypes = {
-  children: PropTypes.object.isRequired
-};
 
 export default App;

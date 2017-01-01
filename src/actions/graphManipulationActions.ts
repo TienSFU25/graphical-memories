@@ -1,4 +1,5 @@
-import * as types from './actionTypes.ts';
+import * as types from './actionTypes';
+import {ActionCreatorsMapObject} from 'redux';
 
 export function addNode(nodeData, callback) {
   callback(nodeData);
@@ -45,3 +46,14 @@ export function selectEntity(clickEvent, network) {
     return selectNetwork();
   }
 }
+
+const GraphManipulationCreatorsMap: ActionCreatorsMapObject = {
+  addNode,
+  editNode,
+  selectNode,
+  selectNetwork,
+  initializeNetworkSuccess,
+  selectEntity
+}
+
+export default GraphManipulationCreatorsMap;

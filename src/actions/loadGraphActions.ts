@@ -1,4 +1,4 @@
-import * as types from './actionTypes.ts';
+import * as types from './actionTypes';
 import loadGraphFromFile from '../api/loadGraphFromFileApi';
 import jsonToVisNetwork from '../dataMappers/jsonToVisNetwork';
 
