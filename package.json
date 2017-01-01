@@ -31,6 +31,7 @@
     "vis": "^4.17.0"
   },
   "devDependencies": {
+    "@types/vis": "^4.17.0",
     "awesome-typescript-loader": "^3.0.0-beta.17",
     "babel-cli": "6.8.0",
     "babel-core": "6.8.0",

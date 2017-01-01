@@ -15,42 +15,50 @@ interface NetworkProps {
 
 class Network extends React.Component<any, any> {
   networkContainer: any;
+  network: any;
 
   constructor(props) {
     super(props);
   }
 
+  componentDidMount() {
+    let options = {
+      interaction: {dragNodes: true},
+      physics: {
+          enabled: false
+      },
+      manipulation: {
+        addNode: (nodeData, callback) => {
+          this.props.actions.addNode(nodeData, callback);
+        },
+        editNode: (nodeData, callback) => {
+          callback(nodeData);
+        }
+      }
+    };
+
+    this.network = new vis.Network(this.networkContainer, [], options);
+
+    this.network.on('click', (params) => {
+      this.props.actions.selectEntity(params, this.network);
+    });
+
+    this.network.on('dragEnd', (params) => {
+      // assume only the node got dragged for now
+      let id = params.nodes[0];
+
+      this.props.actions.selectNode(id, this.network);
+    });
+
+    this.props.actions.initializeNetworkSuccess(this.network);
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.networkData.isFresh) {
-      let options = {
-        interaction: {dragNodes: true},
-        physics: {
-            enabled: false
-        },
-        manipulation: {
-          addNode: (nodeData, callback) => {
-            this.props.actions.addNode(nodeData, callback);
-          },
-          editNode: (nodeData, callback) => {
-            callback(nodeData);
-          }
-        }
-      };
-
-      let network = new vis.Network(this.networkContainer, nextProps.networkData.visNetworkData, options);
-
-      network.on('click', (params) => {
-        this.props.actions.selectEntity(params, network);
+      this.network.setData({
+        nodes: nextProps.networkData.visNetworkData[0],
+        edges: nextProps.networkData.visNetworkData[1]
       });
-
-      network.on('dragEnd', (params) => {
-        // assume only the node got dragged for now
-        let id = params.nodes[0];
-
-        this.props.actions.selectNode(id, network);
-      });
-
-      this.props.actions.initializeNetworkSuccess(network);
     }
   }
 

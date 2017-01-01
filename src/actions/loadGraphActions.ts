@@ -1,8 +1,13 @@
-import {ActionTypes} from './actionTypes';
+import { ActionTypes } from './actionTypes';
+import { Action } from 'redux';
 import loadGraphFromFile from '../api/loadGraphFromFileApi';
 import jsonToVisNetwork from '../dataMappers/jsonToVisNetwork';
 
-function loadGraphSuccess(networkData) {
+interface LoadGraphAction extends Action {
+  networkData: any;
+}
+
+function loadGraphSuccess(networkData): LoadGraphAction {
   networkData.isFresh = true;
 
   return {
@@ -11,7 +16,7 @@ function loadGraphSuccess(networkData) {
   };
 }
 
-function selectNothing() {
+function selectNothing(): Action {
   return {
     type: ActionTypes.SELECT_NOTHING
   };
