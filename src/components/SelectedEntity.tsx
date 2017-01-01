@@ -1,12 +1,12 @@
 import * as React from 'react';
-import {PropTypes} from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { EntityType } from '../types';
 import SelectedNetwork from './SelectedNetwork';
 import SelectedNode from './SelectedNode';
 
-class Network extends React.Component<any, any> {
+class SelectedEntity extends React.Component<any, any> {
   constructor(props) {
     super(props);
   }
@@ -24,12 +24,10 @@ class Network extends React.Component<any, any> {
   }
 }
 
-function mapStateToProps(state) {
-  let selectedEntity = state.selectedEntity;
-
+function mapStateToProps({ selectedEntity }) {
   return {
     selectedEntity
   };
 }
 
-export default connect(mapStateToProps)(Network);
+export default connect(mapStateToProps)(SelectedEntity);

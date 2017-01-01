@@ -1,13 +1,10 @@
 import * as React from 'react';
-// import Header from './common/Header';
 
-interface AppProps {
-  children: Object
-}
+class App extends React.Component<any, any> {
+  static propTypes = {
+    children: React.PropTypes.object.isRequired
+  }
 
-interface AppState {}
-
-class App extends React.Component<AppProps, AppState> {
   render() {
     return (
       <div className="container-fluid">

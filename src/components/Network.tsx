@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import '../../node_modules/vis/dist/vis.css';
@@ -9,16 +8,28 @@ import * as vis from 'vis';
 import SelectedEntity from './SelectedEntity';
 import {Row, Col} from 'react-bootstrap';
 
-interface NetworkProps {
-  actions: Object
+interface INetworkState {
+  network: vis.Network
 }
 
-class Network extends React.Component<any, any> {
+interface INetworkProps {
+  networkData: any,
+  actions: any
+}
+
+class Network extends React.Component<INetworkProps, INetworkState> {
   networkContainer: any;
-  network: any;
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      network: null
+    }
+  }
+
+  static propTypes = {
+    actions: React.PropTypes.object.isRequired
   }
 
   componentDidMount() {
@@ -37,25 +48,29 @@ class Network extends React.Component<any, any> {
       }
     };
 
-    this.network = new vis.Network(this.networkContainer, [], options);
+    const network = new vis.Network(this.networkContainer, [], options);
 
-    this.network.on('click', (params) => {
-      this.props.actions.selectEntity(params, this.network);
+    network.on('click', (params) => {
+      this.props.actions.selectEntity(params, network);
     });
 
-    this.network.on('dragEnd', (params) => {
+    network.on('dragEnd', (params) => {
       // assume only the node got dragged for now
       let id = params.nodes[0];
 
-      this.props.actions.selectNode(id, this.network);
+      this.props.actions.selectNode(id, network);
     });
 
-    this.props.actions.initializeNetworkSuccess(this.network);
+    this.props.actions.initializeNetworkSuccess(network);
+
+    this.setState({
+      network: network
+    });
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.networkData.isFresh) {
-      this.network.setData({
+      this.state.network.setData({
         nodes: nextProps.networkData.visNetworkData[0],
         edges: nextProps.networkData.visNetworkData[1]
       });
@@ -78,10 +93,6 @@ class Network extends React.Component<any, any> {
     );
   }
 }
-
-// Network.propTypes = {
-//   actions: PropTypes.object.isRequired
-// };
 
 function mapStateToProps(state) {
   return {

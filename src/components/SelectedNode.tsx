@@ -1,8 +1,9 @@
 import * as React from 'react';
-import {PropTypes} from 'react';
-import {Table} from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 
-const SelectedNode = ({data}) => {
+const SelectedNode : React.StatelessComponent<React.HTMLProps<JSX.Element>> = (props: React.HTMLProps<JSX.Element> & {data: any}) => {
+  const data = props.data;
+
   return (
     <Table striped bordered condensed hover>
       <thead>
@@ -33,8 +34,8 @@ const SelectedNode = ({data}) => {
   );
 };
 
-// SelectedNode.propTypes = {
-//   data: PropTypes.object.isRequired
-// };
+SelectedNode.propTypes = {
+  data: React.PropTypes.object.isRequired
+};
 
 export default SelectedNode;
