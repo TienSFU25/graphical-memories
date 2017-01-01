@@ -1,5 +1,7 @@
-// import expect from 'expect';
-// import React from 'react';
+// /// <reference path="../../node_modules/@types/mocha/index.d.ts" />
+
+// import * as expect from 'expect';
+// import * as React from 'react';
 // import {mount, shallow} from 'enzyme';
 // import SelectedNode from './SelectedNode';
 

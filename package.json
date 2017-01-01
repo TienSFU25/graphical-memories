@@ -7,7 +7,7 @@
     "open:src": "babel-node tools/startServer.js",
     "lint": "node_modules/.bin/esw webpack.config.* src tools",
     "lint:watch": "npm run lint -- --watch",
-    "test": "mocha --reporter spec tools/testSetup.js \"src/**/*.test.js\"",
+    "test": "mocha --reporter spec --compilers ts:ts-node/register,tsx:ts-node/register tools/testSetup.js \"src/**/*.test.ts\"",
     "test:watch": "npm run test -- --watch"
   },
   "author": "Tien Vu",
@@ -31,6 +31,9 @@
     "vis": "^4.17.0"
   },
   "devDependencies": {
+    "@types/enzyme": "^2.5.39",
+    "@types/expect": "^1.13.31",
+    "@types/mocha": "^2.2.35",
     "@types/vis": "^4.17.0",
     "awesome-typescript-loader": "^3.0.0-beta.17",
     "babel-cli": "6.8.0",
@@ -69,6 +72,7 @@
     "sass-loader": "^4.1.1",
     "style-loader": "0.13.1",
     "ts-loader": "^1.3.3",
+    "ts-node": "^2.0.0",
     "typescript": "^2.1.4",
     "url-loader": "0.5.7",
     "webpack": "1.13.0",
