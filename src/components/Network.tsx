@@ -9,6 +9,10 @@ import * as vis from 'vis';
 import SelectedEntity from './SelectedEntity';
 import {Row, Col} from 'react-bootstrap';
 
+interface NetworkProps {
+  actions: Object
+}
+
 class Network extends React.Component<any, any> {
   networkContainer: any;
 
