@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Network from './Network';
+import Network from '../network/Network';
 import {Jumbotron} from 'react-bootstrap';
 
 interface HomePageProps {}

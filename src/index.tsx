@@ -4,9 +4,9 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { Router, browserHistory } from 'react-router';
 
-import initializeStore from './store/initializeStore';
+import initializeStore from './app/initializeStore';
 import routes from './routes';
-import loadGraph from './actions/loadGraphActions';
+import loadGraph from './network/loadGraphActions';
 
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../node_modules/toastr/build/toastr.min.css';

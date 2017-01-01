@@ -1,6 +1,7 @@
-import { ActionTypes, NodeAction } from './actionTypes';
 import { Action, ActionCreator, ActionCreatorsMapObject } from 'redux';
 import { Node, Network } from 'vis';
+
+import { ActionTypes, NodeAction } from '../app/actionTypes';
 
 export function addNode(nodeData: Node, callback: Function): NodeAction {
   callback(nodeData);

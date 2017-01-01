@@ -1,6 +1,7 @@
-import { ActionTypes, LoadGraphAction } from './actionTypes';
 import { Action } from 'redux';
+
 import loadGraphFromFile from '../api/loadGraphFromFileApi';
+import { ActionTypes, LoadGraphAction } from '../app/actionTypes';
 import jsonToVisNetwork from '../dataMappers/jsonToVisNetwork';
 
 function loadGraphSuccess(networkData): LoadGraphAction {

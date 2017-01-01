@@ -2,6 +2,7 @@ import * as React from 'react';
 import { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+
 import { EntityType } from '../types';
 import SelectedNetwork from './SelectedNetwork';
 import SelectedNode from './SelectedNode';

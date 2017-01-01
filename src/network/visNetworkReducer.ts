@@ -1,5 +1,5 @@
-import { ActionTypes } from '../actions/actionTypes';
-import initialState from './initialState';
+import { ActionTypes } from '../app/actionTypes';
+import initialState from '../app/initialState';
 
 export default function graphReducer(state = initialState.visNetwork, action) {
   switch (action.type) {

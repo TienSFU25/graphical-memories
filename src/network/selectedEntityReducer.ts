@@ -1,5 +1,5 @@
-import { ActionTypes, NodeAction } from '../actions/actionTypes';
-import initialState from './initialState';
+import { ActionTypes, NodeAction } from '../app/actionTypes';
+import initialState from '../app/initialState';
 import { EntityType, SelectedEntity } from '../types';
 
 export default function selectedEntityReducer(state: SelectedEntity = initialState.selectedEntity, action: NodeAction) {

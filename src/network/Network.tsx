@@ -1,12 +1,14 @@
 import * as React from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { Row, Col } from 'react-bootstrap';
+import * as vis from 'vis';
+
+import graphManipulationActions from './graphManipulationActions';
+import SelectedEntity from './SelectedEntity';
+
 import '../../node_modules/vis/dist/vis.css';
 import '../css/app.scss';
-import graphManipulationActions from '../actions/graphManipulationActions';
-import * as vis from 'vis';
-import SelectedEntity from './SelectedEntity';
-import {Row, Col} from 'react-bootstrap';
 
 interface INetworkState {
   network: vis.Network
