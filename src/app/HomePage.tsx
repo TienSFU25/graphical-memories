@@ -10,7 +10,7 @@ class HomePage extends React.Component<HomePageProps, HomePageState> {
     return (
       <div>
         <Jumbotron>
-          <h3>This is my homepage!</h3>
+          <h2>Ruby is learning Python!</h2>
         </Jumbotron>
         <Network />
       </div>

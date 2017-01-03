@@ -4,22 +4,23 @@ import { bindActionCreators } from 'redux';
 import { Row, Col } from 'react-bootstrap';
 import * as vis from 'vis';
 
+import { NetworkData } from '../types';
 import graphManipulationActions from './graphManipulationActions';
 import SelectedEntity from './SelectedEntity';
+import SaveButton from './SaveButton';
+// import LoadButton from './LoadButton';
+import DataPanel from './DataPanel';
 
 import '../../node_modules/vis/dist/vis.css';
 import '../css/app.scss';
 
-interface INetworkState {
-  network: vis.Network
-}
-
 interface INetworkProps {
-  networkData: any,
+  networkData: NetworkData,
+  showEditPopup: boolean,
   actions: any
 }
 
-class Network extends React.Component<INetworkProps, INetworkState> {
+class Network extends React.Component<INetworkProps, any> {
   networkContainer: any;
 
   constructor(props) {
@@ -30,27 +31,25 @@ class Network extends React.Component<INetworkProps, INetworkState> {
     }
   }
 
-  static propTypes = {
-    actions: React.PropTypes.object.isRequired
-  }
-
   componentDidMount() {
+    const network = new vis.Network(this.networkContainer, [], {});
+
     let options = {
       interaction: {dragNodes: true},
       physics: {
           enabled: false
       },
       manipulation: {
-        addNode: (nodeData, callback) => {
+        addNode: (nodeData: vis.Node, callback) => {
           this.props.actions.addNode(nodeData, callback);
         },
-        editNode: (nodeData, callback) => {
-          callback(nodeData);
+        editNode: (nodeData: vis.Node, callback) => {
+          console.log('implement this edit node bitch!');
         }
       }
     };
 
-    const network = new vis.Network(this.networkContainer, [], options);
+    network.setOptions(options);
 
     network.on('click', (params) => {
       this.props.actions.selectEntity(params, network);
@@ -70,13 +69,17 @@ class Network extends React.Component<INetworkProps, INetworkState> {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: INetworkProps) {
     if (nextProps.networkData.isFresh) {
       this.state.network.setData({
-        nodes: nextProps.networkData.visNetworkData[0],
-        edges: nextProps.networkData.visNetworkData[1]
+        nodes: nextProps.networkData.nodes,
+        edges: nextProps.networkData.edges
       });
     }
+  }
+
+  onSave() {
+    this.state.network.storePositions();
   }
 
   render() {
@@ -88,7 +91,9 @@ class Network extends React.Component<INetworkProps, INetworkState> {
             <div ref={(thisDiv) => this.networkContainer = thisDiv} id="mynetwork"/>
           </Col>
           <Col xs={5} md={5}>
+            <SaveButton onClick={this.onSave.bind(this)} />
             <SelectedEntity />
+            <DataPanel networkData={this.props.networkData}/>
           </Col>
         </Row>
       </div>

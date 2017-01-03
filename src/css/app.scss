@@ -1,3 +1,14 @@
 #mynetwork {
 	border: 1px solid purple;
 }
+
+.form-control {
+  &.data-panel {
+    height: 600px;
+  }
+
+  &.edit-popup {
+    z-index: 1000;
+    width: 300px;
+  }
+}

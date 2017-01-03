@@ -14,14 +14,6 @@ export default function selectedEntityReducer(state: SelectedEntity = initialSta
     case ActionTypes.ADD_NODE_SUCCESS: {
       return state;
     }
-    case ActionTypes.EDIT_NODE: {
-      return Object.assign({}, state,
-        {
-          type: EntityType.Node,
-          id: 2,
-          data: action.nodeData
-        });
-    }
     case ActionTypes.SELECT_NETWORK: {
       return Object.assign({}, state,
         {
@@ -35,6 +27,17 @@ export default function selectedEntityReducer(state: SelectedEntity = initialSta
           type: EntityType.Node,
           id: 2,
           data: action.nodeData
+        });
+    }
+    case ActionTypes.EDIT_NODE: {
+      // oh well
+      const newNodeData = Object.assign({}, state.data, action.nodeData);
+
+      return Object.assign({}, state,
+        {
+          type: EntityType.Node,
+          id: 2,
+          data: newNodeData
         });
     }
     default: {

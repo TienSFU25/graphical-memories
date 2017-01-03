@@ -1,6 +1,7 @@
 import { DataSet, Edge, Node } from 'vis';
+import { NetworkData } from '../types';
 
-function jsonToVisNetwork(graph): [DataSet<Node>, DataSet<Edge>] {
+function jsonToVisNetwork(graph): NetworkData {
   let nodes = graph.nodes.map(node => {
     return {
       attributes: node.attributes,
@@ -26,7 +27,11 @@ function jsonToVisNetwork(graph): [DataSet<Node>, DataSet<Edge>] {
   let nodeDataSet = new DataSet<Node>(nodes);
   let edgeDataSet = new DataSet<Edge>(edges);
 
-  return [nodes, edges];
+  return {
+    isFresh: true,
+    nodes: nodeDataSet,
+    edges: edgeDataSet
+  };
 }
 
 export default jsonToVisNetwork;

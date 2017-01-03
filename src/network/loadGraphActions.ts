@@ -1,10 +1,11 @@
 import { Action } from 'redux';
 
+import { NetworkData } from '../types';
 import loadGraphFromFile from '../api/loadGraphFromFileApi';
 import { ActionTypes, LoadGraphAction } from '../app/actionTypes';
 import jsonToVisNetwork from '../dataMappers/jsonToVisNetwork';
 
-function loadGraphSuccess(networkData): LoadGraphAction {
+function loadGraphSuccess(networkData: NetworkData): LoadGraphAction {
   networkData.isFresh = true;
 
   return {
@@ -24,7 +25,7 @@ export default function loadGraph() {
     return loadGraphFromFile().then(graph => {
       let visNetworkData = jsonToVisNetwork(graph);
 
-      dispatch(loadGraphSuccess({ visNetworkData }));
+      dispatch(loadGraphSuccess(visNetworkData));
       dispatch(selectNothing());
     }).catch(err => {
       throw(err);

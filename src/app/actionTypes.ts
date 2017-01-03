@@ -1,5 +1,6 @@
 import { Action } from 'redux';
-import { Node } from 'vis';
+import { NetworkData } from '../types';
+import { Network, Node } from 'vis';
 
 export enum ActionTypes {
   LOAD_GRAPH_SUCCESS,
@@ -8,13 +9,18 @@ export enum ActionTypes {
   SELECT_NOTHING,
   SELECT_NETWORK,
   SELECT_NODE,
+  SAVE_NODE,
   EDIT_NODE
 }
 
 export interface LoadGraphAction extends Action {
-  networkData: any;
+  networkData: NetworkData;
 }
 
 export interface NodeAction extends Action {
   readonly nodeData: Node
+}
+
+export interface NetworkAction extends Action {
+  readonly visNetwork: Network
 }

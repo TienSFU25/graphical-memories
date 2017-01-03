@@ -1,7 +1,7 @@
 import { Action, ActionCreator, ActionCreatorsMapObject } from 'redux';
 import { Node, Network } from 'vis';
 
-import { ActionTypes, NodeAction } from '../app/actionTypes';
+import { ActionTypes, NodeAction, NetworkAction } from '../app/actionTypes';
 
 export function addNode(nodeData: Node, callback: Function): NodeAction {
   callback(nodeData);
@@ -12,11 +12,10 @@ export function addNode(nodeData: Node, callback: Function): NodeAction {
   }
 }
 
-export function editNode(nodeData: Node): NodeAction {
+export function saveNode(nodeId: number): Action {
   return {
-    type: ActionTypes.EDIT_NODE,
-    nodeData
-  };
+    type: ActionTypes.SAVE_NODE
+  }
 }
 
 export function selectNode(nodeId: number, network): NodeAction {
@@ -35,7 +34,7 @@ function selectNetwork(): Action {
   };
 }
 
-export function initializeNetworkSuccess(visNetwork: Network) {
+export function initializeNetworkSuccess(visNetwork: Network): NetworkAction {
   return {
     type: ActionTypes.INITIALIZE_NETWORK_SUCCESS,
     visNetwork
@@ -50,12 +49,24 @@ export function selectEntity(clickEvent, network): Action {
   }
 }
 
+export function editNode(nodeId: string, field: string, value: string) {
+  let nodeData = {};
+  nodeData["id"] = nodeId;
+  nodeData[field] = value;
+
+  return {
+    type: ActionTypes.EDIT_NODE,
+    nodeData
+  };
+}
+
 const GraphManipulationCreatorsMap: ActionCreatorsMapObject = {
   addNode,
-  editNode,
+  saveNode,
   selectNode,
   selectNetwork,
   initializeNetworkSuccess,
+  editNode,
   selectEntity
 }
 
