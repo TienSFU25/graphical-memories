@@ -1,9 +1,9 @@
-import { Action } from 'redux';
+import { Action, ActionCreatorsMapObject } from 'redux';
 
 import { NetworkData } from '../types';
 import loadGraphFromFile from '../api/loadGraphFromFileApi';
 import { ActionTypes, LoadGraphAction } from '../app/actionTypes';
-import jsonToVisNetwork from '../dataMappers/jsonToVisNetwork';
+import { mapToNetworkData } from '../dataMappers';
 
 function loadGraphSuccess(networkData: NetworkData): LoadGraphAction {
   networkData.isFresh = true;
@@ -20,10 +20,22 @@ function selectNothing(): Action {
   };
 }
 
-export default function loadGraph() {
+const LoadGraphActionCreatorsMap: ActionCreatorsMapObject = {
+  loadGraphFromString
+}
+
+function loadGraphFromString(userGraph: string): Action {
+  const visNetworkData = mapToNetworkData(userGraph);
+
+  return loadGraphSuccess(visNetworkData);
+}
+
+export default LoadGraphActionCreatorsMap
+
+export function loadGraph() {
   return function(dispatch) {
     return loadGraphFromFile().then(graph => {
-      let visNetworkData = jsonToVisNetwork(graph);
+      const visNetworkData = mapToNetworkData(graph);
 
       dispatch(loadGraphSuccess(visNetworkData));
       dispatch(selectNothing());

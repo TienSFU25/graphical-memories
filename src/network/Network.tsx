@@ -6,6 +6,7 @@ import * as vis from 'vis';
 
 import { NetworkData } from '../types';
 import graphManipulationActions from './graphManipulationActions';
+import loadGraphFromString from './loadGraphActions';
 import SelectedEntity from './SelectedEntity';
 import SaveButton from './SaveButton';
 // import LoadButton from './LoadButton';
@@ -17,6 +18,7 @@ import '../css/app.scss';
 interface INetworkProps {
   networkData: NetworkData,
   showEditPopup: boolean,
+  loadGraphActions: any,
   actions: any
 }
 
@@ -82,6 +84,12 @@ class Network extends React.Component<INetworkProps, any> {
     this.state.network.storePositions();
   }
 
+  onDataUpdate(event: React.SyntheticEvent<any>) {
+    var newData = event.currentTarget.value;
+
+    this.props.loadGraphActions.loadGraphFromString(newData);
+  }
+
   render() {
     return (
       <div>
@@ -93,7 +101,7 @@ class Network extends React.Component<INetworkProps, any> {
           <Col xs={5} md={5}>
             <SaveButton onClick={this.onSave.bind(this)} />
             <SelectedEntity />
-            <DataPanel networkData={this.props.networkData}/>
+            <DataPanel networkData={this.props.networkData} onChange={this.onDataUpdate.bind(this)} />
           </Col>
         </Row>
       </div>
@@ -109,7 +117,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(graphManipulationActions, dispatch)
+    actions: bindActionCreators(graphManipulationActions, dispatch),
+    loadGraphActions: bindActionCreators(loadGraphFromString, dispatch)
   };
 }
 
