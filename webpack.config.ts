@@ -1,6 +1,6 @@
-import webpack from 'webpack';
+import * as webpack from 'webpack';
 
-module.exports = {
+export default {
   debug: true,
   devtool: 'inline-source-map',
   noInfo: false,
@@ -11,7 +11,7 @@ module.exports = {
   ],
   target: 'web',
   output: {
-    path: __dirname + '/dist', // Note: Physical files are only output by the production build task `npm run build`.
+    path: '/dist', // Note: Physical files are only output by the production build task `npm run build`.
     publicPath: '/',
     filename: 'bundle.js'
   },
