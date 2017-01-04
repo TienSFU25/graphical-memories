@@ -17,7 +17,7 @@ export default {
   },
   resolve: {
       // Add '.ts' and '.tsx' as resolvable extensions.
-      extensions: ["", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
+      extensions: ["", ".webpack.js", ".web.js", ".ts", ".tsx", ".js", ".jsx"]
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
@@ -25,7 +25,7 @@ export default {
   ],
   module: {
     loaders: [
-      {test: /\.js$/, include: ('./src'), loaders: ['babel']},
+      {test: /\.js$/, include: './src', loaders: ['babel']},
       {test: /\.tsx?$/, loader: 'babel-loader?presets[]=react!ts-loader'},
       {test: /(\.css)$/, loaders: ['style', 'css']},
       {test: /(\.scss)$/, loaders: ['style', 'css', 'sass']},
@@ -33,7 +33,8 @@ export default {
       {test: /\.(woff|woff2)$/, loader: 'url?prefix=font/&limit=5000'},
       {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream'},
       {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml'},
-      {test: /\.(png|jpg)$/, loader: 'url?limit=10000'}
+      {test: /\.(png|jpg)$/, loader: 'url?limit=10000'},
+      {test: /\.csv$/, loader: 'dsv-loader'}
     ]
   }
 };

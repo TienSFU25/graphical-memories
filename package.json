@@ -22,6 +22,7 @@
     "bluebird": "^3.4.7",
     "bootstrap": "3.3.6",
     "colors": "^1.1.2",
+    "d3": "^4.4.0",
     "jquery": "2.2.3",
     "lodash": "^4.17.4",
     "react": "15.0.2",
@@ -36,6 +37,7 @@
     "vis": "^4.17.0"
   },
   "devDependencies": {
+    "@types/d3": "^4.4.0",
     "@types/enzyme": "^2.5.39",
     "@types/expect": "^1.13.31",
     "@types/lodash": "^4.14.45",
@@ -55,6 +57,7 @@
     "compression": "1.6.1",
     "cross-env": "1.0.7",
     "css-loader": "0.23.1",
+    "dsv-loader": "^2.0.0",
     "enzyme": "2.2.0",
     "eslint": "2.9.0",
     "eslint-plugin-import": "1.6.1",

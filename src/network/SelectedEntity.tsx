@@ -11,7 +11,6 @@ import SelectedNode from './SelectedNode';
 class SelectedEntity extends React.Component<any, any> {
   constructor(props) {
     super(props);
-
   }
 
   onNodeChange(event: React.SyntheticEvent<any>) {
