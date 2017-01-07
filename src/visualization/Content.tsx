@@ -3,18 +3,18 @@ import * as d3 from 'd3';
 import '../css/app.scss';
 // import { thing } from './flare';
 
-import * as hello from './hello.js';
+import initD3 from './hello';
 
 class Content extends React.Component<any, any> {
   componentDidMount() {
-    console.log(hello);
+    initD3();
   }
 
   render() {
     return (
       <div>
         <div>This is for d3</div>
-        <div className="chart"></div>
+        <div id="chart"></div>
       </div>
     );
   }
