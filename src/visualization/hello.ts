@@ -29,6 +29,7 @@ export default function init() {
 
   var isDragging = false;
   var destDragNode;
+  var DEBUG = true;
   var root = stratify(data);
 
   function sortTree(root) {
@@ -97,6 +98,13 @@ export default function init() {
       }
     });
 
+  function isDefined(e) {
+    if (e === null || typeof(e) === "undefined") {
+      return false;
+    } else {
+      return true;
+    }
+  }
 
   function update(initial = false, source = root) {
     sortTree(root);
@@ -119,6 +127,21 @@ export default function init() {
       .attr('class', d => { const className = d['children'] ? 'internal': 'leaf'; return `node ${className}`; })
       .attr('transform', d => `translate(${d['y']}, ${d['x']})`)
       .attr('style', 'fill-opacity: 1');
+
+    // refresh the text
+    nodes.selectAll('text')
+      .attr('dy', 3)
+      .attr('x', d => d['children'] ? -8 : 8)
+      .attr('class', d => d['children'] ? 'internal': 'leaf')
+      .text(node => {
+        let base = node['id'].substring(node['id'].lastIndexOf('.') + 1);
+
+        if (DEBUG) {
+          base += `:\\${node['height']}\\${node['depth']}\\${isDefined(node['children']) ? node['children'].length : -1}\\${isDefined(node['_children']) ? node['_children'].length : -1}`;
+        }
+
+        return base;
+      });
 
     var enterNodes = nodes.enter().append('g');
 
@@ -160,7 +183,15 @@ export default function init() {
       .attr('dy', 3)
       .attr('x', d => d['children'] ? -8 : 8)
       .attr('class', d => d['children'] ? 'internal': 'leaf')
-      .text(d => d['id'].substring(d['id'].lastIndexOf('.') + 1));
+      .text(node => {
+        let base = node['id'].substring(node['id'].lastIndexOf('.') + 1);
+
+        if (DEBUG) {
+          base += `:\\${node.height}\\${node.depth}\\${isDefined(node.children) ? node.children.length : -1}\\${isDefined(node['_children']) ? node['_children'].length : -1}`;
+        }
+
+        return base;
+      });
 
     var exitNodes = nodes.exit()
       .transition(t)
