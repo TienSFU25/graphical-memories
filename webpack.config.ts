@@ -25,7 +25,7 @@ export default {
   ],
   module: {
     loaders: [
-      {test: /\.js$/, include: './src', loaders: ['babel']},
+      {test: /\.js$/, include: './src', loaders: ['babel-loader?presets[]=es2015']},
       {test: /\.tsx?$/, loader: 'babel-loader?presets[]=react!ts-loader'},
       {test: /(\.css)$/, loaders: ['style', 'css']},
       {test: /(\.scss)$/, loaders: ['style', 'css', 'sass']},

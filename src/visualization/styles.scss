@@ -1,9 +1,3 @@
-.line {
-  fill: none;
-  stroke: steelblue;
-  stroke-width: 2px;
-}
-
 .node text.leaf {
   text-anchor: start
 }
@@ -12,8 +6,8 @@
   text-anchor: end
 }
 
-
 .node circle {
+  stroke: steelblue;
   fill: #999;
 }
 
@@ -21,11 +15,11 @@
   font: 10px sans-serif;
 }
 
-.node--internal circle {
+.node.internal circle {
   fill: #555;
 }
 
-.node--internal text {
+.node.internal text {
   text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
 }
 
@@ -44,6 +38,16 @@
   stroke: green;
 }
 
+.node circle.ghost.disabled {
+  opacity: 0;
+}
+
 .node circle.ghost {
-  opacity: 0.1;
+  opacity: 0.4;
+  fill: red;
+}
+
+.node circle.ghost.hover {
+  opacity: 0.8;
+  fill: green;
 }
