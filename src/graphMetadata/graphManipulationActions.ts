@@ -23,9 +23,9 @@ export function selectNode(nodeData) {
   };
 }
 
-function selectNetwork(): Action {
+function selectGraph(): Action {
   return {
-    type: ActionTypes.SELECT_NETWORK
+    type: ActionTypes.SELECT_GRAPH
   };
 }
 
@@ -51,10 +51,10 @@ function selectNetwork(): Action {
 const GraphManipulationCreatorsMap: ActionCreatorsMapObject = {
   // addNode,
   // saveNode,
-  // selectNode,
+  selectNode,
   // editNode,
   // selectEntity,
-  selectNetwork
+  selectGraph
 }
 
 export default GraphManipulationCreatorsMap;

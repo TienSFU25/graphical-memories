@@ -35,8 +35,8 @@ const SelectedNode : React.StatelessComponent<React.HTMLProps<JSX.Element>> = (p
           <td><FieldGroup data={data} fieldName="id" onChange={onChange} readonly/></td>
         </tr>
         <tr>
-          <td>label</td>
-          <td><FieldGroup data={data} fieldName="label" onChange={onChange} /></td>
+          <td>depth</td>
+          <td><FieldGroup data={data} fieldName="depth" onChange={onChange} /></td>
         </tr>
         <tr>
           <td>x</td>

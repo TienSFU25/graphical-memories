@@ -6,6 +6,9 @@ require('./styles.scss');
 
 const DEBUG = true;
 
+// testing purposes
+window['d3'] = d3;
+
 export default class TreeManager {
   private margin;
   private width: number;
@@ -17,7 +20,7 @@ export default class TreeManager {
   private dragger: d3.DragBehavior<any, any, any>;
   private destDragNode;
 
-  constructor(selector: string, readonly nodeClickHandler: Function) {
+  constructor(selector: string, readonly graphClickHandler, readonly nodeClickHandler) {
     // set the dimensions and margins of the graph
     this.margin = {top: 20, right: 20, bottom: 30, left: 50};
 
@@ -28,6 +31,7 @@ export default class TreeManager {
     // add the svg canvas
     const svg = d3.select('#chart')
       .append('svg')
+      .on('click', graphClickHandler)
       .attr('width', this.width + margin.left + margin.right)
       .attr('height', this.height + margin.top + margin.bottom);
 
@@ -44,6 +48,7 @@ export default class TreeManager {
     });
 
     this.root = stratify(data);
+    window['root'] = this.root;
 
     // drag behavior setup
     const self = this;
@@ -140,8 +145,10 @@ export default class TreeManager {
       .attr('r', 4.5)
       .on('click', thisNode =>
       {
+        this.nodeClickHandler(thisNode);
         this._toggle(thisNode);
         this.update(false, thisNode);
+        d3.event.stopPropagation();
       });
 
     enterNodes.append('text')

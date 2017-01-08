@@ -14,10 +14,10 @@ export default function selectedEntityReducer(state: SelectedEntity = initialSta
     case ActionTypes.ADD_NODE_SUCCESS: {
       return state;
     }
-    case ActionTypes.SELECT_NETWORK: {
+    case ActionTypes.SELECT_GRAPH: {
       return Object.assign({}, state,
         {
-          type: EntityType.Network,
+          type: EntityType.Graph,
           id: 1
         });
     }

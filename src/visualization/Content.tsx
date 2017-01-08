@@ -18,7 +18,7 @@ class Content extends React.Component<any, any> {
   }
 
   componentDidMount() {
-    let tree = new TreeManager('#chart', this.props.actions.selectNode)
+    let tree = new TreeManager('#chart', this.props.actions.selectGraph, this.props.actions.selectNode)
 
     this.setState({
       tree

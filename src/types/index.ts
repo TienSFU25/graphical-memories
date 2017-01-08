@@ -1,6 +1,6 @@
 export enum EntityType {
   Nothing,
-  Network,
+  Graph,
   Node
 }
 
