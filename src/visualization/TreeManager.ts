@@ -9,6 +9,19 @@ const DEBUG = true;
 // testing purposes
 window['d3'] = d3;
 
+interface test {
+  [index: string]: onething;
+}
+
+interface testArray extends Array<onething> {
+  [index: number]: onething;
+}
+
+interface onething {
+  id: string;
+  value: any;
+}
+
 export default class TreeManager {
   private margin;
   private width: number;
@@ -42,7 +55,7 @@ export default class TreeManager {
     this.tree = d3.tree().size([this.height, this.width - 160]);
   }
 
-  setData(data: any) {
+  setData(data: testArray) {
     const stratify = d3.stratify().parentId(d => {
       return d['id'].substring(0, d['id'].lastIndexOf('.'));
     });
@@ -94,21 +107,6 @@ export default class TreeManager {
       .attr('transform', d => `translate(${d['y']}, ${d['x']})`)
       .attr('style', 'fill-opacity: 1');
 
-    // refresh the text
-    nodes.selectAll('text')
-      .attr('dy', 3)
-      .attr('x', d => d['children'] ? -8 : 8)
-      .attr('class', d => d['children'] ? 'internal': 'leaf')
-      .text(node => {
-        let base = node['id'].substring(node['id'].lastIndexOf('.') + 1);
-
-        if (DEBUG) {
-          base += `:\\${node['height']}\\${node['depth']}\\${this._isDefined(node['children']) ? node['children'].length : -1}\\${this._isDefined(node['_children']) ? node['_children'].length : -1}`;
-        }
-
-        return base;
-      });
-
     const enterNodes = nodes.enter().append('g');
 
     enterNodes
@@ -142,16 +140,20 @@ export default class TreeManager {
       });
 
     enterNodes.append('circle')
-      .attr('r', 4.5)
+      .attr('r', 7.5)
       .on('click', thisNode =>
       {
+        console.log('click event actually registered');
         this.nodeClickHandler(thisNode);
         this._toggle(thisNode);
         this.update(false, thisNode);
         d3.event.stopPropagation();
       });
 
-    enterNodes.append('text')
+    // refresh the text
+    nodes.selectAll('text').remove();
+    enterNodes.merge(nodes)
+      .append('text')
       .attr('dy', 3)
       .attr('x', d => d['children'] ? -8 : 8)
       .attr('class', d => d['children'] ? 'internal': 'leaf')
@@ -174,14 +176,6 @@ export default class TreeManager {
     const links = this.g.selectAll('.link')
       .data(root.descendants().slice(1), d => d['id']);
 
-    links.transition(t)
-      .attr('d', d => {
-        return `M${d['y']},${d['x']}`
-          + `C${d['parent']['y'] + 100},${d['x']}`
-          + ` ${d['parent']['y'] + 100},${d['parent']['x']}`
-          + ` ${d['parent']['y']},${d['parent']['x']}`
-      });
-
     const enterLinks = links.enter()
       .append('path')
       .attr('d', d => {
@@ -190,6 +184,7 @@ export default class TreeManager {
           + ` ${source['y']},${source['x']}`
           + ` ${source['y']},${source['x']}`
       })
+      .merge(links)
       .transition(t)
       .attr('class', 'link')
       .attr('d', d => {
