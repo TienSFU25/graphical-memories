@@ -16,15 +16,12 @@ import { ActionTypes } from '../app/actionTypes';
 //   }
 // }
 
-// export function selectNode(nodeId: number, network) {
-//   network.storePositions();
-//   let nodeData = network.body.data.nodes.get(nodeId);
-
-//   return {
-//     type: ActionTypes.SELECT_NODE,
-//     nodeData
-//   };
-// }
+export function selectNode(nodeData) {
+  return {
+    type: ActionTypes.SELECT_NODE,
+    nodeData
+  };
+}
 
 function selectNetwork(): Action {
   return {

@@ -1,4 +1,4 @@
-import data from './flare';
+// import data from './flare';
 import * as d3 from 'd3';
 import * as _ from 'lodash';
 
@@ -17,7 +17,7 @@ export default class TreeManager {
   private dragger: d3.DragBehavior<any, any, any>;
   private destDragNode;
 
-  constructor(selector: string) {
+  constructor(selector: string, readonly nodeClickHandler: Function) {
     // set the dimensions and margins of the graph
     this.margin = {top: 20, right: 20, bottom: 30, left: 50};
 
@@ -36,7 +36,9 @@ export default class TreeManager {
 
     // convert data to tree structure
     this.tree = d3.tree().size([this.height, this.width - 160]);
+  }
 
+  setData(data: any) {
     const stratify = d3.stratify().parentId(d => {
       return d['id'].substring(0, d['id'].lastIndexOf('.'));
     });

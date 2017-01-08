@@ -2,14 +2,12 @@ import { Action, ActionCreatorsMapObject } from 'redux';
 
 import loadGraphFromFile from '../api/loadGraphFromFileApi';
 import { ActionTypes } from '../app/actionTypes';
-import { mapToNetworkData } from '../dataMappers';
+// import { mapToNetworkData } from '../dataMappers';
 
-function loadGraphSuccess(networkData) {
-  networkData.isFresh = true;
-
+function loadGraphSuccess(graph) {
   return {
     type: ActionTypes.LOAD_GRAPH_SUCCESS,
-    networkData
+    graph
   };
 }
 

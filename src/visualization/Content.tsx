@@ -1,8 +1,12 @@
 import * as React from 'react';
 import * as d3 from 'd3';
-import '../css/app.scss';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
+import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import TreeManager from './TreeManager';
+
+import '../css/app.scss';
 
 class Content extends React.Component<any, any> {
   constructor(props) {
@@ -14,7 +18,17 @@ class Content extends React.Component<any, any> {
   }
 
   componentDidMount() {
-    this.setState({tree: new TreeManager('#chart')});
+    let tree = new TreeManager('#chart', this.props.actions.selectNode)
+
+    this.setState({
+      tree
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log('setting data on tree...');
+    let graphData = nextProps.rawGraph;
+    this.state.tree.setData(graphData);
   }
 
   render() {
@@ -27,4 +41,16 @@ class Content extends React.Component<any, any> {
   }
 };
 
-export default Content;
+function mapStateToProps({ rawGraph }) {
+  return {
+    rawGraph
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(graphManipulationActions, dispatch)
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Content);

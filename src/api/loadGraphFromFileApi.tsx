@@ -1,5 +1,5 @@
 import { Promise } from 'bluebird';
-import { graph } from '../data/visSample';
+import graph from '../data/flare';
 
 function loadGraphFromFile() {
   return new Promise((res, rej) => {

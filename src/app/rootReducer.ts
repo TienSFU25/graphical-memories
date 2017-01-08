@@ -1,8 +1,10 @@
 import {combineReducers} from 'redux';
-import selectedEntity from '../network/selectedEntityReducer';
+import selectedEntity from '../graphMetadata/selectedEntityReducer';
+import rawGraph from '../graphMetadata/rawGraphReducer';
 
 const rootReducer = combineReducers({
-  selectedEntity
+  selectedEntity,
+  rawGraph
 });
 
 export default rootReducer;

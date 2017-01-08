@@ -1,7 +1,8 @@
 import * as React from 'react';
-import Network from '../network/Network';
+import { Col, Row, Jumbotron} from 'react-bootstrap';
+
+import GraphMetadata from '../graphMetadata/GraphMetadata';
 import Visualizer from '../visualization/Content';
-import {Jumbotron} from 'react-bootstrap';
 
 interface HomePageProps {}
 interface HomePageState {}
@@ -13,8 +14,14 @@ class HomePage extends React.Component<HomePageProps, HomePageState> {
         <Jumbotron>
           <h2>Ruby is learning Python!</h2>
         </Jumbotron>
-        <Network />
-        <Visualizer />
+        <Row>
+          <Col sm={9}>
+            <Visualizer />
+          </Col>
+          <Col sm={3}>
+            <GraphMetadata />
+          </Col>
+        </Row>
       </div>
     );
   }
