@@ -45,9 +45,11 @@
 .node circle.ghost {
   opacity: 0.4;
   fill: red;
+  pointer-events: "mouseover";
 }
 
 .node circle.ghost.hover {
   opacity: 0.8;
   fill: green;
+  pointer-events: "mouseover";
 }

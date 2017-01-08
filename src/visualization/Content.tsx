@@ -1,13 +1,20 @@
 import * as React from 'react';
 import * as d3 from 'd3';
 import '../css/app.scss';
-// import { thing } from './flare';
 
-import initD3 from './hello';
+import TreeManager from './TreeManager';
 
 class Content extends React.Component<any, any> {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      tree: null
+    };
+  }
+
   componentDidMount() {
-    initD3();
+    this.setState({tree: new TreeManager('#chart')});
   }
 
   render() {

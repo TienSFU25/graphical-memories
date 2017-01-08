@@ -1,126 +1,85 @@
-console.log('hello!');
-
 import data from './flare';
 import * as d3 from 'd3';
 import * as _ from 'lodash';
 
 require('./styles.scss');
 
-export default function init() {
-  // set the dimensions and margins of the graph
-  var margin = {top: 20, right: 20, bottom: 30, left: 50},
-      width = 960 - margin.left - margin.right,
-      height = 2400 - margin.top - margin.bottom;
+const DEBUG = true;
 
-  // add the svg canvas
-  var svg = d3.select('#chart')
-              .append('svg')
-              .attr('width', width + margin.left + margin.right)
-              .attr('height', height + margin.top + margin.bottom);
+export default class TreeManager {
+  private margin;
+  private width: number;
+  private height: number;
+  private g;
+  private tree: d3.TreeLayout<any>;
+  private root: d3.HierarchyNode<any>;
+  private isDragging: boolean;
+  private dragger: d3.DragBehavior<any, any, any>;
+  private destDragNode;
 
-  var g = svg.append('g')
+  constructor(selector: string) {
+    // set the dimensions and margins of the graph
+    this.margin = {top: 20, right: 20, bottom: 30, left: 50};
+
+    const margin = this.margin;
+    this.width = 960 - margin.left - margin.right,
+    this.height = 2400 - margin.top - margin.bottom;
+
+    // add the svg canvas
+    const svg = d3.select('#chart')
+      .append('svg')
+      .attr('width', this.width + margin.left + margin.right)
+      .attr('height', this.height + margin.top + margin.bottom);
+
+    this.g = svg.append('g')
             .attr('transform', `translate(${margin.left},${margin.top})`);
 
-  var tree = d3.tree().size([height, width - 160]);
+    // convert data to tree structure
+    this.tree = d3.tree().size([this.height, this.width - 160]);
 
-  var stratify = d3.stratify().parentId(d => {
-    return d['id'].substring(0, d['id'].lastIndexOf('.'));
-  });
-
-  var isDragging = false;
-  var destDragNode;
-  var DEBUG = true;
-  var root = stratify(data);
-
-  function sortTree(root) {
-    const sorter = (a, b) => a.id.toLowerCase().localeCompare(b.id.toLowerCase());
-    root.sort(sorter);
-  }
-
-  function attachMids(root) {
-    root.descendants().forEach(node => {
-      const depth = node.depth;
-      node.mid = node.id.split('.')[depth];
-    });
-  }
-
-  function visit(node, args, preFn, postFn=(a, b) => 1) {
-    if (node == null) return;
-
-    preFn(node, args);
-    const children = node.children || node._children;
-
-    _.forEach(children, child => {
-      visit(child, args, preFn, postFn);
+    const stratify = d3.stratify().parentId(d => {
+      return d['id'].substring(0, d['id'].lastIndexOf('.'));
     });
 
-    postFn(node, args);
+    this.root = stratify(data);
+
+    // drag behavior setup
+    const self = this;
+    this.dragger = d3.drag()
+      .on('start', d => {
+        self.isDragging = true;
+        d3.selectAll('.ghost.disabled').attr('class', 'ghost');
+        d3.event.sourceEvent.stopPropagation();
+      })
+      .on('end', d => {
+        self.isDragging = false;
+        d3.selectAll('.ghost').attr('class', 'ghost disabled');
+
+        if (self.destDragNode) {
+          self.moveTo(d, self.destDragNode);
+          self.destDragNode = null;
+        }
+      });
+
+    this.update(true);
   }
 
-  function updateIdsByMids(root) {
-    const preVisitor = (node, mids) => {
-      mids.push(node.mid);
-      node.id = mids.join('.');
-    };
+  update(initial = false, source = this.root) {
+    const root = this.root;
 
-    const postVisitor = (node, mids) => mids.pop();
-
-    visit(root, [], preVisitor, postVisitor);
-
-    // function visit(node, mids) {
-    //   mids.push(node.mid);
-
-    //   node.id = mids.join('.');
-
-    //   const children = node.children || node._children;
-    //   _.forEach(children, child => {
-    //     visit(child, mids);
-    //   });
-
-    //   mids.pop();
-    // }
-
-    // visit(root, []);
-  }
-
-  var dragger = d3.drag()
-    .on('start', d => {
-      isDragging = true;
-      d3.selectAll('.ghost.disabled').attr('class', 'ghost');
-    })
-    .on('end', d => {
-      isDragging = false;
-      d3.selectAll('.ghost').attr('class', 'ghost disabled');
-
-      if (destDragNode) {
-        moveTo(d, destDragNode);
-        destDragNode = null;
-      }
-    });
-
-  function isDefined(e) {
-    if (e === null || typeof(e) === "undefined") {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  function update(initial = false, source = root) {
-    sortTree(root);
+    this._sortTree();
 
     if (initial) {
-      attachMids(root);
+      this._attachMids();
     }
 
-    updateIdsByMids(root);
-    tree(root);
+    this._updateIdsByMids();
+    this.tree(this.root);
 
-    console.log(`updating ${source.id}`);
-    var t = d3.transition('myT').duration(750);
+    const t = d3.transition('myT').duration(750);
 
-    var nodes = g.selectAll('.node')
-      .call(dragger)
+    const nodes = this.g.selectAll('.node')
+      .call(this.dragger)
       .data(root.descendants(), d => d['id']);
 
     nodes.transition(t)
@@ -137,13 +96,13 @@ export default function init() {
         let base = node['id'].substring(node['id'].lastIndexOf('.') + 1);
 
         if (DEBUG) {
-          base += `:\\${node['height']}\\${node['depth']}\\${isDefined(node['children']) ? node['children'].length : -1}\\${isDefined(node['_children']) ? node['_children'].length : -1}`;
+          base += `:\\${node['height']}\\${node['depth']}\\${this._isDefined(node['children']) ? node['children'].length : -1}\\${this._isDefined(node['_children']) ? node['_children'].length : -1}`;
         }
 
         return base;
       });
 
-    var enterNodes = nodes.enter().append('g');
+    const enterNodes = nodes.enter().append('g');
 
     enterNodes
       .attr('transform', `translate(${source['y']}, ${source['x']})` )
@@ -153,19 +112,23 @@ export default function init() {
       .attr('transform', d => `translate(${d['y']}, ${d['x']})`)
       .attr('style', 'fill-opacity: 1');
 
+    // need to preserve 'this'
+    const self = this;
+
     enterNodes.append('circle')
-      .attr('r', 9)
+      .attr('r', 10)
       .attr('class', 'ghost disabled')
       .on('mouseover', function(d) {
-        if (isDragging) {
-          destDragNode = d;
+        if (self.isDragging) {
+          self.destDragNode = d;
+
           d3.select(this)
             .attr('class', 'ghost hover');
         }
       })
       .on('mouseout', function(d) {
-        if (isDragging) {
-          destDragNode = null;
+        if (self.isDragging) {
+          self.destDragNode = null;
           d3.select(this)
             .attr('class', 'ghost');
         }
@@ -175,8 +138,8 @@ export default function init() {
       .attr('r', 4.5)
       .on('click', thisNode =>
       {
-        toggle(thisNode);
-        update(false, thisNode);
+        this._toggle(thisNode);
+        this.update(false, thisNode);
       });
 
     enterNodes.append('text')
@@ -187,20 +150,19 @@ export default function init() {
         let base = node['id'].substring(node['id'].lastIndexOf('.') + 1);
 
         if (DEBUG) {
-          base += `:\\${node.height}\\${node.depth}\\${isDefined(node.children) ? node.children.length : -1}\\${isDefined(node['_children']) ? node['_children'].length : -1}`;
+          base += `:\\${node.height}\\${node.depth}\\${this._isDefined(node.children) ? node.children.length : -1}\\${this._isDefined(node['_children']) ? node['_children'].length : -1}`;
         }
 
         return base;
       });
 
-    var exitNodes = nodes.exit()
+    const exitNodes = nodes.exit()
       .transition(t)
       .attr('transform', `translate(${source['y']}, ${source['x']})` )
       .attr('style', 'fill-opacity: 1e-6')
       .remove();
 
-    t = d3.transition('myT').duration(750);
-    var links = g.selectAll('.link')
+    const links = this.g.selectAll('.link')
       .data(root.descendants().slice(1), d => d['id']);
 
     links.transition(t)
@@ -211,7 +173,7 @@ export default function init() {
           + ` ${d['parent']['y']},${d['parent']['x']}`
       });
 
-    var enterLinks = links.enter()
+    const enterLinks = links.enter()
       .append('path')
       .attr('d', d => {
         return `M${source['y']},${source['x']}`
@@ -228,7 +190,7 @@ export default function init() {
           + ` ${d['parent']['y']},${d['parent']['x']}`
       });
 
-    var exitLinks = links.exit()
+    const exitLinks = links.exit()
       .transition(t)
       .attr('d', d => {
         return `M${source['y']},${source['x']}`
@@ -239,7 +201,7 @@ export default function init() {
       .remove();
   }
 
-  function toggle(node) {
+  toggle(node) {
     if (node.children) {
       node._children = node.children;
       node.children = null;
@@ -249,7 +211,7 @@ export default function init() {
     }
   }
 
-  function moveTo(src, dest) {
+  moveTo(src, dest) {
     console.log(`moving ${src.id} to ${dest.id}`);
 
     const parentDepth = src.parent.depth;
@@ -273,7 +235,7 @@ export default function init() {
       dest.children = [];
     }
     else if (dest._children) {
-      toggle(dest);
+      this.toggle(dest);
     }
 
     dest.children.push(src);
@@ -286,23 +248,63 @@ export default function init() {
       node.depth = node.depth - parentDepth + destDepth;
     };
 
-    visit(src, {parentDepth, destDepth}, visitor);
+    this._visit(src, {parentDepth, destDepth}, visitor);
 
     // updating heights does not seem to matter
-
-    update();
+    this.update();
   }
 
-  update(true);
+  _sortTree() {
+    const sorter = (a, b) => a.id.toLowerCase().localeCompare(b.id.toLowerCase());
+    this.root.sort(sorter);
+  }
 
-  window['d3'] = d3;
-  window['tree'] = tree;
-  window['update'] = update;
+  _attachMids() {
+    this.root.descendants().forEach(node => {
+      const depth = node.depth;
+      node['mid'] = node.id.split('.')[depth];
+    });
+  }
 
-  window['root'] = root;
-  window['moveTo'] = moveTo;
-  window['toggle'] = toggle;
+  _visit(node, args, preFn, postFn=(a, b) => 1) {
+    if (node == null) return;
 
-  window['dest'] = root.children[9].children[4];
-  window['src'] = root.children[9].children[5].children[1];
+    preFn(node, args);
+    const children = node.children || node._children;
+
+    _.forEach(children, child => {
+      this._visit(child, args, preFn, postFn);
+    });
+
+    postFn(node, args);
+  }
+
+  _updateIdsByMids() {
+    const preVisitor = (node, mids) => {
+      mids.push(node.mid);
+      node.id = mids.join('.');
+    };
+
+    const postVisitor = (node, mids) => mids.pop();
+
+    this._visit(this.root, [], preVisitor, postVisitor);
+  }
+
+  _isDefined(e) {
+    if (e === null || typeof(e) === "undefined") {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  _toggle(node) {
+    if (node.children) {
+      node._children = node.children;
+      node.children = null;
+    } else {
+      node.children = node._children;
+      node._children = null
+    }
+  }
 }
