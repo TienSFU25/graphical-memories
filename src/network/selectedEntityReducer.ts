@@ -1,8 +1,8 @@
-import { ActionTypes, NodeAction } from '../app/actionTypes';
+import { ActionTypes } from '../app/actionTypes';
 import initialState from '../app/initialState';
 import { EntityType, SelectedEntity } from '../types';
 
-export default function selectedEntityReducer(state: SelectedEntity = initialState.selectedEntity, action: NodeAction) {
+export default function selectedEntityReducer(state: SelectedEntity = initialState.selectedEntity, action) {
   switch (action.type) {
     case ActionTypes.SELECT_NOTHING: {
       return Object.assign({}, state,

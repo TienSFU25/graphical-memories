@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { ControlLabel, FormControl, FormGroup, Table } from 'react-bootstrap';
-import { Node } from 'vis';
 
 function FieldGroup({ data, mode = "edit", fieldName, ...props }) {
   const id = mode + '-' + fieldName;
@@ -17,7 +16,7 @@ function FieldGroup({ data, mode = "edit", fieldName, ...props }) {
   );
 }
 
-const SelectedNode : React.StatelessComponent<React.HTMLProps<JSX.Element>> = (props: React.HTMLProps<JSX.Element> & {data: Node} & {onSave: any} & {onChange: any}) => {
+const SelectedNode : React.StatelessComponent<React.HTMLProps<JSX.Element>> = (props: React.HTMLProps<JSX.Element> & {data: any} & {onSave: any} & {onChange: any}) => {
   const data = props.data;
   const onSave = props.onSave;
   const onChange = props.onChange;

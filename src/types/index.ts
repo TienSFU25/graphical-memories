@@ -1,5 +1,3 @@
-import { Network, DataSet, Edge, Node } from 'vis'
-
 export enum EntityType {
   Nothing,
   Network,
@@ -12,14 +10,6 @@ export interface SelectedEntity {
   data: any
 }
 
-export interface NetworkData {
-  isFresh: boolean,
-  nodes: DataSet<Node>,
-  edges: DataSet<Edge>
-}
-
 export interface ReduxStore {
-  selectedEntity: SelectedEntity,
-  visNetwork?: Network,
-  networkData: NetworkData
+  selectedEntity: SelectedEntity
 }
