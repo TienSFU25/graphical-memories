@@ -42,7 +42,7 @@ export default class TreeManager {
     this.height = 2400 - margin.top - margin.bottom;
 
     // add the svg canvas
-    const svg = d3.select('#chart')
+    const svg = d3.select(selector)
       .append('svg')
       .on('click', graphClickHandler)
       .attr('width', this.width + margin.left + margin.right)
@@ -141,10 +141,13 @@ export default class TreeManager {
 
     enterNodes.append('circle')
       .attr('r', 7.5)
-      .on('click', thisNode =>
+      .on('click', thisNode => {
+        this.nodeClickHandler(thisNode);
+        d3.event.stopPropagation();
+      })
+      .on('dblclick', thisNode =>
       {
         console.log('click event actually registered');
-        this.nodeClickHandler(thisNode);
         this._toggle(thisNode);
         this.update(false, thisNode);
         d3.event.stopPropagation();
