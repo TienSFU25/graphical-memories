@@ -1,6 +1,10 @@
-// import data from './flare';
+import * as React from 'react';
 import * as d3 from 'd3';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import * as _ from 'lodash';
+
+import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 
 require('./styles.scss');
 
@@ -22,10 +26,11 @@ interface onething {
   value: any;
 }
 
-export default class TreeManager {
+class TreeManager extends React.Component<any, any> {
   private margin;
   private width: number;
   private height: number;
+  private svg;
   private g;
   private tree: d3.TreeLayout<any>;
   private root: d3.HierarchyNode<any>;
@@ -33,7 +38,11 @@ export default class TreeManager {
   private dragger: d3.DragBehavior<any, any, any>;
   private destDragNode;
 
-  constructor(selector: string, readonly graphClickHandler, readonly nodeClickHandler) {
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
     // set the dimensions and margins of the graph
     this.margin = {top: 20, right: 20, bottom: 30, left: 50};
 
@@ -42,20 +51,52 @@ export default class TreeManager {
     this.height = 2400 - margin.top - margin.bottom;
 
     // add the svg canvas
-    const svg = d3.select(selector)
+    this.svg = d3.select('#chart')
       .append('svg')
-      .on('click', graphClickHandler)
+      .on('click', e => {
+        const d3e = d3.event;
+
+        const t = d3e.target;
+        const x = d3e.clientX;
+        const y = d3e.clientY;
+        // const target = (t == this.svg.node() ? this.svg.node() : t.parentNode);
+        const target = this.svg.node();
+        const svgP = this.svgPoint(target, x, y);
+        console.log(target);
+        console.log(svgP);
+        this.props.actions.selectGraph;
+      })
       .attr('width', this.width + margin.left + margin.right)
       .attr('height', this.height + margin.top + margin.bottom);
 
-    this.g = svg.append('g')
-            .attr('transform', `translate(${margin.left},${margin.top})`);
+    this.g = this.svg.append('g');
 
     // convert data to tree structure
     this.tree = d3.tree().size([this.height, this.width - 160]);
   }
 
-  setData(data: testArray) {
+  componentWillReceiveProps(nextProps) {
+    console.log('setting data on tree...');
+    let graphData = nextProps.rawGraph;
+    this.setData(graphData);
+  }
+
+  render() {
+    return (
+      <div>
+        <div id="chart"></div>
+      </div>
+    );
+  }
+
+  svgPoint(element, x, y) {
+    var pt = this.svg.node().createSVGPoint();
+    pt.x = x;
+    pt.y = y;
+    return pt.matrixTransform(element.getScreenCTM().inverse());
+  }
+
+  setData(data) {
     const stratify = d3.stratify().parentId(d => {
       return d['id'].substring(0, d['id'].lastIndexOf('.'));
     });
@@ -109,11 +150,13 @@ export default class TreeManager {
 
     const enterNodes = nodes.enter().append('g');
 
+    let i = 0;
+
     enterNodes
       .attr('transform', `translate(${source['y']}, ${source['x']})` )
       .attr('style', 'fill-opacity: 1e-6')
       .transition(t)
-      .attr('class', d => { const className = d['children'] ? 'internal': 'leaf'; return `node ${className}`; })
+      .attr('class', d => { console.log(i++); const className = d['children'] ? 'internal': 'leaf'; return `node ${className}`; })
       .attr('transform', d => `translate(${d['y']}, ${d['x']})`)
       .attr('style', 'fill-opacity: 1');
 
@@ -142,7 +185,7 @@ export default class TreeManager {
     enterNodes.append('circle')
       .attr('r', 7.5)
       .on('click', thisNode => {
-        this.nodeClickHandler(thisNode);
+        this.props.actions.selectNode(thisNode);
         d3.event.stopPropagation();
       })
       .on('dblclick', thisNode =>
@@ -315,3 +358,17 @@ export default class TreeManager {
     }
   }
 }
+
+function mapStateToProps({ rawGraph }) {
+  return {
+    rawGraph
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(graphManipulationActions, dispatch)
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TreeManager);
