@@ -5,6 +5,11 @@ const state = {
     type: EntityType.Nothing,
     id: 0,
     data: null
+  },
+  graph: {
+    raw: {},
+    treeRoot: {},
+    editMode: 'None'
   }
 };
 

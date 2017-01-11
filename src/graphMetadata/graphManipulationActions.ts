@@ -23,9 +23,17 @@ export function selectNode(nodeData) {
   };
 }
 
-function selectGraph(): Action {
+export function selectGraph(): Action {
   return {
     type: ActionTypes.SELECT_GRAPH
+  };
+}
+
+export function moveNode(src, dest) {
+  return {
+    type: ActionTypes.MOVE_NODE,
+    src,
+    dest
   };
 }
 
@@ -52,6 +60,7 @@ const GraphManipulationCreatorsMap: ActionCreatorsMapObject = {
   // addNode,
   // saveNode,
   selectNode,
+  moveNode,
   // editNode,
   // selectEntity,
   selectGraph

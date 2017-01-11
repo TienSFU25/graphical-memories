@@ -4,14 +4,14 @@ import loadGraphFromFile from '../api/loadGraphFromFileApi';
 import { ActionTypes } from '../app/actionTypes';
 // import { mapToNetworkData } from '../dataMappers';
 
-function loadGraphSuccess(graph) {
+export function loadGraphSuccess(graph) {
   return {
     type: ActionTypes.LOAD_GRAPH_SUCCESS,
     graph
   };
 }
 
-function selectNothing(): Action {
+export function selectNothing(): Action {
   return {
     type: ActionTypes.SELECT_NOTHING
   };
