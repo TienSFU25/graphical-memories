@@ -91,6 +91,67 @@ export default function graphReducer(state = initialState.graph, action) {
         treeRoot: root
       });
     }
+    case ActionTypes.ADD_NODE: {
+      const dataCopy = Object.assign({}, state.raw);
+      const { newNode, destNodeId } = action;
+
+      const destInData = findNode(dataCopy, destNodeId).node;
+
+      const destChildren = destInData.children || destInData._children;
+      if (destChildren) {
+        destChildren.push(newNode);
+      } else {
+        destInData.children = [newNode];
+      }
+
+      // reconstruct the tree
+      attachIds(dataCopy);
+      const newRoot = d3.hierarchy(dataCopy);
+      const tree = d3.tree().size([TREE_HEIGHT, TREE_WIDTH]);
+
+      _sortTree(newRoot);
+      tree(newRoot);
+
+      return Object.assign({}, state, {
+        raw: dataCopy,
+        treeRoot: newRoot
+      });
+    }
+    case ActionTypes.DELETE_NODE: {
+      const dataCopy = Object.assign({}, state.raw);
+      const { nodeId } = action;
+
+      const { node, parent } = findNode(dataCopy, nodeId);
+
+      // deleting root
+      if ( parent === null ) {
+        return initialState.graph;
+      } else {
+        let childIndex;
+
+        // delete child in parent
+        _.forEach(parent.children, (child, index) => {
+          if (child.id === nodeId) {
+            childIndex = index;
+          }
+        });
+
+        parent.children.splice(childIndex, 1);
+
+        // reconstruct the tree
+        attachIds(dataCopy);
+        const newRoot = d3.hierarchy(dataCopy);
+        const tree = d3.tree().size([TREE_HEIGHT, TREE_WIDTH]);
+
+        _sortTree(newRoot);
+        tree(newRoot);
+
+        return Object.assign({}, state, {
+          raw: dataCopy,
+          treeRoot: newRoot
+        });
+      }
+    }
     case ActionTypes.MOVE_NODE: {
       const dataCopy = Object.assign({}, state.raw);
       const { src, dest } = action;

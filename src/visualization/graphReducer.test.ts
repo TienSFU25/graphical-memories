@@ -151,4 +151,56 @@ describe('Graph Reducer', () => {
 
     expect(newState).toEqual(initialGraphState);
   });
+
+  it('should add a node to valid leaf dest when ADD_NODE', () => {
+    const initialGraphState = Object.assign({}, initialState.graph, { raw: this.raw });
+    const newNode = {
+      name: 'test!',
+      value: 1
+    };
+
+    const action = graphManipulationActions.addNode(newNode, 6);
+    const newState = graphReducer(initialGraphState, action);
+    expect(newState.treeRoot['descendants']().length).toEqual(8);
+    expect(newState.treeRoot['leaves']().length).toEqual(4);
+  });
+
+  it('should add a node to valid non-leaf dest when ADD_NODE', () => {
+    const initialGraphState = Object.assign({}, initialState.graph, { raw: this.raw });
+    const newNode = {
+      name: 'test!',
+      value: 1
+    };
+
+    const action = graphManipulationActions.addNode(newNode, 0);
+    const newState = graphReducer(initialGraphState, action);
+    expect(newState.treeRoot['descendants']().length).toEqual(8);
+    expect(newState.treeRoot['leaves']().length).toEqual(5);
+  });
+
+  it('should delete a node with children when DELETE_NODE', () => {
+    const initialGraphState = Object.assign({}, initialState.graph, { raw: this.raw });
+
+    const action = graphManipulationActions.deleteNode(4);
+    const newState = graphReducer(initialGraphState, action);
+    expect(newState.treeRoot['descendants']().length).toEqual(4);
+    expect(newState.treeRoot['leaves']().length).toEqual(2);
+  });
+
+  it('should delete a leaf when DELETE_NODE', () => {
+    const initialGraphState = Object.assign({}, initialState.graph, { raw: this.raw });
+
+    const action = graphManipulationActions.deleteNode(6);
+    const newState = graphReducer(initialGraphState, action);
+    expect(newState.treeRoot['descendants']().length).toEqual(6);
+    expect(newState.treeRoot['leaves']().length).toEqual(3);
+  });
+
+  it('should return empty root when DELETE_NODE on root', () => {
+    const initialGraphState = Object.assign({}, initialState.graph, { raw: this.raw });
+
+    const action = graphManipulationActions.deleteNode(0);
+    const newState = graphReducer(initialGraphState, action);
+    expect(newState.treeRoot).toEqual({});
+  });
 });

@@ -7,6 +7,8 @@ export enum ActionTypes {
   SELECT_GRAPH,
   SELECT_NODE,
   SAVE_NODE,
+  ADD_NODE,
   EDIT_NODE,
+  DELETE_NODE,
   MOVE_NODE
 }

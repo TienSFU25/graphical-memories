@@ -1,14 +1,20 @@
 import { Action, ActionCreator, ActionCreatorsMapObject } from 'redux';
 import { ActionTypes } from '../app/actionTypes';
 
-// export function addNode(nodeData: Node, callback: Function) {
-//   callback(nodeData);
+export function addNode(newNode, destNodeId) {
+  return {
+    type: ActionTypes.ADD_NODE,
+    destNodeId,
+    newNode
+  }
+}
 
-//   return {
-//     type: ActionTypes.SELECT_NODE,
-//     nodeData
-//   }
-// }
+export function deleteNode(nodeId) {
+  return {
+    type: ActionTypes.DELETE_NODE,
+    nodeId
+  }
+}
 
 // export function saveNode(nodeId: number): Action {
 //   return {
