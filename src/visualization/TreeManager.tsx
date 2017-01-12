@@ -84,6 +84,7 @@ class TreeManager extends React.Component<any, any> {
     const self = this;
     this.dragger = d3.drag()
       .on('start', d => {
+        console.log('dragging started!');
         self.isDragging = true;
         d3.selectAll('.ghost.disabled').attr('class', 'ghost');
         d3.event.sourceEvent.stopPropagation();
@@ -101,13 +102,15 @@ class TreeManager extends React.Component<any, any> {
     const t = d3.transition('myT').duration(750);
 
     const nodes = this.g.selectAll('.node')
-      .call(this.dragger)
       .data(source.descendants(), d => d.data.name);
 
     nodes.transition(t)
       .attr('class', d => { const className = d['children'] ? 'internal': 'leaf'; return `node ${className}`; })
       .attr('transform', d => `translate(${d['y']}, ${d['x']})`)
-      .attr('style', 'fill-opacity: 1');
+      .attr('style', 'fill-opacity: 1')
+      .on('end', function() {
+        d3.select(this).call(self.dragger);
+      });
 
     const enterNodes = nodes.enter().append('g');
 
@@ -119,11 +122,31 @@ class TreeManager extends React.Component<any, any> {
       .transition(t)
       .attr('class', d => { console.log(i++); const className = d['children'] ? 'internal': 'leaf'; return `node ${className}`; })
       .attr('transform', d => `translate(${d['y']}, ${d['x']})`)
-      .attr('style', 'fill-opacity: 1');
+      .attr('style', 'fill-opacity: 1')
+      .on('end', function() {
+        d3.select(this).call(self.dragger);
+      });
+
+    window['dis'] = enterNodes;
+
+    enterNodes.append('circle')
+      .attr('r', 7.5)
+      .on('click', thisNode => {
+        this.props.actions.selectNode(thisNode);
+        d3.event.stopPropagation();
+      })
+      .on('dblclick', thisNode =>
+      {
+        console.log('click event actually registered');
+        this._toggle(thisNode);
+        this.update(this.root);
+        d3.event.stopPropagation();
+      });
 
     enterNodes.append('circle')
       .attr('r', 10)
       .attr('class', 'ghost disabled')
+      .attr('pointer-events', 'mouseover')
       .on('mouseover', function(d) {
         if (self.isDragging) {
           self.destDragNode = d;
@@ -138,20 +161,6 @@ class TreeManager extends React.Component<any, any> {
           d3.select(this)
             .attr('class', 'ghost');
         }
-      });
-
-    enterNodes.append('circle')
-      .attr('r', 7.5)
-      .on('click', thisNode => {
-        this.props.actions.selectNode(thisNode);
-        d3.event.stopPropagation();
-      })
-      .on('dblclick', thisNode =>
-      {
-        console.log('click event actually registered');
-        this._toggle(thisNode);
-        this.update(this.root);
-        d3.event.stopPropagation();
       });
 
     // refresh the text
@@ -205,6 +214,8 @@ class TreeManager extends React.Component<any, any> {
           + ` ${source['y']},${source['x']}`
       })
       .remove();
+
+      // this.g.selectAll('.node').call(this.dragger);
   }
 
   _toggle(node) {
