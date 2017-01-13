@@ -15,14 +15,19 @@ export default function mainGraphReducer(state = initialState.main, action) {
   switch (action.type) {
     case ActionTypes.LOAD_GRAPH_SUCCESS: {
       let newState = [];
+      let viewHeight = TREE_HEIGHT / action.graph.length;
 
       for (let i = 0; i < action.graph.length; i++) {
         const graph = action.graph[i];
         const subState = ridToReducer[graph.type](null, {
           type: ActionTypes.LOAD_GRAPH_SUCCESS,
+          height: viewHeight,
+          width: TREE_WIDTH,
+          viewIndex: i,
           graph: graph.value
         });
 
+        // to be able to trace a node to corresponding substate
         subState.root['rid'] = i;
         subState.type = graph.type;
         newState.push(subState);

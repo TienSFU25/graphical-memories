@@ -72,19 +72,21 @@ export default function graphReducer(state = initialState.graph, action) {
     // }
     case ActionTypes.LOAD_GRAPH_SUCCESS: {
       const data = action.graph;
+
+      const { height, width, viewIndex } = action;
+
       attachIds(data);
 
-      const tree = d3.tree().size([TREE_HEIGHT, TREE_WIDTH]);
-
-      // const stratify = d3.stratify().parentId(d => {
-      //   return d['id'].substring(0, d['id'].lastIndexOf('.'));
-      // });
-
-      // const root = stratify(data);
+      const tree = d3.tree().size([height, width]);
       const root = d3.hierarchy(data);
 
       _sortTree(root);
       tree(root);
+
+      // shift everything down
+      root.descendants().forEach((node) => {
+        node['x'] += height * viewIndex;
+      });
 
       return Object.assign({}, state, {
         raw: data,

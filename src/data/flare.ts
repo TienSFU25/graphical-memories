@@ -1,6 +1,7 @@
-export default [{
-  type: "tree",
-  value: {
+export default [
+  {
+    type: "tree",
+    value: {
     "name": "flare",
     "children": [{
         "name": "analytics",
@@ -383,7 +384,13 @@ export default [{
             "name": "Xor",
             "size": 1101
         }]
-    }, {
+    }]
+  }},
+{
+  type: "tree",
+  value: {
+    "name": "flare",
+    "children": [{
         "name": "scale",
         "children": [{
             "name": "IScaleMap",
@@ -756,5 +763,4 @@ export default [{
             "size": 16540
         }]
     }]
-  }
-}]
+}}]

@@ -70,13 +70,11 @@ class Graph extends React.Component<any, any> {
     const self = this;
     this.dragBehavior = d3.drag()
       .on('start', d => {
-        console.log('dragging started!');
         self.isDragging = true;
         d3.selectAll('.ghost.disabled').attr('class', 'ghost');
         d3.event.sourceEvent.stopPropagation();
       })
       .on('end', d => {
-        console.log('dragging ended!');
         self.isDragging = false;
         d3.selectAll('.ghost').attr('class', 'ghost disabled');
 
