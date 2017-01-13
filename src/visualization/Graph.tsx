@@ -87,7 +87,7 @@ class Graph extends React.Component<any, any> {
 
   componentWillReceiveProps(nextProps) {
     console.log('setting data on graph...');
-    const graphs = nextProps.graph;
+    const graphs = nextProps.graph.subStates;
 
     this.setState({
       graphs

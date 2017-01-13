@@ -25,17 +25,6 @@ function _visit(node, args, preFn, postFn=(a, b) => 1) {
   postFn(node, args);
 }
 
-// function _updateIdsByMids(root) {
-//     const preVisitor = (node, mids) => {
-//       mids.push(node.mid);
-//       node.id = mids.join('.');
-//     };
-
-//     const postVisitor = (node, mids) => mids.pop();
-
-//     _visit(root, [], preVisitor, postVisitor);
-//   }
-
 function _isDefined(e) {
   if (e === null || typeof(e) === "undefined") {
     return false;
@@ -48,9 +37,9 @@ function findNode(node, id, parent = null) {
   if (node == null) return null;
 
   const children = node.children || node._children;
-  // console.log(`checking ${node.id}`);
+  console.log(`checking ${node.id}`);
   if (node.id === id) {
-    return { node, parent }
+    return { node, parent };
   } else if (children) {
     for (let index = 0; index < children.length; index++) {
       const child = children[index];
@@ -71,14 +60,12 @@ export default function graphReducer(state = initialState.graph, action) {
     //   return state;
     // }
     case ActionTypes.LOAD_GRAPH_SUCCESS: {
-      const data = action.graph;
+      const { graph, height, width, viewIndex } = action;
 
-      const { height, width, viewIndex } = action;
-
-      attachIds(data);
+      attachIds(graph);
 
       const tree = d3.tree().size([height, width]);
-      const root = d3.hierarchy(data);
+      const root = d3.hierarchy(graph);
 
       _sortTree(root);
       tree(root);
@@ -89,13 +76,13 @@ export default function graphReducer(state = initialState.graph, action) {
       });
 
       return Object.assign({}, state, {
-        raw: data,
+        raw: graph,
         root
       });
     }
     case ActionTypes.ADD_NODE: {
       const dataCopy = Object.assign({}, state.raw);
-      const { newNode, destNodeId } = action;
+      const { newNode, destNodeId, height, width, viewIndex } = action;
 
       const destInData = findNode(dataCopy, destNodeId).node;
 
@@ -109,10 +96,15 @@ export default function graphReducer(state = initialState.graph, action) {
       // reconstruct the tree
       attachIds(dataCopy);
       const newRoot = d3.hierarchy(dataCopy);
-      const tree = d3.tree().size([TREE_HEIGHT, TREE_WIDTH]);
+      const tree = d3.tree().size([height, width]);
 
       _sortTree(newRoot);
       tree(newRoot);
+
+      // shift everything down
+      newRoot.descendants().forEach((node) => {
+        node['x'] += height * viewIndex;
+      });
 
       return Object.assign({}, state, {
         raw: dataCopy,
@@ -121,7 +113,7 @@ export default function graphReducer(state = initialState.graph, action) {
     }
     case ActionTypes.DELETE_NODE: {
       const dataCopy = Object.assign({}, state.raw);
-      const { nodeId } = action;
+      const { nodeId, height, width, viewIndex } = action;
 
       const { node, parent } = findNode(dataCopy, nodeId);
 
@@ -143,10 +135,15 @@ export default function graphReducer(state = initialState.graph, action) {
         // reconstruct the tree
         attachIds(dataCopy);
         const newRoot = d3.hierarchy(dataCopy);
-        const tree = d3.tree().size([TREE_HEIGHT, TREE_WIDTH]);
+        const tree = d3.tree().size([height, width]);
 
         _sortTree(newRoot);
         tree(newRoot);
+
+        // shift everything down
+        newRoot.descendants().forEach((node) => {
+          node['x'] += height * viewIndex;
+        });
 
         return Object.assign({}, state, {
           raw: dataCopy,
