@@ -37,7 +37,7 @@ function findNode(node, id, parent = null) {
   if (node == null) return null;
 
   const children = node.children || node._children;
-  console.log(`checking ${node.id}`);
+  // console.log(`checking ${node.id}`);
   if (node.id === id) {
     return { node, parent };
   } else if (children) {
