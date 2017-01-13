@@ -13,92 +13,49 @@ const DEBUG = true;
 // testing purposes
 window['d3'] = d3;
 
-class TreeManager extends React.Component<any, any> {
-  private margin;
-  private width: number;
-  private height: number;
-  private svg;
+interface ITreeManagerProps {
+  dragBehavior: d3.DragBehavior<any, any, any>,
+  onClick,
+  onMouseOver,
+  onMouseOut,
+  container,
+  root
+}
+
+class TreeManager extends React.Component<ITreeManagerProps, any> {
   private g;
   private root: d3.HierarchyNode<any>;
-  private isDragging: boolean;
-  private dragger: d3.DragBehavior<any, any, any>;
-  private destDragNode;
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      root: null
+    };
   }
 
   componentDidMount() {
-    // set the dimensions and margins of the graph
-    this.margin = {top: 20, right: 20, bottom: 30, left: 50};
+    this.g = this.props.container.append('g');
 
-    const margin = this.margin;
-    this.width = 960 - margin.left - margin.right,
-    this.height = 2400 - margin.top - margin.bottom;
-
-    // add the svg canvas
-    this.svg = d3.select('#chart')
-      .append('svg')
-      .on('click', e => {
-        const d3e = d3.event;
-
-        const t = d3e.target;
-        const x = d3e.clientX;
-        const y = d3e.clientY;
-        // const target = (t == this.svg.node() ? this.svg.node() : t.parentNode);
-        const target = this.svg.node();
-        const svgP = this.svgPoint(target, x, y);
-        console.log(target);
-        console.log(svgP);
-        this.props.actions.selectGraph;
-      })
-      .attr('width', this.width + margin.left + margin.right)
-      .attr('height', this.height + margin.top + margin.bottom);
-
-    this.g = this.svg.append('g');
+    console.log('setting data on tree...');
+    let treeRoot = this.props.root;
+    this.update(treeRoot);
   }
 
   componentWillReceiveProps(nextProps) {
     console.log('setting data on tree...');
-    let treeRoot = nextProps.graph.treeRoot;
-    this.root = treeRoot;
+    let treeRoot = nextProps.root;
     this.update(treeRoot);
   }
 
   render() {
     return (
-      <div>
-        <div id="chart"></div>
-      </div>
+      <div />
     );
-  }
-
-  svgPoint(element, x, y) {
-    var pt = this.svg.node().createSVGPoint();
-    pt.x = x;
-    pt.y = y;
-    return pt.matrixTransform(element.getScreenCTM().inverse());
   }
 
   update(source) {
     const self = this;
-    this.dragger = d3.drag()
-      .on('start', d => {
-        console.log('dragging started!');
-        self.isDragging = true;
-        d3.selectAll('.ghost.disabled').attr('class', 'ghost');
-        d3.event.sourceEvent.stopPropagation();
-      })
-      .on('end', d => {
-        self.isDragging = false;
-        d3.selectAll('.ghost').attr('class', 'ghost disabled');
-
-        if (self.destDragNode) {
-          self.props.actions.moveNode(d, self.destDragNode);
-          self.destDragNode = null;
-        }
-      });
-
     const t = d3.transition('myT').duration(750);
 
     const nodes = this.g.selectAll('.node')
@@ -108,8 +65,8 @@ class TreeManager extends React.Component<any, any> {
       .attr('class', d => { const className = d['children'] ? 'internal': 'leaf'; return `node ${className}`; })
       .attr('transform', d => `translate(${d['y']}, ${d['x']})`)
       .attr('style', 'fill-opacity: 1')
-      .on('end', function() {
-        d3.select(this).call(self.dragger);
+      .on('end', function(node) {
+        d3.select(this).call(self.props.dragBehavior);
       });
 
     const enterNodes = nodes.enter().append('g');
@@ -124,43 +81,49 @@ class TreeManager extends React.Component<any, any> {
       .attr('transform', d => `translate(${d['y']}, ${d['x']})`)
       .attr('style', 'fill-opacity: 1')
       .on('end', function() {
-        d3.select(this).call(self.dragger);
-      });
+        const node = d3.select(this);
 
-    window['dis'] = enterNodes;
+        // setup drag and click behaviors
+        node.call(self.props.dragBehavior);
+        node.on('click', (thisNode) => {
+          self.props.onClick(thisNode);
+          d3.event.stopPropagation();
+        })
+        .on('dblclick', thisNode =>
+        {
+          self._toggle(thisNode);
+          self.update(source);
+          d3.event.stopPropagation();
+        });
+      });
 
     enterNodes.append('circle')
       .attr('r', 7.5)
-      .on('click', thisNode => {
-        this.props.actions.selectNode(thisNode);
-        d3.event.stopPropagation();
-      })
-      .on('dblclick', thisNode =>
-      {
-        console.log('click event actually registered');
-        this._toggle(thisNode);
-        this.update(this.root);
-        d3.event.stopPropagation();
-      });
+      // .on('click', thisNode => {
+      //   this.props.actions.selectNode(thisNode);
+      //   d3.event.stopPropagation();
+      // })
+      // .on('click', (thisNode) => {
+      //   this.props.onClick(thisNode);
+      //   d3.event.stopPropagation();
+      // })
+      // .on('dblclick', thisNode =>
+      // {
+      //   console.log('click event actually registered');
+      //   this._toggle(thisNode);
+      //   this.update(this.root);
+      //   d3.event.stopPropagation();
+      // });
 
     enterNodes.append('circle')
       .attr('r', 10)
       .attr('class', 'ghost disabled')
       .attr('pointer-events', 'mouseover')
-      .on('mouseover', function(d) {
-        if (self.isDragging) {
-          self.destDragNode = d;
-
-          d3.select(this)
-            .attr('class', 'ghost hover');
-        }
+      .on('mouseover', function(node) {
+          self.props.onMouseOver(node, this);
       })
-      .on('mouseout', function(d) {
-        if (self.isDragging) {
-          self.destDragNode = null;
-          d3.select(this)
-            .attr('class', 'ghost');
-        }
+      .on('mouseout', function(node) {
+        self.props.onMouseOut(node, this);
       });
 
     // refresh the text
@@ -171,10 +134,6 @@ class TreeManager extends React.Component<any, any> {
       .attr('x', d => d['children'] ? -8 : 8)
       .attr('class', d => d['children'] ? 'internal': 'leaf')
       .text(node => {
-        if (DEBUG) {
-          // base += `:\\${node.height}\\${node.depth}\\${this._isDefined(node.children) ? node.children.length : -1}\\${this._isDefined(node['_children']) ? node['_children'].length : -1}`;
-        }
-
         return node.data.name;
       });
 
@@ -214,8 +173,6 @@ class TreeManager extends React.Component<any, any> {
           + ` ${source['y']},${source['x']}`
       })
       .remove();
-
-      // this.g.selectAll('.node').call(this.dragger);
   }
 
   _toggle(node) {
@@ -229,16 +186,4 @@ class TreeManager extends React.Component<any, any> {
   }
 }
 
-function mapStateToProps({ graph }) {
-  return {
-    graph
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(graphManipulationActions, dispatch)
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(TreeManager);
+export default TreeManager;

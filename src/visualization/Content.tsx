@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
-import TreeManager from './TreeManager';
+import Graph from './Graph';
 import AxisManager from './AxisManager';
 
 import '../css/app.scss';
@@ -31,7 +31,7 @@ export default class Content extends React.Component<any, any> {
       <div>
         <div>This is for d3</div>
         <div id="axis"></div>
-        <TreeManager />
+        <Graph />
       </div>
     );
   }

@@ -88,7 +88,7 @@ export default function graphReducer(state = initialState.graph, action) {
 
       return Object.assign({}, state, {
         raw: data,
-        treeRoot: root
+        root
       });
     }
     case ActionTypes.ADD_NODE: {
@@ -114,7 +114,7 @@ export default function graphReducer(state = initialState.graph, action) {
 
       return Object.assign({}, state, {
         raw: dataCopy,
-        treeRoot: newRoot
+        root: newRoot
       });
     }
     case ActionTypes.DELETE_NODE: {
@@ -148,7 +148,7 @@ export default function graphReducer(state = initialState.graph, action) {
 
         return Object.assign({}, state, {
           raw: dataCopy,
-          treeRoot: newRoot
+          root: newRoot
         });
       }
     }
@@ -196,7 +196,7 @@ export default function graphReducer(state = initialState.graph, action) {
 
       return Object.assign({}, state, {
         raw: dataCopy,
-        treeRoot: newRoot
+        root: newRoot
       });
     }
     default: {

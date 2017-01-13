@@ -1,4 +1,6 @@
-export default {
+export default [{
+  type: "tree",
+  value: {
     "name": "flare",
     "children": [{
         "name": "analytics",
@@ -754,4 +756,5 @@ export default {
             "size": 16540
         }]
     }]
-}
+  }
+}]

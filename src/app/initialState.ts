@@ -6,6 +6,9 @@ const state = {
     id: 0,
     data: null
   },
+  main: {
+    subStates: []
+  },
   graph: {
     raw: {},
     treeRoot: {},
