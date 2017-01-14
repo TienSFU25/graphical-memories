@@ -74,7 +74,9 @@ export default function graphReducer(state = emptyTree, action) {
     }
     case ActionTypes.ADD_NODE: {
       const dataCopy = Object.assign({}, state.raw);
-      const { newNode, destNodeId, height, width, viewIndex } = action;
+      const { newNode, destNode, height, width, viewIndex } = action;
+
+      const destNodeId = destNode.data.id;
       const destInData = findNode(dataCopy, destNodeId).node;
 
       const destChildren = destInData.children || destInData._children;
@@ -88,9 +90,11 @@ export default function graphReducer(state = emptyTree, action) {
     }
     case ActionTypes.DELETE_NODE: {
       const dataCopy = Object.assign({}, state.raw);
-      const { nodeId, height, width, viewIndex } = action;
+      const { node, height, width, viewIndex } = action;
 
-      const { node, parent } = findNode(dataCopy, nodeId);
+      const nodeId = node.data.id;
+
+      const parent = findNode(dataCopy, nodeId).parent;
 
       // deleting root
       if ( parent === null ) {

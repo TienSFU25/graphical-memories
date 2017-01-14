@@ -2,59 +2,11 @@ import * as expect from 'expect';
 import mainGraphReducer from './mainGraphReducer';
 import { emptyTree } from '../app/initialState';
 import initialState from '../app/initialState';
-import { attachIds } from './treeManipulator';
 import * as graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import * as loadGraphActions from '../graphMetadata/loadGraphActions';
 import * as sinon from 'sinon';
 import { TreeHelper } from './treeHelper';
 import * as d3 from 'd3';
-
-// returns a binary tree
-const generateTree = (numberOfNodes, rid) => {
-  const root = {
-    id: 0,
-    name: String.fromCharCode(97),
-    children: []
-  };
-
-  root['rid'] = rid;
-
-  let queue = [root];
-  let index = 1;
-
-  while (index < numberOfNodes) {
-    const currentNode = queue.splice(0, 1);
-    const child1 = {
-      id: index,
-      name: String.fromCharCode(97 + index),
-      children: []
-    };
-
-    index += 1;
-
-    const child2 = {
-      id: index,
-      name: String.fromCharCode(97 + index),
-      children: []
-    };
-
-    index += 1;
-
-    currentNode[0].children = [child1, child2];
-    queue.push(child1);
-    queue.push(child2);
-  }
-
-  const d3Root = d3.hierarchy(root);
-
-  let leaf = d3Root;
-
-  while (leaf.children && leaf.children.length) {
-    leaf = leaf.children[0];
-  }
-
-  return [d3Root, root, leaf];
-}
 
 describe('Main Graph Reducer', () => {
   before(() => {
@@ -65,8 +17,8 @@ describe('Main Graph Reducer', () => {
   })
 
   beforeEach(() => {
-    const [rootOne, rawOne, leafOne]  = generateTree(6, 0);
-    const [rootTwo, rawTwo, leafTwo] = generateTree(6, 1);
+    const [rawOne, rootOne, internalOne, leafOne]  = TreeHelper.generateTree(6, 0);
+    const [rawTwo, rootTwo, internalTwo, leafTwo] = TreeHelper.generateTree(6, 1);
 
     this.rootOne = rootOne;
     this.rootTwo = rootTwo;
@@ -87,6 +39,24 @@ describe('Main Graph Reducer', () => {
 
   afterEach(() => {
     TreeHelper.getRid['restore']();
+  });
+
+  it('should forward to tree reducer when ADD_NODE', () => {
+    const mockNode = {
+      name: 'mocky'
+    };
+    const action = graphManipulationActions.addNode(mockNode, this.rawOne.id);
+    const newState = mainGraphReducer(this.mockState, action);
+
+    expect(newState.subStates[0].treeRoot['descendants']().length).toEqual(8);
+    expect(newState.subStates[1].treeRoot['leaves']().length).toEqual(3);
+  });
+
+  it('should forward to tree reducer when DELETE_NODE', () => {
+    const action = graphManipulationActions.deleteNode(this.leafOne.id);
+    const newState = mainGraphReducer(this.mockState, action);
+
+    expect(newState.subStates[0].treeRoot['descendants']().length).toEqual(8);
   });
 
   it('should move node to a non-leaf when MOVE_NODE', () => {

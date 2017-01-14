@@ -71,6 +71,7 @@ export default function mainGraphReducer(state = initialState.main, action: Grap
       return Object.assign({}, state, { subStates });
     }
     case ActionTypes.ADD_NODE: {
+      // const srcGraph =
     }
     case ActionTypes.DELETE_NODE: {
 
@@ -86,7 +87,7 @@ export default function mainGraphReducer(state = initialState.main, action: Grap
       const srcCopy = Object.assign({}, src.data);
 
       // add in dest
-      let subDestState = forwardActionToReducer(destGraph, ActionTypes.ADD_NODE, destGraph, viewHeight, destRid, { newNode: srcCopy, destNodeId: dest.data.id });
+      let subDestState = forwardActionToReducer(destGraph, ActionTypes.ADD_NODE, destGraph, viewHeight, destRid, { newNode: srcCopy, destNode: dest });
 
       subDestState.treeRoot.rid = destRid;
       subDestState.type = destGraph.type;
@@ -95,7 +96,7 @@ export default function mainGraphReducer(state = initialState.main, action: Grap
       state.subStates[destRid] = subDestState;
 
       // delete in src
-      let subSrcState = forwardActionToReducer(srcGraph, ActionTypes.DELETE_NODE, srcGraph, viewHeight, srcRid, { nodeId: src.data.id });
+      let subSrcState = forwardActionToReducer(srcGraph, ActionTypes.DELETE_NODE, srcGraph, viewHeight, srcRid, { node: src });
 
       // deleted the root
       if (subSrcState == emptyTree) {

@@ -1,18 +1,18 @@
 import { Action, ActionCreator, ActionCreatorsMapObject } from 'redux';
 import { ActionTypes } from '../app/actionTypes';
 
-export function addNode(newNode, destNodeId) {
+export function addNode(newNode, destNode) {
   return {
     type: ActionTypes.ADD_NODE,
-    destNodeId,
+    destNode,
     newNode
   }
 }
 
-export function deleteNode(nodeId) {
+export function deleteNode(node) {
   return {
     type: ActionTypes.DELETE_NODE,
-    nodeId
+    node
   }
 }
 

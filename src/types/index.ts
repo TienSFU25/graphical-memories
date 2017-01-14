@@ -17,8 +17,9 @@ export interface ReduxStore {
   selectedEntity: SelectedEntity
 }
 
-/* Graph related */
+/*  */
 
+/* Graph related */
 export enum GraphType {
   Tree
 }
