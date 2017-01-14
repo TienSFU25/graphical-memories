@@ -143,6 +143,6 @@ describe('Graph Reducer', () => {
 
     const action = graphManipulationActions.deleteNode(0);
     const newState = graphReducer(initialGraphState, action);
-    expect(newState.treeRoot).toEqual({});
+    expect(newState).toEqual(emptyTree);
   });
 });

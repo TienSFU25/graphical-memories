@@ -18,6 +18,8 @@ export default initialState;
 export const emptyTree = {
   type: GraphType.Tree,
   raw: {},
-  treeRoot: {},
+  treeRoot: {
+    rid: null
+  },
   editMode: 'None'
 };
