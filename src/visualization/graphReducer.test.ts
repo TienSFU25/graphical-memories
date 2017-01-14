@@ -1,4 +1,6 @@
 import * as expect from 'expect';
+import * as _ from 'lodash';
+
 import graphReducer from './graphReducer';
 import { emptyTree } from '../app/initialState';
 import { TreeHelper } from './treeHelper';
@@ -90,6 +92,17 @@ describe('Graph Reducer', () => {
     const newState = graphReducer(this.mockState, action);
     expect(newState.treeRoot.descendants().length).toEqual(8);
     expect(newState.treeRoot.leaves().length).toEqual(5);
+  });
+
+  it('should change the node value when EDIT_NODE', () => {
+    const editData = {
+      name: 'newname'
+    };
+
+    const action = graphManipulationActions.editNode(this.internal, editData);
+    const newState = graphReducer(this.mockState, action);
+
+    expect(_.findIndex(newState.treeRoot.descendants(), d => d.data.name == 'newname')).toBeGreaterThan(-1);
   });
 
   it('should delete a node with children when DELETE_NODE', () => {

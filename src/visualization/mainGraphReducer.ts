@@ -5,7 +5,7 @@ import { TREE_WIDTH, TREE_HEIGHT } from './constants';
 import { ActionTypes } from '../app/actionTypes';
 import { emptyTree, initialState } from '../app/initialState';
 
-import { GraphAction, GraphsData, GraphType, TypedGraph, TreeReducerState, AllGraphsReducerState } from '../types';
+import { d3Node, GraphAction, GraphsData, GraphType, TreeReducerState, AllGraphsReducerState } from '../types';
 import graphReducer from './graphReducer';
 import { TreeHelper } from './treeHelper';
 
@@ -22,10 +22,10 @@ const ridToReducer = function(graphType) {
   }
 }
 
-const forwardActionToReducer = function(graph: TypedGraph<any>, actionType, previousState, viewHeight, viewIndex, params?): TreeReducerState<string> {
+const forwardActionToReducer = function(previousState: TreeReducerState<string>, actionType, viewHeight, viewIndex, params?): TreeReducerState<string> {
   let reducer;
 
-  switch (graph.type) {
+  switch (previousState.type) {
     case GraphType.Tree: {
 
     }
@@ -39,17 +39,31 @@ const forwardActionToReducer = function(graph: TypedGraph<any>, actionType, prev
     height: viewHeight,
     width: TREE_WIDTH,
     viewIndex,
-    graph: graph.value,
+    graph: previousState.value,
     ...params
   });
 
   return subState;
 }
 
-// const _getRid = (node) => {
-//   const ancestors = node.ancestors();
-//   return ancestors[ancestors.length - 1].rid;
-// }
+const executeActionOnNode = function(subStates: Array<TreeReducerState<string>>, action, node: d3Node, params?) {
+  const graphRid = TreeHelper.getRid(node);
+  const previousSubState = subStates[graphRid];
+  const viewHeight = TREE_HEIGHT / subStates.length;
+
+  let subState = forwardActionToReducer(previousSubState, action, viewHeight, graphRid, params);
+
+  // we did something that deleted the root
+  if (subState == emptyTree) {
+    subStates.splice(graphRid, 1);
+  } else {
+    subState.treeRoot.rid = graphRid;
+    subState.type = previousSubState.type;
+    subStates[graphRid] = subState;
+  }
+
+  return subState;
+}
 
 export default function mainGraphReducer(state = initialState.main, action: GraphAction): AllGraphsReducerState {
   switch (action.type) {
@@ -59,7 +73,7 @@ export default function mainGraphReducer(state = initialState.main, action: Grap
 
       for (let i = 0; i < action.graph.length; i++) {
         const graph = action.graph[i];
-        let subState = forwardActionToReducer(graph, ActionTypes.LOAD_GRAPH_SUCCESS, null, viewHeight, i);
+        let subState = forwardActionToReducer(graph, ActionTypes.LOAD_GRAPH_SUCCESS, viewHeight, i);
 
         // to be able to trace a node to corresponding substate
         subState.treeRoot.rid = i;
@@ -71,41 +85,30 @@ export default function mainGraphReducer(state = initialState.main, action: Grap
       return Object.assign({}, state, { subStates });
     }
     case ActionTypes.ADD_NODE: {
-      // const srcGraph =
+      const { newNode, destNode } = action;
+      executeActionOnNode(state.subStates, ActionTypes.ADD_NODE, destNode, { newNode, destNode });
+
+      return Object.assign({}, state);
+    }
+    case ActionTypes.EDIT_NODE: {
+      const { node, editData } = action;
+      executeActionOnNode(state.subStates, ActionTypes.EDIT_NODE, node, { node, editData });
+
+      return Object.assign({}, state);
     }
     case ActionTypes.DELETE_NODE: {
+      const { node } = action;
+      executeActionOnNode(state.subStates, ActionTypes.DELETE_NODE, node, { node });
 
+      return Object.assign({}, state);
     }
     // src, dest
     case ActionTypes.MOVE_NODE: {
       const { src, dest } = action;
-      let [srcRid, destRid] =  [src, dest].map(TreeHelper.getRid);
-
-      let viewHeight = TREE_HEIGHT / state.subStates.length;
-      let [srcGraph, destGraph] = [state.subStates[srcRid], state.subStates[destRid]];
-
       const srcCopy = Object.assign({}, src.data);
 
-      // add in dest
-      let subDestState = forwardActionToReducer(destGraph, ActionTypes.ADD_NODE, destGraph, viewHeight, destRid, { newNode: srcCopy, destNode: dest });
-
-      subDestState.treeRoot.rid = destRid;
-      subDestState.type = destGraph.type;
-
-      // no need to copy again, subreducers already make a new copy
-      state.subStates[destRid] = subDestState;
-
-      // delete in src
-      let subSrcState = forwardActionToReducer(srcGraph, ActionTypes.DELETE_NODE, srcGraph, viewHeight, srcRid, { node: src });
-
-      // deleted the root
-      if (subSrcState == emptyTree) {
-        state.subStates.splice(srcRid, 1);
-      } else {
-        subSrcState.treeRoot.rid = srcRid;
-        subSrcState.type = srcGraph.type;
-        state.subStates[srcRid] = subSrcState;
-      }
+      executeActionOnNode(state.subStates, ActionTypes.ADD_NODE, dest, { newNode: srcCopy, destNode: dest });
+      executeActionOnNode(state.subStates, ActionTypes.DELETE_NODE, src, { node: src });
 
       return Object.assign({}, state);
     }

@@ -1,9 +1,11 @@
 import * as d3 from 'd3';
 
+import { d3Node } from '../types';
+
 export class TreeHelper {
-  static getRid(node) {
+  static getRid(node: d3Node): number {
     const ancestors = node.ancestors();
-    return ancestors[ancestors.length - 1].rid;
+    return ancestors[ancestors.length - 1]['rid'];
   }
 
   // returns a binary tree for testing

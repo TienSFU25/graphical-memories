@@ -1,12 +1,13 @@
+import * as d3 from 'd3';
 import * as expect from 'expect';
+import * as sinon from 'sinon';
+
 import mainGraphReducer from './mainGraphReducer';
-import { emptyTree } from '../app/initialState';
-import initialState from '../app/initialState';
+import { emptyTree, initialState } from '../app/initialState';
 import * as graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import * as loadGraphActions from '../graphMetadata/loadGraphActions';
-import * as sinon from 'sinon';
 import { TreeHelper } from './treeHelper';
-import * as d3 from 'd3';
+import { GraphType } from '../types';
 
 describe('Main Graph Reducer', () => {
   before(() => {
@@ -21,17 +22,22 @@ describe('Main Graph Reducer', () => {
     const [rawTwo, rootTwo, internalTwo, leafTwo] = TreeHelper.generateTree(6, 1);
 
     this.rootOne = rootOne;
-    this.rootTwo = rootTwo;
+    this.internalOne = internalOne;
     this.leafOne = leafOne;
+
+    this.rootTwo = rootTwo;
+    this.internalTwo = internalTwo;
     this.leafTwo = leafTwo;
 
-    const rawStateOne = Object.assign({}, emptyTree, { raw: rawOne, type: 'tree', treeRoot: rootOne });
-    const rawStateTwo = Object.assign({}, emptyTree, { raw: rawTwo, type: 'tree', treeRoot: rootTwo });
+    const rawStateOne = Object.assign({}, emptyTree, { raw: rawOne, type: GraphType.Tree, treeRoot: rootOne });
+    const rawStateTwo = Object.assign({}, emptyTree, { raw: rawTwo, type: GraphType.Tree, treeRoot: rootTwo });
 
     this.stub = sinon.stub(TreeHelper, 'getRid')
       .withArgs(this.rootOne).returns(0)
+      .withArgs(this.internalOne).returns(0)
       .withArgs(this.leafOne).returns(0)
       .withArgs(this.rootTwo).returns(1)
+      .withArgs(this.internalTwo).returns(1)
       .withArgs(this.leafTwo).returns(1);
 
     this.mockState = Object.assign({}, initialState.main, { subStates: [rawStateOne, rawStateTwo] });
@@ -45,18 +51,18 @@ describe('Main Graph Reducer', () => {
     const mockNode = {
       name: 'mocky'
     };
-    const action = graphManipulationActions.addNode(mockNode, this.rawOne.id);
+
+    const action = graphManipulationActions.addNode(mockNode, this.internalOne);
     const newState = mainGraphReducer(this.mockState, action);
 
     expect(newState.subStates[0].treeRoot.descendants().length).toEqual(8);
-    expect(newState.subStates[1].treeRoot.leaves().length).toEqual(3);
   });
 
   it('should forward to tree reducer when DELETE_NODE', () => {
-    const action = graphManipulationActions.deleteNode(this.leafOne.id);
+    const action = graphManipulationActions.deleteNode(this.internalOne);
     const newState = mainGraphReducer(this.mockState, action);
 
-    expect(newState.subStates[0].treeRoot.descendants().length).toEqual(8);
+    expect(newState.subStates[0].treeRoot.descendants().length).toEqual(4);
   });
 
   it('should move node to a non-leaf when MOVE_NODE', () => {

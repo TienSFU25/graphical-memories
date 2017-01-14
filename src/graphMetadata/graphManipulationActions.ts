@@ -4,8 +4,8 @@ import { ActionTypes } from '../app/actionTypes';
 export function addNode(newNode, destNode) {
   return {
     type: ActionTypes.ADD_NODE,
-    destNode,
-    newNode
+    newNode,
+    destNode
   }
 }
 
@@ -51,23 +51,20 @@ export function moveNode(src, dest) {
 //   }
 // }
 
-// export function editNode(nodeId: string, field: string, value: string) {
-//   let nodeData = {};
-//   nodeData["id"] = nodeId;
-//   nodeData[field] = value;
-
-//   return {
-//     type: ActionTypes.EDIT_NODE,
-//     nodeData
-//   };
-// }
+export function editNode(node, editData) {
+  return {
+    type: ActionTypes.EDIT_NODE,
+    node,
+    editData
+  };
+}
 
 const GraphManipulationCreatorsMap: ActionCreatorsMapObject = {
   // addNode,
   // saveNode,
   selectNode,
   moveNode,
-  // editNode,
+  editNode,
   // selectEntity,
   selectGraph
 }

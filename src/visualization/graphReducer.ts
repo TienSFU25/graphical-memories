@@ -88,6 +88,19 @@ export default function graphReducer(state = emptyTree, action): TreeReducerStat
 
       return _reconstructTree(dataCopy, state, viewIndex, height, width);
     }
+    case ActionTypes.EDIT_NODE: {
+      const dataCopy = Object.assign({}, state.raw);
+      const { node, editData, viewIndex, height, width } = action;
+
+      const nodeId = node.data.id;
+      let nodeInData = findNode(dataCopy, nodeId).node;
+
+      _.forEach(editData, (value, key) => {
+        nodeInData[key] = value;
+      });
+
+      return _reconstructTree(dataCopy, state, viewIndex, height, width);
+    }
     case ActionTypes.DELETE_NODE: {
       const dataCopy = Object.assign({}, state.raw);
       const { node, height, width, viewIndex } = action;
