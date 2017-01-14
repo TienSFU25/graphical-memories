@@ -1,6 +1,6 @@
 import * as expect from 'expect';
 import graphReducer from './graphReducer';
-import initialState from '../app/initialState';
+import { emptyTree } from '../app/initialState';
 import { attachIds } from './treeManipulator';
 import * as graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import * as loadGraphActions from '../graphMetadata/loadGraphActions';
@@ -63,7 +63,7 @@ describe('Graph Reducer', () => {
     };
 
     const action = loadGraphActions.loadGraphSuccess(data);
-    const newState = graphReducer(initialState.graph, action);
+    const newState = graphReducer(emptyTree, action);
 
     expect(newState.raw).toEqual(data);
     expect(newState.treeRoot['descendants']().length).toEqual(3);
@@ -74,7 +74,7 @@ describe('Graph Reducer', () => {
     const data = {};
 
     const action = loadGraphActions.loadGraphSuccess(data);
-    const newState = graphReducer(initialState.graph, action);
+    const newState = graphReducer(emptyTree, action);
 
     expect(newState.raw).toEqual(data);
     expect(newState.treeRoot['descendants']().length).toEqual(1);
@@ -87,7 +87,7 @@ describe('Graph Reducer', () => {
     };
 
     const action = loadGraphActions.loadGraphSuccess(data);
-    const newState = graphReducer(initialState.graph, action);
+    const newState = graphReducer(emptyTree, action);
 
     expect(newState.raw).toEqual(data);
     expect(newState.treeRoot['descendants']().length).toEqual(1);
@@ -95,7 +95,7 @@ describe('Graph Reducer', () => {
   });
 
   it('should add a node to valid leaf dest when ADD_NODE', () => {
-    const initialGraphState = Object.assign({}, initialState.graph, { raw: this.raw });
+    const initialGraphState = Object.assign({}, emptyTree, { raw: this.raw });
     const newNode = {
       name: 'test!',
       value: 1
@@ -108,7 +108,7 @@ describe('Graph Reducer', () => {
   });
 
   it('should add a node to valid non-leaf dest when ADD_NODE', () => {
-    const initialGraphState = Object.assign({}, initialState.graph, { raw: this.raw });
+    const initialGraphState = Object.assign({}, emptyTree, { raw: this.raw });
     const newNode = {
       name: 'test!',
       value: 1
@@ -121,7 +121,7 @@ describe('Graph Reducer', () => {
   });
 
   it('should delete a node with children when DELETE_NODE', () => {
-    const initialGraphState = Object.assign({}, initialState.graph, { raw: this.raw });
+    const initialGraphState = Object.assign({}, emptyTree, { raw: this.raw });
 
     const action = graphManipulationActions.deleteNode(4);
     const newState = graphReducer(initialGraphState, action);
@@ -130,7 +130,7 @@ describe('Graph Reducer', () => {
   });
 
   it('should delete a leaf when DELETE_NODE', () => {
-    const initialGraphState = Object.assign({}, initialState.graph, { raw: this.raw });
+    const initialGraphState = Object.assign({}, emptyTree, { raw: this.raw });
 
     const action = graphManipulationActions.deleteNode(6);
     const newState = graphReducer(initialGraphState, action);
@@ -139,7 +139,7 @@ describe('Graph Reducer', () => {
   });
 
   it('should return empty root when DELETE_NODE on root', () => {
-    const initialGraphState = Object.assign({}, initialState.graph, { raw: this.raw });
+    const initialGraphState = Object.assign({}, emptyTree, { raw: this.raw });
 
     const action = graphManipulationActions.deleteNode(0);
     const newState = graphReducer(initialGraphState, action);

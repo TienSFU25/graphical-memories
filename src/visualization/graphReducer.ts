@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 
 import { TREE_WIDTH, TREE_HEIGHT } from './constants';
 import { ActionTypes } from '../app/actionTypes';
-import initialState from '../app/initialState';
+import { emptyTree } from '../app/initialState';
 import { EntityType, SelectedEntity } from '../types';
 import { attachIds } from './treeManipulator';
 
@@ -54,7 +54,7 @@ function findNode(node, id, parent = null) {
   }
 };
 
-export default function graphReducer(state = initialState.graph, action) {
+export default function graphReducer(state = emptyTree, action) {
   switch (action.type) {
     // case ActionTypes.ADD_NODE_SUCCESS: {
     //   return state;
@@ -119,7 +119,7 @@ export default function graphReducer(state = initialState.graph, action) {
 
       // deleting root
       if ( parent === null ) {
-        return initialState.graph;
+        return emptyTree;
       } else {
         let childIndex;
 

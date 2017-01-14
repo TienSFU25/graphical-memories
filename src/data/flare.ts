@@ -1,6 +1,8 @@
+import { GraphType } from '../types'
+
 export default [
   {
-    type: "tree",
+    type: GraphType.Tree,
     value: {
     "name": "flare",
     "children": [{
@@ -387,7 +389,7 @@ export default [
     }]
   }},
 {
-  type: "tree",
+  type: GraphType.Tree,
   value: {
     "name": "flare",
     "children": [{

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as _ from 'lodash';
 
+import { GraphType } from '../types';
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import TreeManager from './TreeManager';
 
@@ -78,7 +79,7 @@ class Graph extends React.Component<any, any> {
         self.isDragging = false;
         d3.selectAll('.ghost').attr('class', 'ghost disabled');
 
-        if (self.destDragNode && d !== self.destDragNode) {
+        if (self.destDragNode && d['data'].id !== self.destDragNode.data.id) {
           console.log(`moving ${d['data'].id} to ${self.destDragNode.data.id}`)
           self.props.actions.moveNode(d, self.destDragNode);
           self.destDragNode = null;
@@ -116,7 +117,7 @@ class Graph extends React.Component<any, any> {
   }
 
   _graphToReactElement(graph) {
-    if (graph.type === 'tree') {
+    if (graph.type === GraphType.Tree) {
       return <TreeManager dragBehavior={this.dragBehavior} onClick={this.onClick.bind(this)} onMouseOver={this.onMouseOver.bind(this)} onMouseOut={this.onMouseOut.bind(this)} container={this.svg} root={graph.treeRoot}/>
     }
   }

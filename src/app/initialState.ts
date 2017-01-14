@@ -1,6 +1,6 @@
-import { ReduxStore, EntityType } from '../types';
+import { ReduxStore, EntityType, GraphType } from '../types';
 
-const state = {
+export const initialState = {
   selectedEntity: {
     type: EntityType.Nothing,
     id: 0,
@@ -8,12 +8,16 @@ const state = {
   },
   main: {
     subStates: []
-  },
-  graph: {
-    raw: {},
-    treeRoot: {},
-    editMode: 'None'
   }
 };
 
-export default state;
+export default initialState;
+
+/* Custom initial states */
+
+export const emptyTree = {
+  type: GraphType.Tree,
+  raw: {},
+  treeRoot: {},
+  editMode: 'None'
+};

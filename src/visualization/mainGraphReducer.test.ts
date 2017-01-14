@@ -1,5 +1,6 @@
 import * as expect from 'expect';
 import mainGraphReducer from './mainGraphReducer';
+import { emptyTree } from '../app/initialState';
 import initialState from '../app/initialState';
 import { attachIds } from './treeManipulator';
 import * as graphManipulationActions from '../graphMetadata/graphManipulationActions';
@@ -72,8 +73,8 @@ describe('Main Graph Reducer', () => {
     this.leafOne = leafOne;
     this.leafTwo = leafTwo;
 
-    const rawStateOne = Object.assign({}, initialState.graph, { raw: rawOne, type: 'tree', treeRoot: rootOne });
-    const rawStateTwo = Object.assign({}, initialState.graph, { raw: rawTwo, type: 'tree', treeRoot: rootTwo });
+    const rawStateOne = Object.assign({}, emptyTree, { raw: rawOne, type: 'tree', treeRoot: rootOne });
+    const rawStateTwo = Object.assign({}, emptyTree, { raw: rawTwo, type: 'tree', treeRoot: rootTwo });
 
     this.stub = sinon.stub(TreeHelper, 'getRid')
       .withArgs(this.rootOne).returns(0)

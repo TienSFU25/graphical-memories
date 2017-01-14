@@ -3,21 +3,31 @@ import * as _ from 'lodash';
 
 import { TREE_WIDTH, TREE_HEIGHT } from './constants';
 import { ActionTypes } from '../app/actionTypes';
-import initialState from '../app/initialState';
-import { EntityType, SelectedEntity } from '../types';
+import { emptyTree, initialState } from '../app/initialState';
+
+import { GraphAction, GraphsData, GraphType } from '../types';
 import graphReducer from './graphReducer';
 import { TreeHelper } from './treeHelper';
 
-const ridToReducer = {
-  tree: graphReducer
-};
+// corresponds to the order in GraphTypes
+// make this better if necessary
+const ridToReducer = function(graphType) {
+  switch (graphType) {
+    case GraphType.Tree: {
+
+    }
+    default: {
+      return graphReducer;
+    }
+  }
+}
 
 // const _getRid = (node) => {
 //   const ancestors = node.ancestors();
 //   return ancestors[ancestors.length - 1].rid;
 // }
 
-export default function mainGraphReducer(state = initialState.main, action) {
+export default function mainGraphReducer(state = initialState.main, action: GraphAction) {
   switch (action.type) {
     case ActionTypes.LOAD_GRAPH_SUCCESS: {
       let subStates = [];
@@ -25,7 +35,7 @@ export default function mainGraphReducer(state = initialState.main, action) {
 
       for (let i = 0; i < action.graph.length; i++) {
         const graph = action.graph[i];
-        const subState = ridToReducer[graph.type](null, {
+        const subState = ridToReducer(graph.type)(null, {
           type: ActionTypes.LOAD_GRAPH_SUCCESS,
           height: viewHeight,
           width: TREE_WIDTH,
@@ -56,7 +66,7 @@ export default function mainGraphReducer(state = initialState.main, action) {
       let [srcGraph, destGraph] = [state.subStates[srcRid], state.subStates[destRid]];
 
       // delete in src
-      const subSrcState = ridToReducer[srcGraph.type](srcGraph, {
+      const subSrcState = ridToReducer(srcGraph.type)(srcGraph, {
         type: ActionTypes.DELETE_NODE,
         height: viewHeight,
         width: TREE_WIDTH,
@@ -66,7 +76,7 @@ export default function mainGraphReducer(state = initialState.main, action) {
       });
 
       // deleted the root
-      if (subSrcState == initialState.graph) {
+      if (subSrcState == emptyTree) {
         state.subStates.splice(srcRid, 1);
         destRid -= 1;
       } else {
@@ -76,7 +86,7 @@ export default function mainGraphReducer(state = initialState.main, action) {
       }
 
       // add in dest
-      const subDestState = ridToReducer[destGraph.type](destGraph, {
+      const subDestState = ridToReducer(destGraph.type)(destGraph, {
         type: ActionTypes.ADD_NODE,
         height: viewHeight,
         width: TREE_WIDTH,
