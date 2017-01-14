@@ -78,7 +78,8 @@ class Graph extends React.Component<any, any> {
         self.isDragging = false;
         d3.selectAll('.ghost').attr('class', 'ghost disabled');
 
-        if (self.destDragNode) {
+        if (self.destDragNode && d !== self.destDragNode) {
+          console.log(`moving ${d['data'].id} to ${self.destDragNode.data.id}`)
           self.props.actions.moveNode(d, self.destDragNode);
           self.destDragNode = null;
         }
@@ -92,6 +93,11 @@ class Graph extends React.Component<any, any> {
     this.setState({
       graphs
     });
+  }
+
+  onClick(node) {
+    this.props.actions.selectNode(node);
+    d3.event.stopPropagation();
   }
 
   onMouseOver(node, context) {
@@ -111,7 +117,7 @@ class Graph extends React.Component<any, any> {
 
   _graphToReactElement(graph) {
     if (graph.type === 'tree') {
-      return <TreeManager dragBehavior={this.dragBehavior} onClick={this.props.actions.selectNode} onMouseOver={this.onMouseOver.bind(this)} onMouseOut={this.onMouseOut.bind(this)} container={this.svg} root={graph.root}/>
+      return <TreeManager dragBehavior={this.dragBehavior} onClick={this.onClick.bind(this)} onMouseOver={this.onMouseOver.bind(this)} onMouseOut={this.onMouseOut.bind(this)} container={this.svg} root={graph.treeRoot}/>
     }
   }
 

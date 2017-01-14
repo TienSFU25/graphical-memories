@@ -1,12 +1,17 @@
 import * as _ from 'lodash';
 
-export function attachIds(dataRoot) {
+export function attachIds(dataRoot, isd3Node = false) {
   let i = 0;
 
   const attachId = (node) => {
     if (node == null) return;
 
-    node.id = i;
+    if (isd3Node) {
+      node.data.id = i;
+    } else {
+      node.id = i;
+    }
+
     i += 1;
 
     const children = node.children || node._children;

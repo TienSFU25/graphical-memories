@@ -6,15 +6,16 @@ import { ActionTypes } from '../app/actionTypes';
 import initialState from '../app/initialState';
 import { EntityType, SelectedEntity } from '../types';
 import graphReducer from './graphReducer';
+import { TreeHelper } from './treeHelper';
 
 const ridToReducer = {
   tree: graphReducer
 };
 
-const _getRid = (node) => {
-  const ancestors = node.ancestors();
-  return ancestors[ancestors.length - 1].rid;
-}
+// const _getRid = (node) => {
+//   const ancestors = node.ancestors();
+//   return ancestors[ancestors.length - 1].rid;
+// }
 
 export default function mainGraphReducer(state = initialState.main, action) {
   switch (action.type) {
@@ -33,7 +34,7 @@ export default function mainGraphReducer(state = initialState.main, action) {
         });
 
         // to be able to trace a node to corresponding substate
-        subState.root['rid'] = i;
+        subState.treeRoot['rid'] = i;
         subState.type = graph.type;
         subStates.push(subState);
       }
@@ -49,7 +50,7 @@ export default function mainGraphReducer(state = initialState.main, action) {
     // src, dest
     case ActionTypes.MOVE_NODE: {
       const { src, dest } = action;
-      const [srcRid, destRid] =  [src, dest].map(_getRid);
+      let [srcRid, destRid] =  [src, dest].map(TreeHelper.getRid);
 
       let viewHeight = TREE_HEIGHT / state.subStates.length;
       let [srcGraph, destGraph] = [state.subStates[srcRid], state.subStates[destRid]];
@@ -64,8 +65,15 @@ export default function mainGraphReducer(state = initialState.main, action) {
         nodeId: src.data.id
       });
 
-      subSrcState.root['rid'] = srcRid;
-      subSrcState.type = srcGraph.type;
+      // deleted the root
+      if (subSrcState == initialState.graph) {
+        state.subStates.splice(srcRid, 1);
+        destRid -= 1;
+      } else {
+        subSrcState.treeRoot['rid'] = srcRid;
+        subSrcState.type = srcGraph.type;
+        state.subStates[srcRid] = subSrcState;
+      }
 
       // add in dest
       const subDestState = ridToReducer[destGraph.type](destGraph, {
@@ -78,11 +86,10 @@ export default function mainGraphReducer(state = initialState.main, action) {
         destNodeId: dest.data.id
       });
 
-      subDestState.root['rid'] = destRid;
+      subDestState.treeRoot['rid'] = destRid;
       subDestState.type = destGraph.type;
 
       // no need to copy again, subreducers already make a new copy
-      state.subStates[srcRid] = subSrcState;
       state.subStates[destRid] = subDestState;
 
       return Object.assign({}, state);
