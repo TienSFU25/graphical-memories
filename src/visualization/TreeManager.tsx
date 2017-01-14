@@ -32,6 +32,11 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     };
   }
 
+  // thank you redux
+  shouldComponentUpdate(nextState) {
+    return (nextState.root !== this.state.root);
+  }
+
   componentDidMount() {
     this.setState({
       g: this.props.container.append('g'),
@@ -64,6 +69,8 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
     const nodes = context.selectAll('.node')
       .data(root.descendants(), d => d.data.name);
+
+
 
     nodes.transition(t)
       .attr('class', d => { const className = d['children'] ? 'internal': 'leaf'; return `node ${className}`; })

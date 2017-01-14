@@ -1,5 +1,6 @@
 import { Action, ActionCreator, ActionCreatorsMapObject } from 'redux';
 import { ActionTypes } from '../app/actionTypes';
+import { d3Node } from '../types';
 
 export function addNode(newNode, destNode) {
   return {
@@ -22,10 +23,10 @@ export function deleteNode(node) {
 //   }
 // }
 
-export function selectNode(nodeData) {
+export function selectNode(node: d3Node) {
   return {
     type: ActionTypes.SELECT_NODE,
-    nodeData
+    node
   };
 }
 
@@ -65,6 +66,7 @@ const GraphManipulationCreatorsMap: ActionCreatorsMapObject = {
   selectNode,
   moveNode,
   editNode,
+  deleteNode,
   // selectEntity,
   selectGraph
 }

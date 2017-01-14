@@ -30,7 +30,7 @@ class SelectedEntity extends React.Component<any, any> {
     if (this.props.selectedEntity.type === EntityType.Graph) {
       return <SelectedGraph />;
     } else if (this.props.selectedEntity.type === EntityType.Node) {
-      return <SelectedNode onChange={this.onNodeChange.bind(this)} data={this.props.selectedEntity.data} />;
+      return <SelectedNode onChange={this.onNodeChange.bind(this)} data={this.props.selectedEntity.node} />;
     } else if (this.props.selectedEntity.type === EntityType.Nothing) {
       return <div>You havent selected shit!</div>;
     } else {

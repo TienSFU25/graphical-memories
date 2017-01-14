@@ -6,6 +6,7 @@ import * as _ from 'lodash';
 
 import { GraphType } from '../types';
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
+import ControlBar from './ControlBar';
 import TreeManager from './TreeManager';
 
 require('./styles.scss');
@@ -20,8 +21,6 @@ class Graph extends React.Component<any, any> {
   private width: number;
   private height: number;
   private svg;
-  private g;
-  private root: d3.HierarchyNode<any>;
   private isDragging: boolean;
   private dragBehavior: d3.DragBehavior<any, any, any>;
   private destDragNode;
@@ -118,8 +117,17 @@ class Graph extends React.Component<any, any> {
 
   _graphToReactElement(graph) {
     if (graph.type === GraphType.Tree) {
-      return <TreeManager dragBehavior={this.dragBehavior} onClick={this.onClick.bind(this)} onMouseOver={this.onMouseOver.bind(this)} onMouseOut={this.onMouseOut.bind(this)} container={this.svg} root={graph.treeRoot}/>
+      return <TreeManager dragBehavior={this.dragBehavior}
+                          onClick={this.onClick.bind(this)}
+                          onMouseOver={this.onMouseOver.bind(this)}
+                          onMouseOut={this.onMouseOut.bind(this)}
+                          container={this.svg}
+                          root={graph.treeRoot}/>
     }
+  }
+
+  _onDelete() {
+    this.props.actions.deleteNode(this.props.selectedEntity.node);
   }
 
   render() {
@@ -131,6 +139,7 @@ class Graph extends React.Component<any, any> {
 
     return (
       <div>
+        <ControlBar onClickDelete={this._onDelete.bind(this)} />
         <div id="chart">
           {graphsElements}
         </div>
@@ -139,8 +148,9 @@ class Graph extends React.Component<any, any> {
   }
 }
 
-function mapStateToProps({ graph }) {
+function mapStateToProps({ selectedEntity, graph }) {
   return {
+    selectedEntity,
     graph
   };
 }
