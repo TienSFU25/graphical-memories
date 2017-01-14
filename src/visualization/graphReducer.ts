@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 import { TREE_WIDTH, TREE_HEIGHT } from './constants';
 import { ActionTypes } from '../app/actionTypes';
 import { emptyTree } from '../app/initialState';
-import { EntityType, SelectedEntity } from '../types';
+import { EntityType, SelectedEntity, TreeReducerState } from '../types';
 import { attachIds } from './treeManipulator';
 
 function _sortTree(root) {
@@ -62,7 +62,7 @@ function _reconstructTree(treeData, previousState, viewIndex: number, height: nu
   });
 }
 
-export default function graphReducer(state = emptyTree, action) {
+export default function graphReducer(state = emptyTree, action): TreeReducerState<string> {
   switch (action.type) {
     // case ActionTypes.ADD_NODE_SUCCESS: {
     //   return state;
@@ -114,6 +114,9 @@ export default function graphReducer(state = emptyTree, action) {
 
         return _reconstructTree(dataCopy, state, viewIndex, height, width);
       }
+    }
+    default: {
+      return state;
     }
   }
 }

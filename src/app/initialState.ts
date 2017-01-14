@@ -14,12 +14,11 @@ export const initialState = {
 export default initialState;
 
 /* Custom initial states */
-
 export const emptyTree = {
   type: GraphType.Tree,
-  raw: {},
-  treeRoot: {
-    rid: null
+  raw: {
+    name: 'empty tree'
   },
+  treeRoot: null,
   editMode: 'None'
 };

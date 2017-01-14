@@ -48,15 +48,15 @@ describe('Main Graph Reducer', () => {
     const action = graphManipulationActions.addNode(mockNode, this.rawOne.id);
     const newState = mainGraphReducer(this.mockState, action);
 
-    expect(newState.subStates[0].treeRoot['descendants']().length).toEqual(8);
-    expect(newState.subStates[1].treeRoot['leaves']().length).toEqual(3);
+    expect(newState.subStates[0].treeRoot.descendants().length).toEqual(8);
+    expect(newState.subStates[1].treeRoot.leaves().length).toEqual(3);
   });
 
   it('should forward to tree reducer when DELETE_NODE', () => {
     const action = graphManipulationActions.deleteNode(this.leafOne.id);
     const newState = mainGraphReducer(this.mockState, action);
 
-    expect(newState.subStates[0].treeRoot['descendants']().length).toEqual(8);
+    expect(newState.subStates[0].treeRoot.descendants().length).toEqual(8);
   });
 
   it('should move node to a non-leaf when MOVE_NODE', () => {
@@ -64,8 +64,8 @@ describe('Main Graph Reducer', () => {
     const newState = mainGraphReducer(this.mockState, action);
 
     expect(this.stub.callCount).toEqual(1);
-    expect(newState.subStates[0].treeRoot['descendants']().length).toEqual(8);
-    expect(newState.subStates[1].treeRoot['leaves']().length).toEqual(3);
+    expect(newState.subStates[0].treeRoot.descendants().length).toEqual(8);
+    expect(newState.subStates[1].treeRoot.leaves().length).toEqual(3);
   });
 
   it('should move node to a leaf when MOVE_NODE', () => {
@@ -73,15 +73,15 @@ describe('Main Graph Reducer', () => {
     const newState = mainGraphReducer(this.mockState, action);
 
     expect(this.stub.callCount).toEqual(1);
-    expect(newState.subStates[0].treeRoot['descendants']().length).toEqual(8);
-    expect(newState.subStates[1].treeRoot['leaves']().length).toEqual(3);
+    expect(newState.subStates[0].treeRoot.descendants().length).toEqual(8);
+    expect(newState.subStates[1].treeRoot.leaves().length).toEqual(3);
   });
 
   it('should move a whole tree when MOVE_NODE', () => {
     const action = graphManipulationActions.moveNode(this.rootOne, this.rootTwo);
     const newState = mainGraphReducer(this.mockState, action);
 
-    expect(newState.subStates[0].treeRoot['descendants']().length).toEqual(14);
+    expect(newState.subStates[0].treeRoot.descendants().length).toEqual(14);
     expect(newState.subStates.length).toEqual(1);
   });
 })

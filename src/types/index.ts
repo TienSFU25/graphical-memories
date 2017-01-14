@@ -17,7 +17,17 @@ export interface ReduxStore {
   selectedEntity: SelectedEntity
 }
 
-/*  */
+/* Reducer states */
+export interface TreeReducerState<T> {
+  type: GraphType,
+  raw: TreeNode<T>,
+  treeRoot: d3.HierarchyNode<TreeNode<any>> & {rid: number},
+  editMode?: string
+}
+
+export interface AllGraphsReducerState {
+  subStates: Array<TreeReducerState<any>>
+}
 
 /* Graph related */
 export enum GraphType {
@@ -30,7 +40,7 @@ export interface GraphNode<T> {
 }
 
 export interface TreeNode<T> extends GraphNode<T> {
-  children: Array<TreeNode<T>>
+  children?: Array<TreeNode<T>>
 }
 
 export interface TypedGraph<T> {

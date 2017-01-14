@@ -40,8 +40,8 @@ describe('Graph Reducer', () => {
     const newState = graphReducer(emptyTree, action);
 
     expect(newState.raw).toEqual(data);
-    expect(newState.treeRoot['descendants']().length).toEqual(3);
-    expect(newState.treeRoot['leaves']().length).toEqual(2);
+    expect(newState.treeRoot.descendants().length).toEqual(3);
+    expect(newState.treeRoot.leaves().length).toEqual(2);
   });
 
   it('should generate a tree with just a root when data is empty for LOAD_GRAPH_SUCCESS', () => {
@@ -51,8 +51,8 @@ describe('Graph Reducer', () => {
     const newState = graphReducer(emptyTree, action);
 
     expect(newState.raw).toEqual(data);
-    expect(newState.treeRoot['descendants']().length).toEqual(1);
-    expect(newState.treeRoot['leaves']().length).toEqual(1);
+    expect(newState.treeRoot.descendants().length).toEqual(1);
+    expect(newState.treeRoot.leaves().length).toEqual(1);
   });
 
   it('should generate a tree with just a root when data has one item for LOAD_GRAPH_SUCCESS', () => {
@@ -64,8 +64,8 @@ describe('Graph Reducer', () => {
     const newState = graphReducer(emptyTree, action);
 
     expect(newState.raw).toEqual(data);
-    expect(newState.treeRoot['descendants']().length).toEqual(1);
-    expect(newState.treeRoot['leaves']().length).toEqual(1);
+    expect(newState.treeRoot.descendants().length).toEqual(1);
+    expect(newState.treeRoot.leaves().length).toEqual(1);
   });
 
   it('should add a node to valid leaf dest when ADD_NODE', () => {
@@ -76,8 +76,8 @@ describe('Graph Reducer', () => {
 
     const action = graphManipulationActions.addNode(newNode, this.leaf);
     const newState = graphReducer(this.mockState, action);
-    expect(newState.treeRoot['descendants']().length).toEqual(8);
-    expect(newState.treeRoot['leaves']().length).toEqual(4);
+    expect(newState.treeRoot.descendants().length).toEqual(8);
+    expect(newState.treeRoot.leaves().length).toEqual(4);
   });
 
   it('should add a node to valid non-leaf dest when ADD_NODE', () => {
@@ -88,22 +88,22 @@ describe('Graph Reducer', () => {
 
     const action = graphManipulationActions.addNode(newNode, this.internal);
     const newState = graphReducer(this.mockState, action);
-    expect(newState.treeRoot['descendants']().length).toEqual(8);
-    expect(newState.treeRoot['leaves']().length).toEqual(5);
+    expect(newState.treeRoot.descendants().length).toEqual(8);
+    expect(newState.treeRoot.leaves().length).toEqual(5);
   });
 
   it('should delete a node with children when DELETE_NODE', () => {
     const action = graphManipulationActions.deleteNode(this.internal);
     const newState = graphReducer(this.mockState, action);
-    expect(newState.treeRoot['descendants']().length).toEqual(4);
-    expect(newState.treeRoot['leaves']().length).toEqual(2);
+    expect(newState.treeRoot.descendants().length).toEqual(4);
+    expect(newState.treeRoot.leaves().length).toEqual(2);
   });
 
   it('should delete a leaf when DELETE_NODE', () => {
     const action = graphManipulationActions.deleteNode(this.leaf);
     const newState = graphReducer(this.mockState, action);
-    expect(newState.treeRoot['descendants']().length).toEqual(6);
-    expect(newState.treeRoot['leaves']().length).toEqual(3);
+    expect(newState.treeRoot.descendants().length).toEqual(6);
+    expect(newState.treeRoot.leaves().length).toEqual(3);
   });
 
   it('should return empty root when DELETE_NODE on root', () => {

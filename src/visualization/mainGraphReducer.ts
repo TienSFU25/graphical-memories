@@ -5,7 +5,7 @@ import { TREE_WIDTH, TREE_HEIGHT } from './constants';
 import { ActionTypes } from '../app/actionTypes';
 import { emptyTree, initialState } from '../app/initialState';
 
-import { GraphAction, GraphsData, GraphType, TypedGraph } from '../types';
+import { GraphAction, GraphsData, GraphType, TypedGraph, TreeReducerState, AllGraphsReducerState } from '../types';
 import graphReducer from './graphReducer';
 import { TreeHelper } from './treeHelper';
 
@@ -22,7 +22,7 @@ const ridToReducer = function(graphType) {
   }
 }
 
-const forwardActionToReducer = function(graph: TypedGraph<any>, actionType, previousState, viewHeight, viewIndex, params?) {
+const forwardActionToReducer = function(graph: TypedGraph<any>, actionType, previousState, viewHeight, viewIndex, params?): TreeReducerState<string> {
   let reducer;
 
   switch (graph.type) {
@@ -51,7 +51,7 @@ const forwardActionToReducer = function(graph: TypedGraph<any>, actionType, prev
 //   return ancestors[ancestors.length - 1].rid;
 // }
 
-export default function mainGraphReducer(state = initialState.main, action: GraphAction) {
+export default function mainGraphReducer(state = initialState.main, action: GraphAction): AllGraphsReducerState {
   switch (action.type) {
     case ActionTypes.LOAD_GRAPH_SUCCESS: {
       let subStates = [];
