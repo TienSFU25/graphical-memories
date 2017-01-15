@@ -1,58 +1,65 @@
+import * as d3 from 'd3';
 import * as React from 'react';
+import * as _ from 'lodash';
 import { ControlLabel, FormControl, FormGroup, Table } from 'react-bootstrap';
 
-function FieldGroup({ data, mode = "edit", fieldName, ...props }) {
-  const id = mode + '-' + fieldName;
-  const label = fieldName;
-  const nodeId = data.id;
-  const value = data[label];
+import { d3Node } from '../types';
 
-  return (
-    <FormGroup controlId={id}>
-      <ControlLabel className="hide">{label}</ControlLabel>
-      <ControlLabel className="hide">{nodeId}</ControlLabel>
-      <FormControl type="text" id={id} value={value} {...props} />
-    </FormGroup>
-  );
+interface ISelectedNodeProps {
+  data: d3Node,
+  onChange: Function
 }
 
-const SelectedNode : React.StatelessComponent<React.HTMLProps<JSX.Element>> = (props: React.HTMLProps<JSX.Element> & {data: any} & {onSave: any} & {onChange: any}) => {
-  const data = props.data;
-  const onSave = props.onSave;
-  const onChange = props.onChange;
+export default class SelectedNode extends React.Component<ISelectedNodeProps, any> {
+  _toDataRow(key, value, readOnly = false) {
+    return (
+      <tr>
+        <td>
+          <FormGroup controlId={value}>
+            <ControlLabel>{key}</ControlLabel>
+          </FormGroup>
+        </td>
+        <td>
+          <input type="text" id={`edit-${value}`} readOnly={readOnly} value={value}/>
+        </td>
+      </tr>
+    );
+  }
 
-  return (
-    <Table striped bordered condensed hover>
-      <thead>
-        <tr>
-          <th>Field</th>
-          <th>Value</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>id</td>
-          <td><FieldGroup data={data} fieldName="id" onChange={onChange} readonly/></td>
-        </tr>
-        <tr>
-          <td>depth</td>
-          <td><FieldGroup data={data} fieldName="depth" onChange={onChange} /></td>
-        </tr>
-        <tr>
-          <td>x</td>
-          <td><FieldGroup data={data} fieldName="x" onChange={onChange} /></td>
-        </tr>
-        <tr>
-          <td>y</td>
-          <td><FieldGroup data={data} fieldName="y" onChange={onChange} /></td>
-        </tr>
-      </tbody>
-    </Table>
-  );
+  render() {
+    const { data, onChange } = this.props;
+    const self = this;
+
+    const readOnlyProps = Object.assign({}, this.props.data);
+    const writeProps = Object.assign({}, this.props.data.data);
+
+    const noTouchie = ['data', 'parent', 'children'];
+    const validReadKeys = _.filter(Object.keys(readOnlyProps), (prop) => {
+      return _.indexOf(noTouchie, prop) === -1;
+    });
+
+    const allRows = [];
+    for (let validKey of validReadKeys) {
+      allRows.push(this._toDataRow(validKey, readOnlyProps[validKey], true));
+    }
+
+    const validWriteKeys = ['id', 'name'];
+    for (let validKey of validWriteKeys) {
+      allRows.push(this._toDataRow(validKey, writeProps[validKey]));
+    }
+
+    return (
+      <Table striped bordered condensed hover id="meta">
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          {allRows}
+        </tbody>
+      </Table>
+    );
+  }
 };
-
-SelectedNode.propTypes = {
-  data: React.PropTypes.object.isRequired
-};
-
-export default SelectedNode;
