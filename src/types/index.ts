@@ -39,7 +39,8 @@ export enum GraphType {
 
 export interface GraphNode<T> {
   id?: number,
-  name: T
+  name: T,
+  image?: string
 }
 
 export interface TreeNode<T> extends GraphNode<T> {

@@ -6,9 +6,10 @@ import { bindActionCreators } from 'redux';
 
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 
-const ControlBar = ({onClickDelete}) => {
+const ControlBar = ({onClickAdd, onClickDelete}) => {
   return (
     <ButtonGroup>
+      <Button onClick={onClickAdd}>Add Child</Button>
       <Button onClick={onClickDelete}>Delete</Button>
     </ButtonGroup>
   );

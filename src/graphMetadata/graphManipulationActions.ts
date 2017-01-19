@@ -61,7 +61,7 @@ export function editNode(node, editData) {
 }
 
 const GraphManipulationCreatorsMap: ActionCreatorsMapObject = {
-  // addNode,
+  addNode,
   // saveNode,
   selectNode,
   moveNode,

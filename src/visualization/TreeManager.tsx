@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import * as _ from 'lodash';
 
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
+import { IMAGE_HEIGHT, IMAGE_WIDTH } from './constants';
 
 require('./styles.scss');
 
@@ -68,9 +69,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     const t = d3.transition('myT').duration(750);
 
     const nodes = context.selectAll('.node')
-      .data(root.descendants(), d => d.data.name);
-
-
+      .data(root.descendants(), d => d.data.id);
 
     nodes.transition(t)
       .attr('class', d => { const className = d['children'] ? 'internal': 'leaf'; return `node ${className}`; })
@@ -127,12 +126,25 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     // refresh the text
     nodes.selectAll('text').remove();
     enterNodes.merge(nodes)
-      .append('text')
-      .attr('dy', 3)
-      .attr('x', d => d['children'] ? -8 : 8)
-      .attr('class', d => d['children'] ? 'internal': 'leaf')
-      .text(node => {
-        return node.data.name;
+      .each(function(node) {
+        const nodeContainer = d3.select(this);
+
+        if (node.data.image) {
+          nodeContainer.append('image')
+            .attr('href', node.data.image)
+            .attr('width', IMAGE_WIDTH)
+            .attr('height', IMAGE_HEIGHT)
+            .attr('x', IMAGE_WIDTH * -0.5)
+            .attr('y', IMAGE_HEIGHT * -0.5);
+        } else {
+          nodeContainer.append('text')
+            .attr('dy', 3)
+            .attr('x', d => d['children'] ? -8 : 8)
+            .attr('class', d => d['children'] ? 'internal': 'leaf')
+            .text(_ => {
+              return node.data.name;
+            });
+        }
       });
 
     const exitNodes = nodes.exit()
@@ -142,7 +154,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
       .remove();
 
     const links = context.selectAll('.link')
-      .data(root.descendants().slice(1), d => d.data.name);
+      .data(root.descendants().slice(1), d => d.data.id);
 
     const enterLinks = links.enter()
       .append('path')

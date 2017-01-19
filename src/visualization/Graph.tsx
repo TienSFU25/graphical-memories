@@ -6,6 +6,8 @@ import * as _ from 'lodash';
 
 import { GraphType } from '../types';
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
+
+import AxisManager from './AxisManager';
 import ControlBar from './ControlBar';
 import TreeManager from './TreeManager';
 
@@ -51,19 +53,22 @@ class Graph extends React.Component<any, any> {
     // add the svg canvas
     this.svg = d3.select('#chart')
       .append('svg')
-      // .on('click', e => {
-      //   const d3e = d3.event;
+      .on('click', e => {
+        const d3e = d3.event;
 
-      //   const t = d3e.target;
-      //   const x = d3e.clientX;
-      //   const y = d3e.clientY;
-      //   // const target = (t == this.svg.node() ? this.svg.node() : t.parentNode);
-      //   const target = this.svg.node();
-      //   const svgP = this.svgPoint(target, x, y);
-      //   console.log(target);
-      //   console.log(svgP);
-      //   this.props.actions.selectGraph;
-      // })
+        const t = d3e.target;
+        const x = d3e.clientX;
+        const y = d3e.clientY;
+        // const target = (t == this.svg.node() ? this.svg.node() : t.parentNode);
+        const target = this.svg.node();
+        const svgP = this.svgPoint(target, x, y);
+        // console.log(target);
+        console.log(x);
+        console.log(y);
+        console.log(svgP);
+        console.log('--------->');
+        this.props.actions.selectGraph;
+      })
       .attr('width', this.width + margin.left + margin.right)
       .attr('height', this.height + margin.top + margin.bottom);
 
@@ -130,6 +135,10 @@ class Graph extends React.Component<any, any> {
     this.props.actions.deleteNode(this.props.selectedEntity.node);
   }
 
+  _onAdd() {
+    this.props.actions.addNode({name: 'ez'}, this.props.selectedEntity.node);
+  }
+
   render() {
     let graphsElements = null;
 
@@ -139,7 +148,8 @@ class Graph extends React.Component<any, any> {
 
     return (
       <div>
-        <ControlBar onClickDelete={this._onDelete.bind(this)} />
+        <AxisManager container={this.svg} dragBehavior={this.dragBehavior} />
+        <ControlBar onClickDelete={this._onDelete.bind(this)} onClickAdd={this._onAdd.bind(this)} />
         <div id="chart">
           {graphsElements}
         </div>

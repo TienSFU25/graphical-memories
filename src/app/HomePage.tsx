@@ -19,7 +19,7 @@ class HomePage extends React.Component<HomePageProps, HomePageState> {
             <Visualizer />
           </Col>
           <Col sm={3}>
-            <GraphMetadata />
+           {/* <GraphMetadata /> */}
           </Col>
         </Row>
       </div>

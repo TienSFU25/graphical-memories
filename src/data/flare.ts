@@ -11,7 +11,7 @@ export default [
             "name": "cluster",
             "children": [{
                 "name": "AgglomerativeCluster",
-                "size": 3938
+                "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/React.js_logo.svg/600px-React.js_logo.svg.png"
             }, {
                 "name": "CommunityStructure",
                 "size": 3812
