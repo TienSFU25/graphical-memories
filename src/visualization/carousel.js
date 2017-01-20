@@ -67,12 +67,15 @@ if (typeof jQuery === 'undefined') {
 
     if (!$.support.transition) return
 
-    $.event.special.bsTransitionEnd = {
+    $.event.special.bsTransitionEndy = {
       bindType: $.support.transition.end,
       delegateType: $.support.transition.end,
-      handle: function (e) {
-        // if ($(e.target).is(this)) return e.handleObj.handler.apply(this, arguments)
-      }
+      // handle: function (e) {
+      //   if ($(e.target).is(this)) {
+      //   console.log('transitionend actually happened');
+      //   return e.handleObj.handler.apply(this, arguments);
+      //   }
+      // }
     }
   })
 
@@ -159,17 +162,17 @@ if (typeof jQuery === 'undefined') {
     return this.$items.eq(itemIndex)
   }
 
-  Carousel.prototype.to = function (pos) {
-    var that        = this
-    var activeIndex = this.getItemIndex(this.$active = this.$element.find('.item.active'))
+  // Carousel.prototype.to = function (pos) {
+    // var that        = this
+    // var activeIndex = this.getItemIndex(this.$active = this.$element.find('.item.active'))
 
-    if (pos > (this.$items.length - 1) || pos < 0) return
+    // if (pos > (this.$items.length - 1) || pos < 0) return
 
-    // if (this.sliding)       return this.$element.one('slid.bs.carousel', function () { that.to(pos) }) // yes, "slid"
-    // if (activeIndex == pos) return this.pause().cycle()
+    // // if (this.sliding)       return this.$element.one('slid.bs.carousel', function () { that.to(pos) }) // yes, "slid"
+    // // if (activeIndex == pos) return this.pause().cycle()
 
-    return this.slide(pos > activeIndex ? 'next' : 'prev', this.$items.eq(pos))
-  }
+    // return this.slide(pos > activeIndex ? 'next' : 'prev', this.$items.eq(pos))
+  // }
 
   // Carousel.prototype.pause = function (e) {
   //   e || (this.paused = true)
@@ -215,11 +218,11 @@ if (typeof jQuery === 'undefined') {
 
     // isCycling && this.pause()
 
-    if (this.$indicators.length) {
-      this.$indicators.find('.active').removeClass('active')
-      var $nextIndicator = $(this.$indicators.children()[this.getItemIndex($next)])
-      $nextIndicator && $nextIndicator.addClass('active')
-    }
+    // if (this.$indicators.length) {
+    //   this.$indicators.find('.active').removeClass('active')
+    //   var $nextIndicator = $(this.$indicators.children()[this.getItemIndex($next)])
+    //   $nextIndicator && $nextIndicator.addClass('active')
+    // }
 
     // var slidEvent = $.Event('slid.bs.carousel', { relatedTarget: relatedTarget, direction: direction }) // yes, "slid"
     if ($.support.transition && this.$element.hasClass('slide')) {
@@ -230,6 +233,7 @@ if (typeof jQuery === 'undefined') {
       $active
         .one('webkitTransitionEnd', function (e) {
           if ($(e.target).is(this)) {
+            // console.log('transitionend actually happened');
             $next.removeClass([type, direction].join(' ')).addClass('active');
             $active.removeClass(['active', direction].join(' '));
           }
@@ -256,18 +260,18 @@ if (typeof jQuery === 'undefined') {
   // CAROUSEL PLUGIN DEFINITION
   // ==========================
 
-  function Plugin(option) {
-    return this.each(function () {
-      var $this   = $(this)
-      var data    = $this.data('bs.carousel')
-      var options = $.extend({}, Carousel.DEFAULTS, $this.data(), typeof option == 'object' && option)
+  function Plugin(carousel, option) {
+    // return carousel.each(function () {
+      var $carousel   = $(carousel)
+      var data    = $carousel.data('bs.carousel')
+      var options = $.extend({}, Carousel.DEFAULTS, $carousel.data(), typeof option == 'object' && option)
       var action  = typeof option == 'string' ? option : options.slide
 
-      if (!data) $this.data('bs.carousel', (data = new Carousel(this, options)))
-      if (typeof option == 'number') data.to(option)
+      if (!data) $carousel.data('bs.carousel', (data = new Carousel(carousel, options)))
+      // if (typeof option == 'number') data.to(option)
       else if (action) data[action]()
       // else if (options.interval) data.pause().cycle()
-    })
+    // })
   }
 
   // var old = $.fn.carousel
@@ -294,26 +298,26 @@ if (typeof jQuery === 'undefined') {
     var $target = $($this.attr('data-target') || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')) // strip for ie7
     if (!$target.hasClass('carousel')) return
     var options = $.extend({}, $target.data(), $this.data())
-    var slideIndex = $this.attr('data-slide-to')
-    if (slideIndex) options.interval = false
+    // var slideIndex = $this.attr('data-slide-to')
+    // if (slideIndex) options.interval = false
 
-    Plugin.call($target, options)
+    Plugin($target, options)
 
-    if (slideIndex) {
-      $target.data('bs.carousel').to(slideIndex)
-    }
+    // if (slideIndex) {
+    //   $target.data('bs.carousel').to(slideIndex)
+    // }
 
     e.preventDefault()
   }
 
   $(document)
     .on('click.bs.carousel.data-api', '[data-slide]', clickHandler)
-    .on('click.bs.carousel.data-api', '[data-slide-to]', clickHandler)
+    // .on('click.bs.carousel.data-api', '[data-slide-to]', clickHandler)
 
   $(window).on('load', function () {
     $('[data-ride="carousel"]').each(function () {
       var $carousel = $(this)
-      Plugin.call($carousel, $carousel.data())
+      Plugin($carousel, $carousel.data())
     })
   })
 

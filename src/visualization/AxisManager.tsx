@@ -19,6 +19,9 @@ export default class AxisManager extends React.Component<any, any> {
   private height: number;
   private g;
   private scrollable;
+  private leftButton;
+  private rightButton;
+  private carousel;
 
   constructor(props) {
     super(props);
@@ -42,6 +45,21 @@ export default class AxisManager extends React.Component<any, any> {
     }
   }
 
+  transitionEnd(e) {
+    window['lefty'] = this.leftButton;
+    if (e.target == this.leftButton) {
+      console.log('dit me het me transition left!');
+    }
+
+    if (e.target == this.rightButton) {
+      console.log('dit me het me transition right!');
+    }
+
+    if (e.target == this.carousel) {
+      console.log('dit me het me transition carousel!');
+    }
+  }
+
   render() {
     if (this.state.g) {
       this.update();
@@ -56,7 +74,7 @@ export default class AxisManager extends React.Component<any, any> {
                   <li data-target="#myCarousel" data-slide-to="1"></li>
               </ol>
               <div className="carousel-inner">
-                  <div className="item active">
+                  <div className="item active" onTransitionEnd={this.transitionEnd.bind(this)} ref={(d) => this.carousel = d}>
                       <Row>
                           <Col sm={2}>
                               <a href="#x" className="thumbnail">
@@ -125,11 +143,11 @@ export default class AxisManager extends React.Component<any, any> {
                       </Row>
                   </div>
               </div>
-              <a className="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+              <a className="left carousel-control" href="#myCarousel" role="button" data-slide="prev" ref={(d) => this.leftButton = d} >
                 <span className="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
                 <span className="sr-only">Previous</span>
               </a>
-              <a className="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+              <a className="right carousel-control" href="#myCarousel" role="button" data-slide="next" ref={(d) => this.rightButton = d}>
                 <span className="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                 <span className="sr-only">Next</span>
               </a>
