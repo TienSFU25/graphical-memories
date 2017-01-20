@@ -25,61 +25,61 @@ if (typeof jQuery === 'undefined') {
  * ======================================================================== */
 
 
-+function ($) {
-  'use strict';
+// +function ($) {
+//   'use strict';
 
-  // CSS TRANSITION SUPPORT (Shoutout: http://www.modernizr.com/)
-  // ============================================================
+//   // CSS TRANSITION SUPPORT (Shoutout: http://www.modernizr.com/)
+//   // ============================================================
 
-  function transitionEnd() {
-    var el = document.createElement('bootstrap')
+//   function transitionEnd() {
+//     var el = document.createElement('bootstrap')
 
-    var transEndEventNames = {
-      WebkitTransition : 'webkitTransitionEnd',
-      MozTransition    : 'transitionend',
-      OTransition      : 'oTransitionEnd otransitionend',
-      transition       : 'transitionend'
-    }
+//     var transEndEventNames = {
+//       WebkitTransition : 'webkitTransitionEnd',
+//       MozTransition    : 'transitionend',
+//       OTransition      : 'oTransitionEnd otransitionend',
+//       transition       : 'transitionend'
+//     }
 
-    for (var name in transEndEventNames) {
-      if (el.style[name] !== undefined) {
-        return { end: transEndEventNames[name] }
-      }
-    }
+//     for (var name in transEndEventNames) {
+//       if (el.style[name] !== undefined) {
+//         return { end: transEndEventNames[name] }
+//       }
+//     }
 
-    return false // explicit for ie8 (  ._.)
-  }
+//     return false // explicit for ie8 (  ._.)
+//   }
 
-  // http://blog.alexmaccaw.com/css-transitions
-  // $.fn.emulateTransitionEnd = function (duration) {
-  //   var called = false
-  //   var $el = this
-  //   $(this).one('bsTransitionEnd', function () { called = true })
-  //   var callback = function () {
-  //     // if (!called) $($el).trigger($.support.transition.end)
-  //   }
-  //   setTimeout(callback, duration)
-  //   return this
-  // }
+//   // http://blog.alexmaccaw.com/css-transitions
+//   // $.fn.emulateTransitionEnd = function (duration) {
+//   //   var called = false
+//   //   var $el = this
+//   //   $(this).one('bsTransitionEnd', function () { called = true })
+//   //   var callback = function () {
+//   //     // if (!called) $($el).trigger($.support.transition.end)
+//   //   }
+//   //   setTimeout(callback, duration)
+//   //   return this
+//   // }
 
-  $(function () {
-    $.support.transition = transitionEnd()
+//   $(function () {
+//     $.support.transition = transitionEnd()
 
-    if (!$.support.transition) return
+//     if (!$.support.transition) return
 
-    $.event.special.bsTransitionEndy = {
-      bindType: $.support.transition.end,
-      delegateType: $.support.transition.end,
-      // handle: function (e) {
-      //   if ($(e.target).is(this)) {
-      //   console.log('transitionend actually happened');
-      //   return e.handleObj.handler.apply(this, arguments);
-      //   }
-      // }
-    }
-  })
+//     $.event.special.bsTransitionEndy = {
+//       bindType: $.support.transition.end,
+//       delegateType: $.support.transition.end,
+//       // handle: function (e) {
+//       //   if ($(e.target).is(this)) {
+//       //   console.log('transitionend actually happened');
+//       //   return e.handleObj.handler.apply(this, arguments);
+//       //   }
+//       // }
+//     }
+//   })
 
-}(jQuery);
+// }(jQuery);
 
 /* ========================================================================
  * Bootstrap: carousel.js v3.3.6
@@ -225,13 +225,13 @@ if (typeof jQuery === 'undefined') {
     // }
 
     // var slidEvent = $.Event('slid.bs.carousel', { relatedTarget: relatedTarget, direction: direction }) // yes, "slid"
-    if ($.support.transition && this.$element.hasClass('slide')) {
+    // if ($.support.transition && this.$element.hasClass('slide')) {
       $next.addClass(type)
       $next[0].offsetWidth // force reflow
       $active.addClass(direction)
       $next.addClass(direction)
       $active
-        .one('webkitTransitionEnd', function (e) {
+        .one('webkitTransitionEndy', function (e) {
           if ($(e.target).is(this)) {
             // console.log('transitionend actually happened');
             $next.removeClass([type, direction].join(' ')).addClass('active');
@@ -243,7 +243,7 @@ if (typeof jQuery === 'undefined') {
           // }, 0)
         })
         // .emulateTransitionEnd(Carousel.TRANSITION_DURATION)
-    }
+    // }
     // else {
       // $active.removeClass('active')
       // $next.addClass('active')
@@ -310,8 +310,8 @@ if (typeof jQuery === 'undefined') {
     e.preventDefault()
   }
 
-  $(document)
-    .on('click.bs.carousel.data-api', '[data-slide]', clickHandler)
+  // $(document)
+  //   .on('click.bs.carousel.data-api', '[data-slide]', clickHandler)
     // .on('click.bs.carousel.data-api', '[data-slide-to]', clickHandler)
 
   $(window).on('load', function () {

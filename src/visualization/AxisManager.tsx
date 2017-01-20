@@ -2,6 +2,8 @@ import * as d3 from 'd3';
 import * as React from 'react';
 import {Grid, Row, Col} from 'react-bootstrap';
 
+import ClassBagElement from './ClassBagElement';
+
 // import '../../node_modules/jquery/dist/jquery';
 // import '../../node_modules/bootstrap/dist/js/bootstrap';
 
@@ -22,13 +24,30 @@ export default class AxisManager extends React.Component<any, any> {
   private leftButton;
   private rightButton;
   private carousel;
+  // private children;
+  private active;
 
   constructor(props) {
     super(props);
 
+    const children = [
+      // <ClassBagElement outerClassName="item active" onTransitionEnd={this.transitionEnd.bind(this)} />,
+      // <ClassBagElement outerClassName="item" onTransitionEnd={this.transitionEnd.bind(this)} />
+      {
+        classAdds: ['item', 'active']
+      },
+      {
+        classAdds: ['item']
+      }
+    ];
+
+    this.active = [1, 0];
+
     this.state = {
       hasInitialized: false,
-      g: null
+      g: null,
+      numberOfTransitionedChildren: 0,
+      children
     };
   }
 
@@ -46,18 +65,70 @@ export default class AxisManager extends React.Component<any, any> {
   }
 
   transitionEnd(e) {
-    window['lefty'] = this.leftButton;
-    if (e.target == this.leftButton) {
-      console.log('dit me het me transition left!');
+    // window['lefty'] = this.leftButton;
+    // if (e.target == this.refs[0]) {
+    // }
+
+    // let numberOfTransitionedChildren = this.state.numberOfTransitionedChildren + 1;
+
+    // if (numberOfTransitionedChildren == this.state.children.length) {
+    //   numberOfTransitionedChildren = 0;
+    //   this.setState({children: [
+    //     {
+    //       classRemoves: ['active', 'left']
+    //     },
+    //     {
+    //       classAdds: ['next', 'left'],
+    //       classRemoves: ['active']
+    //     }
+    //   ],
+    //   numberOfTransitionedChildren: numberOfTransitionedChildren});
+    // }
+    if (e.target && e.target.classList && e.target.classList.contains('active')) {
+      this.setState({children: [
+        {
+          classRemoves: ['active', 'left']
+        },
+        {
+          classAdds: ['next', 'left'],
+          classRemoves: ['active']
+        }
+      ]});
+      console.log('transition carousel!');
     }
 
-    if (e.target == this.rightButton) {
-      console.log('dit me het me transition right!');
-    }
+  }
 
-    if (e.target == this.carousel) {
-      console.log('dit me het me transition carousel!');
-    }
+  _onClickNext(e) {
+    e.preventDefault();
+    this.setState({children: [
+      {
+        classAdds: ['left']
+      },
+      {
+        classAdds: ['next']
+      }
+    ]}, renderAgain.bind(this));
+
+    function renderAgain() {
+        this.setState({
+          children: [
+            {
+            },
+            {
+              classAdds: ['left'],
+              reflow: true
+            }
+        ]
+      })
+    };
+
+    console.log('next was clicked!');
+  }
+
+  toClassBag(child) {
+    // const childClassName = child.classNames.join(' ');
+    return <ClassBagElement classAdds={child.classAdds} classRemoves={child.classRemoves} onTransitionEnd={this.transitionEnd.bind(this)} reflow={child.reflow} />
   }
 
   render() {
@@ -74,80 +145,13 @@ export default class AxisManager extends React.Component<any, any> {
                   <li data-target="#myCarousel" data-slide-to="1"></li>
               </ol>
               <div className="carousel-inner">
-                  <div className="item active" onTransitionEnd={this.transitionEnd.bind(this)} ref={(d) => this.carousel = d}>
-                      <Row>
-                          <Col sm={2}>
-                              <a href="#x" className="thumbnail">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/React.js_logo.svg/600px-React.js_logo.svg.png" />
-                              </a>
-                          </Col>
-                          <Col sm={2}>
-                              <a href="#x" className="thumbnail">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/React.js_logo.svg/600px-React.js_logo.svg.png" />
-                              </a>
-                          </Col>
-                          <Col sm={2}>
-                              <a href="#x" className="thumbnail">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/React.js_logo.svg/600px-React.js_logo.svg.png" />
-                              </a>
-                          </Col>
-                          <Col sm={2}>
-                              <a href="#x" className="thumbnail">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/React.js_logo.svg/600px-React.js_logo.svg.png" />
-                              </a>
-                          </Col>
-                          <Col sm={2}>
-                              <a href="#x" className="thumbnail">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/React.js_logo.svg/600px-React.js_logo.svg.png" />
-                              </a>
-                          </Col>
-                          <Col sm={2}>
-                              <a href="#x" className="thumbnail">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/React.js_logo.svg/600px-React.js_logo.svg.png" />
-                              </a>
-                          </Col>
-                      </Row>
-                  </div>
-                  <div className="item">
-                      <Row>
-                          <Col sm={2}>
-                              <a href="#x" className="thumbnail">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/React.js_logo.svg/600px-React.js_logo.svg.png" />
-                              </a>
-                          </Col>
-                          <Col sm={2}>
-                              <a href="#x" className="thumbnail">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/React.js_logo.svg/600px-React.js_logo.svg.png" />
-                              </a>
-                          </Col>
-                          <Col sm={2}>
-                              <a href="#x" className="thumbnail">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/React.js_logo.svg/600px-React.js_logo.svg.png" />
-                              </a>
-                          </Col>
-                          <Col sm={2}>
-                              <a href="#x" className="thumbnail">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/React.js_logo.svg/600px-React.js_logo.svg.png" />
-                              </a>
-                          </Col>
-                          <Col sm={2}>
-                              <a href="#x" className="thumbnail">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/React.js_logo.svg/600px-React.js_logo.svg.png" />
-                              </a>
-                          </Col>
-                          <Col sm={2}>
-                              <a href="#x" className="thumbnail">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/React.js_logo.svg/600px-React.js_logo.svg.png" />
-                              </a>
-                          </Col>
-                      </Row>
-                  </div>
+                {this.state.children.map(this.toClassBag.bind(this))}
               </div>
               <a className="left carousel-control" href="#myCarousel" role="button" data-slide="prev" ref={(d) => this.leftButton = d} >
                 <span className="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
                 <span className="sr-only">Previous</span>
               </a>
-              <a className="right carousel-control" href="#myCarousel" role="button" data-slide="next" ref={(d) => this.rightButton = d}>
+              <a className="right carousel-control" href="#myCarousel" role="button" data-slide="next" onClick={this._onClickNext.bind(this)} >
                 <span className="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                 <span className="sr-only">Next</span>
               </a>
