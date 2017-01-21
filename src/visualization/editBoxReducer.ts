@@ -17,10 +17,11 @@ export default function editBoxReducer(state = initialState.editBox, action) {
       const { newValue } = action;
       return Object.assign({}, state, { value: newValue });
     }
-    case ActionTypes.EDIT_NODE: {
+    case ActionTypes.HIDE_EDIT: {
       return Object.assign({}, state,
         {
-          show: false
+          show: false,
+          value: ''
         });
     }
     default: {

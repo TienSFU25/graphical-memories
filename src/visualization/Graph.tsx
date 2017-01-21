@@ -100,7 +100,7 @@ class Graph extends React.Component<any, any> {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('setting data on graph...');
+    console.log('graph getting some prop action...');
     const graphs = nextProps.graph.subStates;
 
     this.setState({
@@ -127,7 +127,12 @@ class Graph extends React.Component<any, any> {
     if (this.props.editBox.show) {
       const value = this.props.editBox.value;
       const prevNode = this.props.selectedEntity.node;
-      this.props.actions.editNode(prevNode, { name: value });
+
+      if (prevNode.data.name !== value) {
+        this.props.actions.editNode(prevNode, { name: value });
+      }
+
+      this.props.actions.hideEditBox();
     }
   }
 

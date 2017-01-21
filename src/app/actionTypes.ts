@@ -14,6 +14,6 @@ export enum ActionTypes {
   ATTACH_IMAGE,
 
   SHOW_EDIT,
-  UPDATE_EDIT,
-  EDIT_COMPLETE
+  HIDE_EDIT,
+  UPDATE_EDIT
 }
