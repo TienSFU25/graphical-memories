@@ -26,23 +26,15 @@ class CarouselItem {
     this.addClasses(...items);
   }
 
-  addClass(c: string): void {
-    this.classNames.add(c);
-  }
-
   addClasses(...cs: Array<string>): void {
     for (let c of cs) {
-      this.addClass(c);
+      this.classNames.add(c);
     }
-  }
-
-  removeClass(c: string): void {
-    this.classNames.delete(c);
   }
 
   removeClasses(...cs: Array<string>): void {
     for (let c of cs) {
-      this.removeClass(c);
+      this.classNames.delete(c);
     }
   }
 
@@ -60,6 +52,7 @@ export default class AxisManager extends React.Component<any, any> {
   private rightButton;
   private activeIndex;
   private prevIndex;
+  private isGoingRight;
 
   constructor(props) {
     super(props);
@@ -74,7 +67,7 @@ export default class AxisManager extends React.Component<any, any> {
 
     this.activeIndex = 0;
     this.prevIndex = 2;
-    carousel[this.activeIndex].addClass('active');
+    carousel[this.activeIndex].addClasses('active');
 
     this.state = {
       hasInitialized: false,
@@ -98,18 +91,14 @@ export default class AxisManager extends React.Component<any, any> {
   }
 
   transitionEnd(e) {
-    // window['lefty'] = this.leftButton;
-    // if (e.target == this.refs[0]) {
-    // }
-
-    // let numberOfTransitionedChildren = this.state.numbe
+    const [type, direction] = this._getTypeAndDirection();
 
     if (e.target && e.target.classList && e.target.classList.contains('active') && !this.state.hasTransitionEnded) {
       console.log('transition carousel!');
       const nextCarousel = Object.assign([], [...this.state.carousel]);
-      nextCarousel[this.activeIndex].addClass('active');
-      nextCarousel[this.activeIndex].removeClasses('next', 'left');
-      nextCarousel[this.prevIndex].removeClasses('active', 'left');
+      nextCarousel[this.activeIndex].addClasses('active');
+      nextCarousel[this.activeIndex].removeClasses(type, direction);
+      nextCarousel[this.prevIndex].removeClasses('active', direction);
 
       this.setState({
         carousel: nextCarousel,
@@ -121,13 +110,29 @@ export default class AxisManager extends React.Component<any, any> {
 
   _onClickNext(e) {
     e.preventDefault();
+    this.isGoingRight = true;
+    this._update();
+  }
+
+  _onClickPrev(e) {
+    e.preventDefault();
+    this.isGoingRight = false;
+    this._update();
+  }
+
+  _getTypeAndDirection() {
+    return this.isGoingRight ? ['next', 'left'] : ['prev', 'right'];
+  }
+
+  _update() {
+    const [type, direction] = this._getTypeAndDirection();
     const oldActiveIndex = this.activeIndex;
     this.activeIndex = (oldActiveIndex + 1) % this.state.carousel.length;
     this.prevIndex = oldActiveIndex;
 
     const nextCarousel = Object.assign([], [...this.state.carousel]);
-    nextCarousel[this.activeIndex].addClass('next');
-    nextCarousel[this.prevIndex].addClass('left');
+    nextCarousel[this.activeIndex].addClasses(type);
+    nextCarousel[this.prevIndex].addClasses(direction);
 
     this.setState({
       carousel: nextCarousel
@@ -135,7 +140,7 @@ export default class AxisManager extends React.Component<any, any> {
 
     function renderAgain() {
       const nextCarousel = Object.assign([], [...this.state.carousel]);
-      nextCarousel[this.activeIndex].addClass('left');
+      nextCarousel[this.activeIndex].addClasses(direction);
       nextCarousel[this.activeIndex].reflow = true;
 
       this.setState({
@@ -165,7 +170,7 @@ export default class AxisManager extends React.Component<any, any> {
               <div className="carousel-inner">
                 {this.state.carousel.map(this.toClassBag.bind(this))}
               </div>
-              <a className="left carousel-control" href="#myCarousel" role="button" data-slide="prev" ref={(d) => this.leftButton = d} >
+              <a className="left carousel-control" href="#myCarousel" role="button" data-slide="prev" onClick={this._onClickPrev.bind(this)} >
                 <span className="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
                 <span className="sr-only">Previous</span>
               </a>
