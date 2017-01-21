@@ -70,27 +70,30 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     const t = d3.transition('myT').duration(750);
 
     function attachBehaviors() {
-        const node = d3.select(this);
-        const text = node.select('text');
-        const circle = node.select('circle');
+      const node = d3.select(this);
+      const text = node.select('text');
+      const circle = node.select('circle');
 
-        // setup drag and click behaviors
-        circle.call(self.props.dragBehavior);
-        circle.on('click', (thisNode) => {
-          self.props.onClick(thisNode);
-          d3.event.stopPropagation();
-        })
-        .on('dblclick', thisNode =>
-        {
-          self._toggle(thisNode);
-          self.update(thisNode);
-          d3.event.stopPropagation();
-        });
+      // setup drag and click behaviors
+      circle.call(self.props.dragBehavior);
 
-        text.on('click', (thisNode) => {
-          self.props.onTextClick(thisNode);
-          d3.event.stopPropagation();
-        });
+      circle.on('click', (thisNode) => {
+        console.log('CLICKED');
+        self.props.onClick(thisNode);
+        d3.event.stopPropagation();
+      });
+
+      circle.on('dblclick', thisNode =>
+      {
+        self._toggle(thisNode);
+        self.update(thisNode);
+        d3.event.stopPropagation();
+      });
+
+      text.on('click', (thisNode) => {
+        self.props.onTextClick(thisNode);
+        d3.event.stopPropagation();
+      });
     }
 
     const nodes = context.selectAll('.node')
@@ -134,15 +137,18 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
             .attr('height', IMAGE_HEIGHT)
             .attr('x', IMAGE_WIDTH * -0.5)
             .attr('y', IMAGE_HEIGHT * -0.5);
-        } else {
-          nodeContainer.append('text')
-            .attr('dy', 3)
-            .attr('x', d => d['children'] ? -8 : 8)
-            .attr('class', d => d['children'] ? 'internal': 'leaf')
-            .text(_ => {
-              return node.data.name;
-            });
+
+          // remove the circle
+          nodeContainer.select('circle').remove();
         }
+
+        nodeContainer.append('text')
+          .attr('dy', 3)
+          .attr('x', d => d['children'] ? -8 : 8)
+          .attr('class', d => d['children'] ? 'internal': 'leaf')
+          .text(_ => {
+            return node.data.name;
+          });
       });
 
     // stick in DOM
