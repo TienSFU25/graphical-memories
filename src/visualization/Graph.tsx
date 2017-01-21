@@ -112,6 +112,25 @@ class Graph extends React.Component<any, any> {
     d3.event.stopPropagation();
   }
 
+  _toHtmlCoords(svgCoords) {
+    const ctm = this.svg.node().getScreenCTM();
+    const pt = this.svg.node().createSVGPoint();
+    pt.x = svgCoords.y;
+    pt.y = svgCoords.x;
+
+    return pt.matrixTransform(ctm);
+  }
+
+  onTextClick(node) {
+    if (!node.x || !node.y) {
+      console.error('node does not have coordinates!');
+      return;
+    }
+
+    const htmlCoords = this._toHtmlCoords(node);
+    this.props.actions.showEditBox(htmlCoords);
+  }
+
   onMouseOver(node, context) {
     if (this.isDragging) {
       this.destDragNode = node;
@@ -131,6 +150,7 @@ class Graph extends React.Component<any, any> {
     if (graph.type === GraphType.Tree) {
       return <TreeManager dragBehavior={this.dragBehavior}
                           onClick={this.onClick.bind(this)}
+                          onTextClick={this.onTextClick.bind(this)}
                           onMouseOver={this.onMouseOver.bind(this)}
                           onMouseOut={this.onMouseOut.bind(this)}
                           container={this.svg}

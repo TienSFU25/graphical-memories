@@ -11,5 +11,6 @@ export enum ActionTypes {
   EDIT_NODE,
   DELETE_NODE,
   MOVE_NODE,
-  ATTACH_IMAGE
+  ATTACH_IMAGE,
+  SHOW_EDIT
 }

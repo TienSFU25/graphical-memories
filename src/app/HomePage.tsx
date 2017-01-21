@@ -1,16 +1,18 @@
 import * as React from 'react';
 import { Col, Row, Jumbotron} from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
+import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import GraphMetadata from '../graphMetadata/GraphMetadata';
 import Visualizer from '../visualization/Content';
+import EditBox from '../visualization/EditBox';
 
-interface HomePageProps {}
-interface HomePageState {}
-
-class HomePage extends React.Component<HomePageProps, HomePageState> {
+class HomePage extends React.Component<any, any> {
   render() {
     return (
       <div>
+        <EditBox htmlCoords={this.props.editBox.htmlCoords} />
         <Jumbotron>
           <h2>Ruby is learning Python!</h2>
         </Jumbotron>
@@ -27,4 +29,16 @@ class HomePage extends React.Component<HomePageProps, HomePageState> {
   }
 }
 
-export default HomePage;
+function mapStateToProps({ editBox }) {
+  return {
+    editBox
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(graphManipulationActions, dispatch)
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomePage);

@@ -17,6 +17,7 @@ window['d3'] = d3;
 interface ITreeManagerProps {
   dragBehavior: d3.DragBehavior<any, any, any>,
   onClick,
+  onTextClick,
   onMouseOver,
   onMouseOut,
   container,
@@ -68,34 +69,14 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
     const t = d3.transition('myT').duration(750);
 
-    const nodes = context.selectAll('.node')
-      .data(root.descendants(), d => d.data.id);
-
-    nodes.transition(t)
-      .attr('class', d => { const className = d['children'] ? 'internal': 'leaf'; return `node ${className}`; })
-      .attr('transform', d => `translate(${d['y']}, ${d['x']})`)
-      .attr('style', 'fill-opacity: 1')
-      .on('end', function(node) {
-        d3.select(this).call(self.props.dragBehavior);
-      });
-
-    const enterNodes = nodes.enter().append('g');
-
-    let i = 0;
-
-    enterNodes
-      .attr('transform', `translate(${source['y']}, ${source['x']})` )
-      .attr('style', 'fill-opacity: 1e-6')
-      .transition(t)
-      .attr('class', d => { i++; const className = d['children'] ? 'internal': 'leaf'; return `node ${className}`; })
-      .attr('transform', d => `translate(${d['y']}, ${d['x']})`)
-      .attr('style', 'fill-opacity: 1')
-      .on('end', function() {
+    function attachBehaviors() {
         const node = d3.select(this);
+        const text = node.select('text');
+        const circle = node.select('circle');
 
         // setup drag and click behaviors
-        node.call(self.props.dragBehavior);
-        node.on('click', (thisNode) => {
+        circle.call(self.props.dragBehavior);
+        circle.on('click', (thisNode) => {
           self.props.onClick(thisNode);
           d3.event.stopPropagation();
         })
@@ -105,15 +86,31 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
           self.update(thisNode);
           d3.event.stopPropagation();
         });
-      });
 
-    console.log(`updating ${i} nodes`);
+        text.on('click', (thisNode) => {
+          self.props.onTextClick(thisNode);
+          d3.event.stopPropagation();
+        });
+    }
+
+    const nodes = context.selectAll('.node')
+      .data(root.descendants(), d => d.data.id);
+
+    nodes.transition(t)
+      .attr('class', d => { const className = d['children'] ? 'internal': 'leaf'; return `node ${className}`; })
+      .attr('transform', d => `translate(${d['y']}, ${d['x']})`)
+      .attr('style', 'fill-opacity: 1')
+      .on('end', attachBehaviors);
+
+    const enterNodes = nodes.enter().append('g');
+
+    let i = 0;
 
     enterNodes.append('circle')
       .attr('r', 7.5);
 
     enterNodes.append('circle')
-      .attr('r', 10)
+      .attr('r', 20)
       .attr('class', 'ghost disabled')
       .attr('pointer-events', 'mouseover')
       .on('mouseover', function(node) {
@@ -147,6 +144,18 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
             });
         }
       });
+
+    // stick in DOM
+    enterNodes
+      .attr('transform', `translate(${source['y']}, ${source['x']})` )
+      .attr('style', 'fill-opacity: 1e-6')
+      .transition(t)
+      .attr('class', d => { i++; const className = d['children'] ? 'internal': 'leaf'; return `node ${className}`; })
+      .attr('transform', d => `translate(${d['y']}, ${d['x']})`)
+      .attr('style', 'fill-opacity: 1')
+      .on('end', attachBehaviors);
+
+    console.log(`updating ${i} nodes`);
 
     const exitNodes = nodes.exit()
       .transition(t)

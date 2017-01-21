@@ -8,6 +8,13 @@ export const initialState = {
   },
   main: {
     subStates: []
+  },
+  editBox: {
+    show: true,
+    htmlCoords: {
+      x: 0,
+      y: 0
+    }
   }
 };
 

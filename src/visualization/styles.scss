@@ -53,3 +53,11 @@
   fill: green;
   pointer-events: "mouseover";
 }
+
+.editBox {
+    position: absolute;
+    border: 3px solid rgb(252,101,18);
+    margin-left: 8px;
+    margin-top: -11px;
+    height: 20px
+}

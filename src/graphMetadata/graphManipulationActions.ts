@@ -68,6 +68,13 @@ export function attachImageToNode(imageHref, node) {
   }
 }
 
+export function showEditBox(htmlCoords) {
+  return {
+    type: ActionTypes.SHOW_EDIT,
+    htmlCoords
+  }
+}
+
 const GraphManipulationCreatorsMap: ActionCreatorsMapObject = {
   addNode,
   // saveNode,
@@ -77,7 +84,8 @@ const GraphManipulationCreatorsMap: ActionCreatorsMapObject = {
   deleteNode,
   // selectEntity,
   selectGraph,
-  attachImageToNode
+  attachImageToNode,
+  showEditBox
 }
 
 export default GraphManipulationCreatorsMap;
