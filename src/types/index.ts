@@ -62,5 +62,6 @@ export interface GraphAction extends Action {
   newNode?: any,
   destNode?: d3Node,
   node?: d3Node,
-  editData?: any
+  editData?: any,
+  imageHref?: string
 }

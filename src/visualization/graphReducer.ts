@@ -128,6 +128,17 @@ export default function graphReducer(state = emptyTree, action): TreeReducerStat
         return _reconstructTree(dataCopy, state, viewIndex, height, width);
       }
     }
+    case ActionTypes.ATTACH_IMAGE: {
+      const dataCopy = Object.assign({}, state.raw);
+      const { node, imageHref, height, width, viewIndex } = action;
+
+      const nodeId = node.data.id;
+      const nodeInData = findNode(dataCopy, nodeId).node;
+
+      nodeInData.image = imageHref;
+
+      return _reconstructTree(dataCopy, state, viewIndex, height, width);
+    }
     default: {
       return state;
     }

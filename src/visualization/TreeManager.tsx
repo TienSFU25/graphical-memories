@@ -125,6 +125,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
     // refresh the text
     nodes.selectAll('text').remove();
+    nodes.selectAll('image').remove();
     enterNodes.merge(nodes)
       .each(function(node) {
         const nodeContainer = d3.select(this);

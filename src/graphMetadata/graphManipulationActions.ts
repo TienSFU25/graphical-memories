@@ -60,6 +60,14 @@ export function editNode(node, editData) {
   };
 }
 
+export function attachImageToNode(imageHref, node) {
+  return {
+    type: ActionTypes.ATTACH_IMAGE,
+    node,
+    imageHref
+  }
+}
+
 const GraphManipulationCreatorsMap: ActionCreatorsMapObject = {
   addNode,
   // saveNode,
@@ -68,7 +76,8 @@ const GraphManipulationCreatorsMap: ActionCreatorsMapObject = {
   editNode,
   deleteNode,
   // selectEntity,
-  selectGraph
+  selectGraph,
+  attachImageToNode
 }
 
 export default GraphManipulationCreatorsMap;

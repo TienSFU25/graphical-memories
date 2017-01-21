@@ -83,12 +83,19 @@ class Graph extends React.Component<any, any> {
         self.isDragging = false;
         d3.selectAll('.ghost').attr('class', 'ghost disabled');
 
-        if (self.destDragNode && d['data'].id !== self.destDragNode.data.id) {
+        // fix this yolo code plz
+        if (d['type'] == 'IMAGE') {
+          this.props.actions.attachImageToNode(d['href'], self.destDragNode);
+        }
+        else if (self.destDragNode && d['data'].id !== self.destDragNode.data.id) {
           console.log(`moving ${d['data'].id} to ${self.destDragNode.data.id}`)
           self.props.actions.moveNode(d, self.destDragNode);
-          self.destDragNode = null;
         }
+
+        self.destDragNode = null;
       });
+
+    window['draggy'] = this.dragBehavior;
   }
 
   componentWillReceiveProps(nextProps) {

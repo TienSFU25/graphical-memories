@@ -16,14 +16,48 @@ var Carousel = require('./carousel.js');
 
 // window['caru'] = Carousel;
 
+const MAX_LENGTH = 6;
+const IMAGES = [
+  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
+  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
+  "https://openclipart.org/image/90px/svg_to_png/271075/donkey-pegasus-brown-and-gold.png",
+  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
+  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
+  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
+  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
+  "https://openclipart.org/image/90px/svg_to_png/271075/donkey-pegasus-brown-and-gold.png",
+  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
+  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
+  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
+  "https://openclipart.org/image/90px/svg_to_png/271075/donkey-pegasus-brown-and-gold.png",
+  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
+  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
+  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
+  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
+  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png"
+];
+
 class CarouselItem {
   private classNames: Set<string>;
+  private imageList: Array<string>;
   public reflow: boolean;
 
-  constructor(...items) {
+  constructor(images?: Array<string>) {
     this.classNames = new Set<string>();
+    this.classNames.add('item');
     this.reflow = false;
-    this.addClasses(...items);
+    this.imageList = [];
+    this.addImages(images);
+  }
+
+  addImages(images) {
+    if (images) {
+      this.imageList = this.imageList.concat(images);
+    }
+  }
+
+  getImages() {
+    return this.imageList;
   }
 
   addClasses(...cs: Array<string>): void {
@@ -53,16 +87,18 @@ export default class AxisManager extends React.Component<any, any> {
   private activeIndex;
   private prevIndex;
   private isGoingRight;
+  private hasInitialized: boolean = false;
 
   constructor(props) {
     super(props);
 
     // initialize carousel
-    const nElements = 3;
     const carousel = new Array<CarouselItem>();
 
-    for (let i = 0; i < nElements; i++) {
-      carousel.push(new CarouselItem('item'));
+    for (let i = 0; i < IMAGES.length; i+= MAX_LENGTH) {
+      const imgSlice = IMAGES.slice(i, i + MAX_LENGTH);
+      const carouselItem = new CarouselItem(imgSlice);
+      carousel.push(carouselItem);
     }
 
     this.activeIndex = 0;
@@ -70,7 +106,7 @@ export default class AxisManager extends React.Component<any, any> {
     carousel[this.activeIndex].addClasses('active');
 
     this.state = {
-      hasInitialized: false,
+      // hasInitialized: false,
       g: null,
       carousel
       // children
@@ -82,11 +118,18 @@ export default class AxisManager extends React.Component<any, any> {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.container !== undefined) {
-      this.setState({
-        g: nextProps.container.append('g'),
-        hasInitialized: true
+    if (nextProps.dragBehavior !== undefined && !this.hasInitialized) {
+      // attach drag data and behavior to images
+      const imagesWithDescriptor = IMAGES.map((image) => {
+        return {
+          type: 'IMAGE',
+          href: image
+        };
       });
+
+      d3.select('#myCarousel').selectAll('img').data(imagesWithDescriptor);
+      d3.select('#myCarousel').selectAll('img').call(nextProps.dragBehavior);
+      this.hasInitialized = true;
     }
   }
 
@@ -151,7 +194,7 @@ export default class AxisManager extends React.Component<any, any> {
   }
 
   toClassBag(carouselItem: CarouselItem) {
-    return <ClassBagElement className={carouselItem.getClassName()} reflow={carouselItem.reflow} onTransitionEnd={this.transitionEnd.bind(this)}/>
+    return <ClassBagElement className={carouselItem.getClassName()} images={carouselItem.getImages()} reflow={carouselItem.reflow} onTransitionEnd={this.transitionEnd.bind(this)}/>
   }
 
   render() {

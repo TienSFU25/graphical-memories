@@ -112,6 +112,12 @@ export default function mainGraphReducer(state = initialState.main, action: Grap
 
       return Object.assign({}, state);
     }
+    case ActionTypes.ATTACH_IMAGE: {
+      const { node, imageHref } = action;
+
+      executeActionOnNode(state.subStates, ActionTypes.ATTACH_IMAGE, node, { node, imageHref });
+      return Object.assign({}, state);
+    }
     default: {
       return state;
     }

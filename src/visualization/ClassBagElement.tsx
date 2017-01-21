@@ -11,6 +11,7 @@ interface IProps {
   className: string;
   onTransitionEnd: any;
   reflow: boolean;
+  images: Array<string>;
 }
 
 export default class ClassBag extends React.Component<IProps, any> {
@@ -24,12 +25,18 @@ export default class ClassBag extends React.Component<IProps, any> {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.reflow) {
-      // console.log('reflowing!');
       this.thingy.offsetWidth;
-      // this.forceUpdate();
     }
+  }
 
-    // this.updateClassNames();
+  _toThumbnail(imageHref) {
+    return(
+      <Col sm={2}>
+          <a href="#x" className="thumbnail">
+            <img src={imageHref} />
+          </a>
+      </Col>
+    );
   }
 
   render() {
@@ -38,36 +45,7 @@ export default class ClassBag extends React.Component<IProps, any> {
     return (
       <div className={this.props.className} ref={(d) => { this.thingy = d; }} onTransitionEnd={this._onTransitionEnd.bind(this)}>
         <Row>
-            <Col sm={2}>
-                <a href="#x" className="thumbnail">
-                  <img src="https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png" />
-                </a>
-            </Col>
-            <Col sm={2}>
-                <a href="#x" className="thumbnail">
-                  <img src="https://www.google.ca/images/branding/googlelogo/2x/googlelogo_color_120x44dp.png" />
-                </a>
-            </Col>
-            <Col sm={2}>
-                <a href="#x" className="thumbnail">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/React.js_logo.svg/600px-React.js_logo.svg.png" />
-                </a>
-            </Col>
-            <Col sm={2}>
-                <a href="#x" className="thumbnail">
-                  <img src="https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png" />
-                </a>
-            </Col>
-            <Col sm={2}>
-                <a href="#x" className="thumbnail">
-                  <img src="https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png" />
-                </a>
-            </Col>
-            <Col sm={2}>
-                <a href="#x" className="thumbnail">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/React.js_logo.svg/600px-React.js_logo.svg.png" />
-                </a>
-            </Col>
+          {this.props.images.map(this._toThumbnail.bind(this))}
         </Row>
       </div>
     );
