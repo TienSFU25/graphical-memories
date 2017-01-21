@@ -68,6 +68,7 @@ class Graph extends React.Component<any, any> {
         console.log(svgP);
         console.log('--------->');
         this.props.actions.selectGraph;
+        this._saveCurrentNode();
       })
       .attr('width', this.width + margin.left + margin.right)
       .attr('height', this.height + margin.top + margin.bottom);
@@ -121,14 +122,25 @@ class Graph extends React.Component<any, any> {
     return pt.matrixTransform(ctm);
   }
 
+  _saveCurrentNode() {
+    // save current node if any. also hides the box
+    if (this.props.editBox.show) {
+      const value = this.props.editBox.value;
+      const prevNode = this.props.selectedEntity.node;
+      this.props.actions.editNode(prevNode, { name: value });
+    }
+  }
+
   onTextClick(node) {
     if (!node.x || !node.y) {
       console.error('node does not have coordinates!');
       return;
     }
 
+    this._saveCurrentNode();
     const htmlCoords = this._toHtmlCoords(node);
-    this.props.actions.showEditBox(htmlCoords);
+    this.props.actions.showEditBox(node, htmlCoords);
+    this.props.actions.selectNode(node);
   }
 
   onMouseOver(node, context) {
@@ -185,9 +197,10 @@ class Graph extends React.Component<any, any> {
   }
 }
 
-function mapStateToProps({ selectedEntity, graph }) {
+function mapStateToProps({ selectedEntity, editBox, graph }) {
   return {
     selectedEntity,
+    editBox,
     graph
   };
 }

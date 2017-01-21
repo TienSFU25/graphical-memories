@@ -57,7 +57,7 @@ export function editNode(node, editData) {
     type: ActionTypes.EDIT_NODE,
     node,
     editData
-  };
+  }
 }
 
 export function attachImageToNode(imageHref, node) {
@@ -68,10 +68,18 @@ export function attachImageToNode(imageHref, node) {
   }
 }
 
-export function showEditBox(htmlCoords) {
+export function showEditBox(node: d3Node, htmlCoords) {
   return {
     type: ActionTypes.SHOW_EDIT,
+    value: node.data.name,
     htmlCoords
+  };
+}
+
+export function updateEditValue(newValue: string) {
+  return {
+    type: ActionTypes.UPDATE_EDIT,
+    newValue
   }
 }
 
@@ -85,7 +93,8 @@ const GraphManipulationCreatorsMap: ActionCreatorsMapObject = {
   // selectEntity,
   selectGraph,
   attachImageToNode,
-  showEditBox
+  showEditBox,
+  updateEditValue
 }
 
 export default GraphManipulationCreatorsMap;

@@ -9,10 +9,16 @@ import Visualizer from '../visualization/Content';
 import EditBox from '../visualization/EditBox';
 
 class HomePage extends React.Component<any, any> {
+  onSave(value) {
+    this.props.actions.editNode(this.props.selectedEntity.node, { name: value });
+  }
+
   render() {
+    const nodeName = this.props.editBox.value;
+
     return (
       <div>
-        <EditBox htmlCoords={this.props.editBox.htmlCoords} />
+        <EditBox htmlCoords={this.props.editBox.htmlCoords} show={this.props.editBox.show} onSave={this.onSave.bind(this)} value={nodeName}/>
         <Jumbotron>
           <h2>Ruby is learning Python!</h2>
         </Jumbotron>
@@ -29,8 +35,9 @@ class HomePage extends React.Component<any, any> {
   }
 }
 
-function mapStateToProps({ editBox }) {
+function mapStateToProps({ selectedEntity, editBox }) {
   return {
+    selectedEntity,
     editBox
   };
 }
