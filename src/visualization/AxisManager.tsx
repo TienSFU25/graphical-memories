@@ -16,6 +16,41 @@ var Carousel = require('./carousel.js');
 
 // window['caru'] = Carousel;
 
+class CarouselItem {
+  private classNames: Set<string>;
+  public reflow: boolean;
+
+  constructor(...items) {
+    this.classNames = new Set<string>();
+    this.reflow = false;
+    this.addClasses(...items);
+  }
+
+  addClass(c: string): void {
+    this.classNames.add(c);
+  }
+
+  addClasses(...cs: Array<string>): void {
+    for (let c of cs) {
+      this.addClass(c);
+    }
+  }
+
+  removeClass(c: string): void {
+    this.classNames.delete(c);
+  }
+
+  removeClasses(...cs: Array<string>): void {
+    for (let c of cs) {
+      this.removeClass(c);
+    }
+  }
+
+  getClassName(): string {
+    return ([...this.classNames]).join(' ');
+  }
+}
+
 export default class AxisManager extends React.Component<any, any> {
   private width: number;
   private height: number;
@@ -23,31 +58,29 @@ export default class AxisManager extends React.Component<any, any> {
   private scrollable;
   private leftButton;
   private rightButton;
-  private carousel;
-  // private children;
-  private active;
+  private activeIndex;
+  private prevIndex;
 
   constructor(props) {
     super(props);
 
-    const children = [
-      // <ClassBagElement outerClassName="item active" onTransitionEnd={this.transitionEnd.bind(this)} />,
-      // <ClassBagElement outerClassName="item" onTransitionEnd={this.transitionEnd.bind(this)} />
-      {
-        classAdds: ['item', 'active']
-      },
-      {
-        classAdds: ['item']
-      }
-    ];
+    // initialize carousel
+    const nElements = 3;
+    const carousel = new Array<CarouselItem>();
 
-    this.active = [1, 0];
+    for (let i = 0; i < nElements; i++) {
+      carousel.push(new CarouselItem('item'));
+    }
+
+    this.activeIndex = 0;
+    this.prevIndex = 2;
+    carousel[this.activeIndex].addClass('active');
 
     this.state = {
       hasInitialized: false,
       g: null,
-      numberOfTransitionedChildren: 0,
-      children
+      carousel
+      // children
     };
   }
 
@@ -69,66 +102,51 @@ export default class AxisManager extends React.Component<any, any> {
     // if (e.target == this.refs[0]) {
     // }
 
-    // let numberOfTransitionedChildren = this.state.numberOfTransitionedChildren + 1;
+    // let numberOfTransitionedChildren = this.state.numbe
 
-    // if (numberOfTransitionedChildren == this.state.children.length) {
-    //   numberOfTransitionedChildren = 0;
-    //   this.setState({children: [
-    //     {
-    //       classRemoves: ['active', 'left']
-    //     },
-    //     {
-    //       classAdds: ['next', 'left'],
-    //       classRemoves: ['active']
-    //     }
-    //   ],
-    //   numberOfTransitionedChildren: numberOfTransitionedChildren});
-    // }
-    if (e.target && e.target.classList && e.target.classList.contains('active')) {
-      this.setState({children: [
-        {
-          classRemoves: ['active', 'left']
-        },
-        {
-          classAdds: ['next', 'left'],
-          classRemoves: ['active']
-        }
-      ]});
+    if (e.target && e.target.classList && e.target.classList.contains('active') && !this.state.hasTransitionEnded) {
       console.log('transition carousel!');
+      const nextCarousel = Object.assign([], [...this.state.carousel]);
+      nextCarousel[this.activeIndex].addClass('active');
+      nextCarousel[this.activeIndex].removeClasses('next', 'left');
+      nextCarousel[this.prevIndex].removeClasses('active', 'left');
+
+      this.setState({
+        carousel: nextCarousel,
+        hasTransitionEnded: true
+      });
     }
 
   }
 
   _onClickNext(e) {
     e.preventDefault();
-    this.setState({children: [
-      {
-        classAdds: ['left']
-      },
-      {
-        classAdds: ['next']
-      }
-    ]}, renderAgain.bind(this));
+    const oldActiveIndex = this.activeIndex;
+    this.activeIndex = (oldActiveIndex + 1) % this.state.carousel.length;
+    this.prevIndex = oldActiveIndex;
+
+    const nextCarousel = Object.assign([], [...this.state.carousel]);
+    nextCarousel[this.activeIndex].addClass('next');
+    nextCarousel[this.prevIndex].addClass('left');
+
+    this.setState({
+      carousel: nextCarousel
+    }, renderAgain.bind(this));
 
     function renderAgain() {
-        this.setState({
-          children: [
-            {
-            },
-            {
-              classAdds: ['left'],
-              reflow: true
-            }
-        ]
-      })
-    };
+      const nextCarousel = Object.assign([], [...this.state.carousel]);
+      nextCarousel[this.activeIndex].addClass('left');
+      nextCarousel[this.activeIndex].reflow = true;
 
-    console.log('next was clicked!');
+      this.setState({
+        carousel: nextCarousel,
+        hasTransitionEnded: false
+      });
+    }
   }
 
-  toClassBag(child) {
-    // const childClassName = child.classNames.join(' ');
-    return <ClassBagElement classAdds={child.classAdds} classRemoves={child.classRemoves} onTransitionEnd={this.transitionEnd.bind(this)} reflow={child.reflow} />
+  toClassBag(carouselItem: CarouselItem) {
+    return <ClassBagElement className={carouselItem.getClassName()} reflow={carouselItem.reflow} onTransitionEnd={this.transitionEnd.bind(this)}/>
   }
 
   render() {
@@ -145,7 +163,7 @@ export default class AxisManager extends React.Component<any, any> {
                   <li data-target="#myCarousel" data-slide-to="1"></li>
               </ol>
               <div className="carousel-inner">
-                {this.state.children.map(this.toClassBag.bind(this))}
+                {this.state.carousel.map(this.toClassBag.bind(this))}
               </div>
               <a className="left carousel-control" href="#myCarousel" role="button" data-slide="prev" ref={(d) => this.leftButton = d} >
                 <span className="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
