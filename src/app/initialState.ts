@@ -11,6 +11,7 @@ export const initialState = {
   },
   editBox: {
     show: false,
+    popup: false,
     htmlCoords: {
       x: 0,
       y: 0

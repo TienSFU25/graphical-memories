@@ -18,7 +18,7 @@ class HomePage extends React.Component<any, any> {
 
     return (
       <div>
-        <EditBox htmlCoords={this.props.editBox.htmlCoords} show={this.props.editBox.show} onSave={this.onSave.bind(this)} value={nodeName}/>
+        <EditBox htmlCoords={this.props.editBox.htmlCoords} show={this.props.editBox.show} isPopup={this.props.editBox.popup} onSave={this.onSave.bind(this)} value={nodeName}/>
         <Jumbotron>
           <h2>Ruby is learning Python!</h2>
         </Jumbotron>

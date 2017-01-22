@@ -81,10 +81,9 @@ export function hideEditBox() {
   };
 }
 
-export function showPopup(node: d3Node, htmlCoords) {
+export function showPopup(htmlCoords) {
   return {
     type: ActionTypes.SHOW_POPUP,
-    node,
     htmlCoords
   }
 }

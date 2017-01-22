@@ -1,0 +1,40 @@
+.edit {
+  position: absolute;
+  border: 3px solid rgb(252,101,18);
+  z-index: 1;
+}
+
+form.edit {
+  background-color: lightblue;
+}
+
+.edit.box {
+  margin-left: 8px;
+  margin-top: -11px;
+  height: 20px;
+}
+
+.hide {
+  display: none;
+}
+
+.icon {
+  display: inline-block;
+  background-color: #E7E7E7;
+  height: 55px;
+  width: 50px;
+  background: url('../images/office.jpg');
+  background-repeat: no-repeat;
+
+  &.add {
+    background-position: -443px -250px;
+  }
+
+  &.delete {
+    background-position: -443px -171px;
+  }
+
+  &.-collapse {
+    background-position: -272px -250px;
+  }
+}

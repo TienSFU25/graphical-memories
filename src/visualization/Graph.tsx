@@ -8,7 +8,6 @@ import { GraphType } from '../types';
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 
 import AxisManager from './AxisManager';
-import ControlBar from './ControlBar';
 import TreeManager from './TreeManager';
 
 require('./styles.scss');
@@ -127,8 +126,6 @@ class Graph extends React.Component<any, any> {
       return;
     }
 
-    console.log('clicked the fkin text!');
-
     const htmlCoords = this._toHtmlCoords(node);
     this.props.actions.showEditBox(htmlCoords);
     this.props.actions.selectNode(node);
@@ -141,8 +138,8 @@ class Graph extends React.Component<any, any> {
     }
 
     const htmlCoords = this._toHtmlCoords(node);
-    this.props.actions.showPopup(node, htmlCoords);
     this.props.actions.selectNode(node);
+    this.props.actions.showPopup(htmlCoords);
   }
 
   onMouseOver(node, context) {
@@ -173,14 +170,6 @@ class Graph extends React.Component<any, any> {
     }
   }
 
-  _onDelete() {
-    this.props.actions.deleteNode(this.props.selectedEntity.node);
-  }
-
-  _onAdd() {
-    this.props.actions.addNode({name: 'ez'}, this.props.selectedEntity.node);
-  }
-
   render() {
     let graphsElements = null;
 
@@ -191,7 +180,6 @@ class Graph extends React.Component<any, any> {
     return (
       <div>
         <AxisManager container={this.svg} dragBehavior={this.dragBehavior} />
-        <ControlBar onClickDelete={this._onDelete.bind(this)} onClickAdd={this._onAdd.bind(this)} />
         <div id="chart">
           {graphsElements}
         </div>

@@ -74,6 +74,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     function attachBehaviors() {
       let timeout = null;
       const node = d3.select(this);
+      const nodeData = this;
       const text = node.select('text');
       const circle = node.select('circle');
 
@@ -92,9 +93,9 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
       // delayed hover
       circle.on('mouseover', (thisNode) => {
-        timeout = setTimeout((thisNode => {
+        timeout = setTimeout(_ => {
           self.props.onDelayedHover(thisNode);
-        }), DELAY);
+        }, DELAY);
       }).on('mouseout',() => {
         clearTimeout(timeout);
       });
