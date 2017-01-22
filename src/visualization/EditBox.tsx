@@ -15,6 +15,8 @@ interface Props {
   show: boolean;
   onSave: Function;
   actions: any;
+  editBox: any;
+  selectedEntity: any;
 }
 
 class EditBox extends React.Component<Props, any> {
@@ -28,13 +30,27 @@ class EditBox extends React.Component<Props, any> {
     };
   }
 
+  saveCurrentNode() {
+    // save current node if any. also hides the box
+    const value = this.state.value;
+    const prevNode = this.props.selectedEntity.node;
+
+    if (prevNode.data.name !== value) {
+      this.props.actions.editNode(prevNode, { name: value });
+    }
+
+    this.props.actions.hideEditBox();
+  }
+
+  onBlur(e) {
+    this.saveCurrentNode();
+  }
+
   onChange(e) {
     const value = e.target.value;
     this.setState({
       value
     });
-
-    this.props.actions.updateEditValue(value);
   }
 
   onKeyDown(e) {
@@ -67,10 +83,17 @@ class EditBox extends React.Component<Props, any> {
     return (
       <input type="text" className={className} value={this.state.value} style={style} ref={(input) => this.ref = input}
         onChange={this.onChange.bind(this)}
-        onKeyDown={this.onKeyDown.bind(this)} />
+        onKeyDown={this.onKeyDown.bind(this)}
+        onBlur={this.onBlur.bind(this)} />
     );
   }
 };
+
+function mapStateToProps({ selectedEntity }) {
+  return {
+    selectedEntity
+  };
+}
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -78,4 +101,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(() => { return {}}, mapDispatchToProps)(EditBox);
+export default connect(mapStateToProps, mapDispatchToProps)(EditBox);

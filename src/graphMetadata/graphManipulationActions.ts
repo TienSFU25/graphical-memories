@@ -82,11 +82,8 @@ export function hideEditBox() {
   };
 }
 
-export function updateEditValue(newValue: string) {
-  return {
-    type: ActionTypes.UPDATE_EDIT,
-    newValue
-  }
+export function showPopup(node: d3Node, htmlCoords) {
+
 }
 
 const GraphManipulationCreatorsMap: ActionCreatorsMapObject = {
@@ -101,7 +98,8 @@ const GraphManipulationCreatorsMap: ActionCreatorsMapObject = {
   attachImageToNode,
   showEditBox,
   hideEditBox,
-  updateEditValue
+
+  showPopup
 }
 
 export default GraphManipulationCreatorsMap;

@@ -20,6 +20,7 @@ interface ITreeManagerProps {
   onTextClick,
   onMouseOver,
   onMouseOut,
+  onDelayedHover,
   container,
   root
 }
@@ -67,9 +68,11 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     const context = this.state.g;
     const root = this.state.root;
 
+    const DELAY = 500;
     const t = d3.transition('myT').duration(750);
 
     function attachBehaviors() {
+      let timeout = null;
       const node = d3.select(this);
       const text = node.select('text');
       const circle = node.select('circle');
@@ -77,17 +80,23 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
       // setup drag and click behaviors
       circle.call(self.props.dragBehavior);
 
-      circle.on('click', (thisNode) => {
-        console.log('CLICKED');
-        self.props.onClick(thisNode);
-        d3.event.stopPropagation();
-      });
+      // circle.on('click', (thisNode) => {
+      //   self.props.onClick(thisNode);
+      //   d3.event.stopPropagation();
+      // }).on('dblclick', thisNode =>
+      // {
+      //   self._toggle(thisNode);
+      //   self.update(thisNode);
+      //   d3.event.stopPropagation();
+      // });
 
-      circle.on('dblclick', thisNode =>
-      {
-        self._toggle(thisNode);
-        self.update(thisNode);
-        d3.event.stopPropagation();
+      // delayed hover
+      circle.on('mouseover', (thisNode) => {
+        timeout = setTimeout((thisNode => {
+          self.props.onDelayedHover(thisNode);
+        }), DELAY);
+      }).on('mouseout',() => {
+        clearTimeout(timeout);
       });
 
       text.on('click', (thisNode) => {

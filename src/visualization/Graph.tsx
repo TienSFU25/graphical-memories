@@ -68,7 +68,6 @@ class Graph extends React.Component<any, any> {
         console.log(svgP);
         console.log('--------->');
         this.props.actions.selectGraph;
-        this._saveCurrentNode();
       })
       .attr('width', this.width + margin.left + margin.right)
       .attr('height', this.height + margin.top + margin.bottom);
@@ -122,29 +121,25 @@ class Graph extends React.Component<any, any> {
     return pt.matrixTransform(ctm);
   }
 
-  _saveCurrentNode() {
-    // save current node if any. also hides the box
-    if (this.props.editBox.show) {
-      const value = this.props.editBox.value;
-      const prevNode = this.props.selectedEntity.node;
-
-      if (prevNode.data.name !== value) {
-        this.props.actions.editNode(prevNode, { name: value });
-      }
-
-      this.props.actions.hideEditBox();
-    }
-  }
-
   onTextClick(node) {
     if (!node.x || !node.y) {
       console.error('node does not have coordinates!');
       return;
     }
 
-    this._saveCurrentNode();
     const htmlCoords = this._toHtmlCoords(node);
     this.props.actions.showEditBox(node, htmlCoords);
+    this.props.actions.selectNode(node);
+  }
+
+  onDelayedHover(node) {
+    if (!node.x || !node.y) {
+      console.error('node does not have coordinates!');
+      return;
+    }
+
+    const htmlCoords = this._toHtmlCoords(node);
+    this.props.actions.showPopup(node, htmlCoords);
     this.props.actions.selectNode(node);
   }
 
@@ -170,6 +165,7 @@ class Graph extends React.Component<any, any> {
                           onTextClick={this.onTextClick.bind(this)}
                           onMouseOver={this.onMouseOver.bind(this)}
                           onMouseOut={this.onMouseOut.bind(this)}
+                          onDelayedHover={this.onDelayedHover.bind(this)}
                           container={this.svg}
                           root={graph.treeRoot}/>
     }
