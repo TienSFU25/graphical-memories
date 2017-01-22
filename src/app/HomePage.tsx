@@ -14,7 +14,7 @@ class HomePage extends React.Component<any, any> {
   }
 
   render() {
-    const nodeName = this.props.editBox.value;
+    const nodeName = this.props.selectedEntity.node ? this.props.selectedEntity.node.data.name : '';
 
     return (
       <div>

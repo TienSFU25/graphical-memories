@@ -111,11 +111,20 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     nodes.transition(t)
       .attr('class', d => { const className = d['children'] ? 'internal': 'leaf'; return `node ${className}`; })
       .attr('transform', d => `translate(${d['y']}, ${d['x']})`)
-      .attr('style', 'fill-opacity: 1')
-      .on('end', attachBehaviors);
+      .attr('style', 'fill-opacity: 1');
+
+    // update text or image if node
+    // IS THERE A BETTER WAY TO DO THESE UPDATES???
+    nodes.each(function(node) {
+      const nodeContainer = d3.select(this);
+      const newNodeName = node.data.name;
+      const newImgHref = node.data.image;
+
+      nodeContainer.select('text').text(newNodeName);
+      nodeContainer.select('image').attr('href', newImgHref);
+    });
 
     const enterNodes = nodes.enter().append('g');
-
     let i = 0;
 
     enterNodes.append('circle')
@@ -132,10 +141,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
         self.props.onMouseOut(node, this);
       });
 
-    // refresh the text
-    nodes.selectAll('text').remove();
-    nodes.selectAll('image').remove();
-    enterNodes.merge(nodes)
+    enterNodes
       .each(function(node) {
         const nodeContainer = d3.select(this);
 

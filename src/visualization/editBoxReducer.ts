@@ -5,17 +5,12 @@ import { EntityType } from '../types';
 export default function editBoxReducer(state = initialState.editBox, action) {
   switch (action.type) {
     case ActionTypes.SHOW_EDIT: {
-      const { htmlCoords, value } = action;
+      const { htmlCoords } = action;
       return Object.assign({}, state,
         {
           show: true,
-          htmlCoords,
-          value
+          htmlCoords
         });
-    }
-    case ActionTypes.UPDATE_EDIT: {
-      const { newValue } = action;
-      return Object.assign({}, state, { value: newValue });
     }
     case ActionTypes.HIDE_EDIT: {
       return Object.assign({}, state,

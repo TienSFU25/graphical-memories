@@ -42,7 +42,7 @@ class EditBox extends React.Component<Props, any> {
     this.props.actions.hideEditBox();
   }
 
-  onBlur(e) {
+  onBlur() {
     this.saveCurrentNode();
   }
 

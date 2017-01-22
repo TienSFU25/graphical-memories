@@ -127,8 +127,10 @@ class Graph extends React.Component<any, any> {
       return;
     }
 
+    console.log('clicked the fkin text!');
+
     const htmlCoords = this._toHtmlCoords(node);
-    this.props.actions.showEditBox(node, htmlCoords);
+    this.props.actions.showEditBox(htmlCoords);
     this.props.actions.selectNode(node);
   }
 

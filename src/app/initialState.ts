@@ -10,7 +10,6 @@ export const initialState = {
     subStates: []
   },
   editBox: {
-    node: null,
     show: false,
     htmlCoords: {
       x: 0,

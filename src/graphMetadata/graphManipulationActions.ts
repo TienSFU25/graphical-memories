@@ -68,10 +68,9 @@ export function attachImageToNode(imageHref, node) {
   }
 }
 
-export function showEditBox(node: d3Node, htmlCoords) {
+export function showEditBox(htmlCoords) {
   return {
     type: ActionTypes.SHOW_EDIT,
-    value: node.data.name,
     htmlCoords
   };
 }
@@ -83,7 +82,11 @@ export function hideEditBox() {
 }
 
 export function showPopup(node: d3Node, htmlCoords) {
-
+  return {
+    type: ActionTypes.SHOW_POPUP,
+    node,
+    htmlCoords
+  }
 }
 
 const GraphManipulationCreatorsMap: ActionCreatorsMapObject = {
