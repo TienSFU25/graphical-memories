@@ -4,7 +4,8 @@ export const initialState = {
   selectedEntity: {
     type: EntityType.Nothing,
     id: 0,
-    data: null
+    data: null,
+    node: null
   },
   main: {
     subStates: []
@@ -28,5 +29,7 @@ export const emptyTree = {
     name: 'empty tree'
   },
   treeRoot: null,
-  editMode: 'None'
+  editMode: 'None',
+  toggleIds: new Set(),
+  updateNode: null
 };

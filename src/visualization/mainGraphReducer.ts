@@ -90,6 +90,12 @@ export default function mainGraphReducer(state = initialState.main, action: Grap
 
       return Object.assign({}, state);
     }
+    case ActionTypes.TOGGLE_NODE: {
+      const { node } = action;
+      executeActionOnNode(state.subStates, ActionTypes.TOGGLE_NODE, node, { node });
+
+      return Object.assign({}, state);
+    }
     case ActionTypes.EDIT_NODE: {
       const { node, editData } = action;
       executeActionOnNode(state.subStates, ActionTypes.EDIT_NODE, node, { node, editData });

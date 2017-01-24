@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import * as _ from 'lodash';
 
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
+import { d3Node } from '../types';
 import { IMAGE_HEIGHT, IMAGE_WIDTH } from './constants';
 
 require('./styles.scss');
@@ -22,7 +23,8 @@ interface ITreeManagerProps {
   onMouseOut,
   onDelayedHover,
   container,
-  root
+  root,
+  updateNode
 }
 
 class TreeManager extends React.Component<ITreeManagerProps, any> {
@@ -31,31 +33,34 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
     this.state = {
       g: null,
-      root: null
+      root: null,
+      updateNode: null
     };
   }
 
   // thank you redux
   shouldComponentUpdate(nextState) {
-    return (nextState.root !== this.state.root);
+    return (nextState.updateNode !== this.state.updateNode);
   }
 
   componentDidMount() {
     this.setState({
       g: this.props.container.append('g'),
-      root: this.props.root
+      root: this.props.root,
+      updateNode: this.props.updateNode
     });
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      root: nextProps.root
+      root: nextProps.root,
+      updateNode: nextProps.updateNode
     });
   }
 
   render() {
-    if (this.state.root) {
-      this.update(this.state.root);
+    if (this.state.updateNode) {
+      this.update(this.state.updateNode);
     }
 
     return (
@@ -215,16 +220,6 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
           + ` ${source['y']},${source['x']}`
       })
       .remove();
-  }
-
-  _toggle(node) {
-    if (node.children) {
-      node._children = node.children;
-      node.children = null;
-    } else {
-      node.children = node._children;
-      node._children = null
-    }
   }
 }
 

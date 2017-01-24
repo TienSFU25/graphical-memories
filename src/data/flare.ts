@@ -3,6 +3,7 @@ import { GraphType } from '../types'
 export default [
   {
     type: GraphType.Tree,
+    toggleIds: new Set(),
     value: {
     "name": "flare",
     "children": [{
@@ -390,6 +391,7 @@ export default [
   }},
 {
   type: GraphType.Tree,
+  toggleIds: new Set(),
   value: {
     "name": "flare",
     "children": [{

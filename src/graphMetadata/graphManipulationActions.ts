@@ -7,21 +7,22 @@ export function addNode(newNode, destNode) {
     type: ActionTypes.ADD_NODE,
     newNode,
     destNode
-  }
+  };
+}
+
+export function toggleNode(node) {
+  return {
+    type: ActionTypes.TOGGLE_NODE,
+    node
+  };
 }
 
 export function deleteNode(node) {
   return {
     type: ActionTypes.DELETE_NODE,
     node
-  }
+  };
 }
-
-// export function saveNode(nodeId: number): Action {
-//   return {
-//     type: ActionTypes.SAVE_NODE
-//   }
-// }
 
 export function selectNode(node: d3Node) {
   return {
@@ -43,14 +44,6 @@ export function moveNode(src, dest) {
     dest
   };
 }
-
-// export function selectEntity(clickEvent, network): Action {
-//   if (clickEvent.nodes && clickEvent.nodes.length > 0) {
-//     return selectNode(clickEvent.nodes[0], network);
-//   } else {
-//     return selectNetwork();
-//   }
-// }
 
 export function editNode(node, editData) {
   return {
@@ -90,7 +83,7 @@ export function showPopup(htmlCoords) {
 
 const GraphManipulationCreatorsMap: ActionCreatorsMapObject = {
   addNode,
-  // saveNode,
+  toggleNode,
   selectNode,
   moveNode,
   editNode,

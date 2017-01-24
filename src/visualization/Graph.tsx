@@ -166,7 +166,8 @@ class Graph extends React.Component<any, any> {
                           onMouseOut={this.onMouseOut.bind(this)}
                           onDelayedHover={this.onDelayedHover.bind(this)}
                           container={this.svg}
-                          root={graph.treeRoot}/>
+                          root={graph.treeRoot}
+                          updateNode={graph.updateNode}/>
     }
   }
 

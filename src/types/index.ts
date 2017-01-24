@@ -1,7 +1,13 @@
 import { Action } from 'redux';
 import * as d3 from 'd3';
 
-export type d3Node = d3.HierarchyNode<GraphNode<any>>;
+// export type d3Node = d3.HierarchyNode<GraphNode<any>>;
+
+export interface d3Node extends d3.HierarchyNode<GraphNode<any>> {
+  _children?: Array<d3.HierarchyNode<GraphNode<any>>>;
+  x?: number;
+  y?: number;
+}
 
 export enum EntityType {
   Nothing,
@@ -12,7 +18,8 @@ export enum EntityType {
 export interface SelectedEntity {
   type: EntityType,
   id: number,
-  data: any
+  data: any,
+  node: d3Node
 }
 
 export interface ReduxStore {

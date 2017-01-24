@@ -102,6 +102,10 @@ class EditBox extends React.Component<Props, any> {
     );
   }
 
+  collapseNode() {
+    this.props.actions.toggleNode(this.props.selectedEntity.node);
+  }
+
   render() {
     const style = {
       top: this.props.htmlCoords.y + window.pageYOffset,
@@ -130,7 +134,7 @@ class EditBox extends React.Component<Props, any> {
                 <div className='icon delete' />
               </Col>
               <Col sm={4}>
-                <div className='icon -collapse' />
+                <div className='icon -collapse' onClick={this.collapseNode.bind(this)}/>
               </Col>
             </Row>
             {allRows}
