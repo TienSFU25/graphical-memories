@@ -3,7 +3,7 @@ import { GraphType } from '../types'
 export default [
   {
     type: GraphType.Tree,
-    toggleIds: new Set(),
+    toggleIds: new Set([37]),
     value: {
     "name": "flare",
     "children": [{

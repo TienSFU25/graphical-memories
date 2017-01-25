@@ -74,6 +74,20 @@ export function hideEditBox() {
   };
 }
 
+export function showAddBox(addCoords) {
+  return {
+    type: ActionTypes.SHOW_ADD,
+    addCoords
+  };
+}
+
+export function hideAddBox() {
+  return {
+    type: ActionTypes.HIDE_ADD
+  };
+}
+
+
 export function showPopup(htmlCoords) {
   return {
     type: ActionTypes.SHOW_POPUP,
@@ -93,6 +107,9 @@ const GraphManipulationCreatorsMap: ActionCreatorsMapObject = {
   attachImageToNode,
   showEditBox,
   hideEditBox,
+
+  showAddBox,
+  hideAddBox,
 
   showPopup
 }

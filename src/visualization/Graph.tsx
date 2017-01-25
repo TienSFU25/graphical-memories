@@ -127,8 +127,8 @@ class Graph extends React.Component<any, any> {
     }
 
     const htmlCoords = this._toHtmlCoords(node);
-    this.props.actions.showEditBox(htmlCoords);
     this.props.actions.selectNode(node);
+    this.props.actions.showEditBox(htmlCoords);
   }
 
   onDelayedHover(node) {

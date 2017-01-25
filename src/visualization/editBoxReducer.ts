@@ -20,11 +20,25 @@ export default function editBoxReducer(state = initialState.editBox, action) {
           show: false
         });
     }
+    case ActionTypes.SHOW_ADD: {
+      const { addCoords } = action;
+      return Object.assign({}, state,
+        {
+          showAdd: true,
+          addCoords
+        });
+    }
+    case ActionTypes.HIDE_ADD: {
+      return Object.assign({}, state,
+        {
+          showAdd: false
+        });
+    }
     case ActionTypes.SHOW_POPUP: {
       const { htmlCoords } = action;
       return Object.assign({}, state,
         {
-          show: true,
+          show: false,
           popup: true,
           htmlCoords
         });

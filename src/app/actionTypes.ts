@@ -17,6 +17,8 @@ export enum ActionTypes {
 
   SHOW_EDIT,
   HIDE_EDIT,
+  SHOW_ADD,
+  HIDE_ADD,
 
   SHOW_POPUP,
   HIDE_POPUP
