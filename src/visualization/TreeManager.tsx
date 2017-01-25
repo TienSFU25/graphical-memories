@@ -117,7 +117,8 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     nodes.transition(t)
       .attr('class', d => { const className = d['children'] ? 'internal': 'leaf'; return `node ${className}`; })
       .attr('transform', d => `translate(${d['y']}, ${d['x']})`)
-      .attr('style', 'fill-opacity: 1');
+      .attr('style', 'fill-opacity: 1')
+      .on('end', attachBehaviors);
 
     // update text or image if node
     // IS THERE A BETTER WAY TO DO THESE UPDATES???

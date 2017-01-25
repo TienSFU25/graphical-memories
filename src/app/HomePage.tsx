@@ -34,9 +34,9 @@ class HomePage extends React.Component<any, any> {
 
   addNode(newNode) {
     console.log(`trying to add newNode ${JSON.stringify(newNode)}`);
-    // const destNode = this.props.selectedEntity.node;
-    // this.props.actions.addNode(newNode, destNode);
-    // this.props.actions.hideAddBox();
+    const destNode = this.props.selectedEntity.node;
+    this.props.actions.addNode(newNode, destNode);
+    this.props.actions.hideAddBox();
   }
 
   render() {
@@ -61,8 +61,8 @@ class HomePage extends React.Component<any, any> {
 
     return (
       <div>
-        <InputField show={this.props.editBox.show} value={nodeName} className='edit box' style={style} onSave={this.saveCurrentNode.bind(this)} />
-        <InputField show value='default' className='edit box' style={addStyle} onSave={this.addNode.bind(this)} />
+        <InputField autoFocus show={this.props.editBox.show} value={nodeName} className='edit box' style={style} onSave={this.saveCurrentNode.bind(this)} />
+        <InputField autoFocus show={this.props.editBox.showAdd} value='default' className='edit box' style={addStyle} onSave={this.addNode.bind(this)} />
         <EditBox show={this.props.editBox.popup} htmlCoords={this.props.editBox.htmlCoords} node={this.props.selectedEntity.node} onAdd={this.onAdd.bind(this)} onSave={this.saveCurrentNode.bind(this)} />
         <Jumbotron>
           <h2>Ruby is learning Python!</h2>

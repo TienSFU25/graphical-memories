@@ -9,6 +9,7 @@ interface Props {
   show: boolean;
   className: string;
   style: Object;
+  autoFocus?: boolean;
 }
 
 class InputField extends React.Component<Props, any> {
@@ -56,7 +57,7 @@ class InputField extends React.Component<Props, any> {
   }
 
   componentDidUpdate() {
-    if (this.editInput) {
+    if (this.editInput && this.props.autoFocus) {
       this.editInput.focus();
     }
   }

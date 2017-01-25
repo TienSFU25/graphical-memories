@@ -75,7 +75,7 @@ class EditBox extends React.Component<Props, any> {
               name
             </Col>
             <Col sm={10}>
-              <InputField show value={currNode.data.name} className='form-control' style={{}} onSave={this.props.onSave.bind(this)}/>
+              <InputField show autoFocus={false} value={currNode.data.name} className='form-control' style={{}} onSave={this.props.onSave.bind(this)}/>
             </Col>
           </FormGroup>
         </Form>
