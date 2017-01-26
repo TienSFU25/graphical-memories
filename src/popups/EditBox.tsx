@@ -7,7 +7,7 @@ import { d3Node } from '../types';
 import InputField from '../shared/InputField';
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 
-require('./edit.scss');
+import '../css/edit.scss';
 
 interface Coordinates {
   x: number;

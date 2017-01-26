@@ -22,10 +22,6 @@ class SelectedEntity extends React.Component<any, any> {
     console.log('Implement the on node change in selectedEntity!');
   }
 
-  onSave() {
-
-  }
-
   render() {
     if (this.props.selectedEntity.type === EntityType.Graph) {
       return <SelectedGraph />;

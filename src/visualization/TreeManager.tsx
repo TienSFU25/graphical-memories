@@ -8,7 +8,7 @@ import graphManipulationActions from '../graphMetadata/graphManipulationActions'
 import { d3Node } from '../types';
 import { IMAGE_HEIGHT, IMAGE_WIDTH } from './constants';
 
-require('./styles.scss');
+import '../css/styles.scss';
 
 const DEBUG = true;
 

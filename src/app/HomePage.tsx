@@ -1,13 +1,15 @@
 import * as React from 'react';
-import { Col, Row, Jumbotron} from 'react-bootstrap';
+import { Col, Row, Jumbotron } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
-import GraphMetadata from '../graphMetadata/GraphMetadata';
-import Visualizer from '../visualization/Content';
-import EditBox from '../visualization/EditBox';
+import popupActions from '../popups/popupActions';
+import Visualizer from '../visualization/Graph';
+import EditBox from '../popups/EditBox';
 import InputField from '../shared/InputField';
+
+import '../css/app.scss';
 
 class HomePage extends React.Component<any, any> {
   // onSave(value) {
@@ -22,11 +24,11 @@ class HomePage extends React.Component<any, any> {
       this.props.actions.editNode(prevNode, nodeData);
     }
 
-    this.props.actions.hideEditBox();
+    this.props.popupActions.hideEditBox();
   }
 
   onAdd(e) {
-    this.props.actions.showAddBox({
+    this.props.popupActions.showAddBox({
       x: e.clientX,
       y: e.clientY
     });
@@ -41,7 +43,7 @@ class HomePage extends React.Component<any, any> {
     console.log(`trying to add newNode ${JSON.stringify(newNode)}`);
     const destNode = this.props.selectedEntity.node;
     this.props.actions.addNode(newNode, destNode);
-    this.props.actions.hideAddBox();
+    this.props.popupActions.hideAddBox();
   }
 
   render() {
@@ -74,11 +76,8 @@ class HomePage extends React.Component<any, any> {
           <h2>Ruby is learning Python!</h2>
         </Jumbotron>
         <Row>
-          <Col sm={9}>
+          <Col sm={12}>
             <Visualizer />
-          </Col>
-          <Col sm={3}>
-           {/* <GraphMetadata /> */}
           </Col>
         </Row>
       </div>
@@ -95,7 +94,8 @@ function mapStateToProps({ selectedEntity, editBox }) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(graphManipulationActions, dispatch)
+    actions: bindActionCreators(graphManipulationActions, dispatch),
+    popupActions: bindActionCreators(popupActions, dispatch)
   };
 }
 

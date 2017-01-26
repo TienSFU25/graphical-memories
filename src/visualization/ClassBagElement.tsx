@@ -15,17 +15,17 @@ interface IProps {
 }
 
 export default class ClassBag extends React.Component<IProps, any> {
-  private thingy;
+  private element;
 
   _onTransitionEnd(e) {
-    if (e.target == this.thingy) {
+    if (e.target == this.element) {
       this.props.onTransitionEnd(e);
     }
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.reflow) {
-      this.thingy.offsetWidth;
+      this.element.offsetWidth;
     }
   }
 
@@ -40,10 +40,8 @@ export default class ClassBag extends React.Component<IProps, any> {
   }
 
   render() {
-    // const className = Array.from(this.state.classNames).join(' ');
-
     return (
-      <div className={this.props.className} ref={(d) => { this.thingy = d; }} onTransitionEnd={this._onTransitionEnd.bind(this)}>
+      <div className={this.props.className} ref={(d) => { this.element = d; }} onTransitionEnd={this._onTransitionEnd.bind(this)}>
         <Row>
           {this.props.images.map(this._toThumbnail.bind(this))}
         </Row>

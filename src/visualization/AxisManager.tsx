@@ -4,17 +4,7 @@ import {Grid, Row, Col} from 'react-bootstrap';
 
 import ClassBagElement from './ClassBagElement';
 
-// import '../../node_modules/jquery/dist/jquery';
-// import '../../node_modules/bootstrap/dist/js/bootstrap';
-
-import './carousel.css';
-global['$'] = require('jquery');
-global['jQuery'] = require('jquery');
-
-var Carousel = require('./carousel.js');
-// import '../../node_modules/bootstrap/dist/js/bootstrap';
-
-// window['caru'] = Carousel;
+import '../css/carousel.css';
 
 const MAX_LENGTH = 6;
 const IMAGES = [
@@ -198,10 +188,6 @@ export default class AxisManager extends React.Component<any, any> {
   }
 
   render() {
-    if (this.state.g) {
-      this.update();
-    }
-
     return (
       <Grid>
         <Row>
@@ -225,18 +211,5 @@ export default class AxisManager extends React.Component<any, any> {
           </Row>
       </Grid>
     );
-  }
-
-  update() {
-    // const img = "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/React.js_logo.svg/600px-React.js_logo.svg.png";
-    // const imgs = [img, img, img, img, img, img, img, img];
-
-    // d3.selectAll('.thumbnail')
-    //   .selectAll('img')
-    //   .data(imgs)
-    //   .enter()
-    //   .append('img')
-    //   .attr('src', d => d)
-    //   .attr('alt', 'Image');
   }
 }

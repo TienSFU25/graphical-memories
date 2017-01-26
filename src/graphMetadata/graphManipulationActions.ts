@@ -61,40 +61,6 @@ export function attachImageToNode(imageHref, node) {
   }
 }
 
-export function showEditBox(htmlCoords) {
-  return {
-    type: ActionTypes.SHOW_EDIT,
-    htmlCoords
-  };
-}
-
-export function hideEditBox() {
-  return {
-    type: ActionTypes.HIDE_EDIT
-  };
-}
-
-export function showAddBox(addCoords) {
-  return {
-    type: ActionTypes.SHOW_ADD,
-    addCoords
-  };
-}
-
-export function hideAddBox() {
-  return {
-    type: ActionTypes.HIDE_ADD
-  };
-}
-
-
-export function showPopup(htmlCoords) {
-  return {
-    type: ActionTypes.SHOW_POPUP,
-    htmlCoords
-  }
-}
-
 const GraphManipulationCreatorsMap: ActionCreatorsMapObject = {
   addNode,
   toggleNode,
@@ -102,16 +68,8 @@ const GraphManipulationCreatorsMap: ActionCreatorsMapObject = {
   moveNode,
   editNode,
   deleteNode,
-  // selectEntity,
   selectGraph,
-  attachImageToNode,
-  showEditBox,
-  hideEditBox,
-
-  showAddBox,
-  hideAddBox,
-
-  showPopup
+  attachImageToNode
 }
 
 export default GraphManipulationCreatorsMap;

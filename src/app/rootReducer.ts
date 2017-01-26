@@ -1,7 +1,7 @@
 import {combineReducers} from 'redux';
 import selectedEntity from '../graphMetadata/selectedEntityReducer';
 import graph from '../visualization/mainGraphReducer';
-import editBox from '../visualization/editBoxReducer';
+import editBox from '../popups/editBoxReducer';
 
 const rootReducer = combineReducers({
   selectedEntity,

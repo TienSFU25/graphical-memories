@@ -6,11 +6,10 @@ import * as _ from 'lodash';
 
 import { GraphType } from '../types';
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
+import popupActions from '../popups/popupActions';
 
 import AxisManager from './AxisManager';
 import TreeManager from './TreeManager';
-
-require('./styles.scss');
 
 const DEBUG = true;
 
@@ -128,7 +127,7 @@ class Graph extends React.Component<any, any> {
 
     const htmlCoords = this._toHtmlCoords(node);
     this.props.actions.selectNode(node);
-    this.props.actions.showEditBox(htmlCoords);
+    this.props.popupActions.showEditBox(htmlCoords);
   }
 
   onDelayedHover(node) {
@@ -139,7 +138,7 @@ class Graph extends React.Component<any, any> {
 
     const htmlCoords = this._toHtmlCoords(node);
     this.props.actions.selectNode(node);
-    this.props.actions.showPopup(htmlCoords);
+    this.props.popupActions.showPopup(htmlCoords);
   }
 
   onMouseOver(node, context) {
@@ -199,7 +198,8 @@ function mapStateToProps({ selectedEntity, editBox, graph }) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(graphManipulationActions, dispatch)
+    actions: bindActionCreators(graphManipulationActions, dispatch),
+    popupActions: bindActionCreators(popupActions, dispatch)
   };
 }
 
