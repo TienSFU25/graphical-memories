@@ -32,6 +32,11 @@ class HomePage extends React.Component<any, any> {
     });
   }
 
+  onDelete() {
+    const node = this.props.selectedEntity.node;
+    this.props.actions.deleteNode(node);
+  }
+
   addNode(newNode) {
     console.log(`trying to add newNode ${JSON.stringify(newNode)}`);
     const destNode = this.props.selectedEntity.node;
@@ -63,7 +68,8 @@ class HomePage extends React.Component<any, any> {
       <div>
         <InputField autoFocus show={this.props.editBox.show} value={nodeName} className='edit box' style={style} onSave={this.saveCurrentNode.bind(this)} />
         <InputField autoFocus show={this.props.editBox.showAdd} value='default' className='edit box' style={addStyle} onSave={this.addNode.bind(this)} />
-        <EditBox show={this.props.editBox.popup} htmlCoords={this.props.editBox.htmlCoords} node={this.props.selectedEntity.node} onAdd={this.onAdd.bind(this)} onSave={this.saveCurrentNode.bind(this)} />
+        <EditBox show={this.props.editBox.popup} htmlCoords={this.props.editBox.htmlCoords} node={this.props.selectedEntity.node}
+            onAdd={this.onAdd.bind(this)} onDelete={this.onDelete.bind(this)} onSave={this.saveCurrentNode.bind(this)} />
         <Jumbotron>
           <h2>Ruby is learning Python!</h2>
         </Jumbotron>

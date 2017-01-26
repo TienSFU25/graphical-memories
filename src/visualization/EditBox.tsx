@@ -25,6 +25,7 @@ interface Props {
   selectedEntity: any;
   node: any;
   onAdd: Function;
+  onDelete: Function;
 }
 
 class EditBox extends React.Component<Props, any> {
@@ -33,8 +34,11 @@ class EditBox extends React.Component<Props, any> {
   }
 
   onClickAdd(e) {
-    console.log(e);
     this.props.onAdd(e);
+  }
+
+  onClickDelete() {
+    this.props.onDelete();
   }
 
   render() {
@@ -56,7 +60,7 @@ class EditBox extends React.Component<Props, any> {
               <div className='icon add' onClick={this.onClickAdd.bind(this)} />
             </Col>
             <Col sm={4}>
-              <div className='icon delete' />
+              <div className='icon delete' onClick={this.onClickDelete.bind(this)}/>
             </Col>
             <Col sm={4}>
               <div className='icon -collapse' onClick={this.collapseNode.bind(this)}/>
