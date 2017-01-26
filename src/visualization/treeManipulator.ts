@@ -1,8 +1,7 @@
 import * as _ from 'lodash';
 
+let i = 0;
 export function attachIds(dataRoot, isd3Node = false) {
-  let i = 0;
-
   const attachId = (node) => {
     if (node == null) return;
 
@@ -22,4 +21,9 @@ export function attachIds(dataRoot, isd3Node = false) {
   };
 
   attachId(dataRoot);
+}
+
+export function getNextId() {
+  i += 1;
+  return i;
 }

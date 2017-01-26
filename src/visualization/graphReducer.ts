@@ -5,7 +5,7 @@ import { TREE_WIDTH, TREE_HEIGHT } from './constants';
 import { ActionTypes } from '../app/actionTypes';
 import { emptyTree } from '../app/initialState';
 import { d3Node, EntityType, SelectedEntity, TreeReducerState } from '../types';
-import { attachIds } from './treeManipulator';
+import { attachIds, getNextId } from './treeManipulator';
 
 function _sortTree(root) {
   const sorter = (a, b) => a.data.name.toLowerCase().localeCompare(b.data.name.toLowerCase());
@@ -44,7 +44,6 @@ function findNode(node, id, parent = null) {
 };
 
 function _reconstructTree(treeData, changedNodeId, previousState, viewIndex: number, height: number, width: number, toggleIds?: Set<number>) {
-  attachIds(treeData);
   const newRoot: d3Node = d3.hierarchy(treeData);
   const tree = d3.tree().size([height, width]);
 
@@ -102,6 +101,7 @@ export default function graphReducer(state = emptyTree, action): TreeReducerStat
   switch (action.type) {
     case ActionTypes.LOAD_GRAPH_SUCCESS: {
       const { graph, height, width, viewIndex } = action;
+      attachIds(graph);
 
       return _reconstructTree(graph, null, state, viewIndex, height, width);
     }
@@ -111,6 +111,7 @@ export default function graphReducer(state = emptyTree, action): TreeReducerStat
 
       const destNodeId = destNode.data.id;
       const destInData = findNode(dataCopy, destNodeId).node;
+      newNode.id = getNextId();
 
       const destChildren = destInData.children || destInData._children;
       if (destChildren) {
