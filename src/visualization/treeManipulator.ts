@@ -25,5 +25,51 @@ export function attachIds(dataRoot, isd3Node = false) {
 
 export function getNextId() {
   i += 1;
-  return i;
+  return i - 1;
 }
+
+function _isDefined(e) {
+  if (e === null || typeof(e) === "undefined") {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+export function findNode(node, id, parent = null) {
+  const idEquals = (node, id) => {
+    return node.id === id || (node.data && node.data.id === id);
+  }
+  return findNodeGeneric(node, idEquals, id, parent);
+};
+
+export function findNodeByName(node, name, parent = null) {
+  const nameEquals = (node, name) => {
+    return node.name === name || (node.data && node.data.name === name);
+  }
+  return findNodeGeneric(node, nameEquals, name, parent);
+}
+
+export function findNodeGeneric(node, condition, param, parent = null) {
+  if (node == null) return null;
+
+  const children = node.children || node._children;
+  // console.log(`checking ${node.name}`);
+  if (condition(node, param)) {
+    return { node, parent };
+  } else if (children) {
+    for (let index = 0; index < children.length; index++) {
+      const child = children[index];
+      const result = findNodeGeneric(child, condition, param, node);
+
+      if (_isDefined(result)) {
+        return result
+      }
+
+      // return null;
+    }
+  } else {
+    return null;
+  }
+};
+

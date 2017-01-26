@@ -5,43 +5,12 @@ import { TREE_WIDTH, TREE_HEIGHT } from './constants';
 import { ActionTypes } from '../app/actionTypes';
 import { emptyTree } from '../app/initialState';
 import { d3Node, EntityType, SelectedEntity, TreeReducerState } from '../types';
-import { attachIds, getNextId } from './treeManipulator';
+import { attachIds, getNextId, findNode } from './treeManipulator';
 
 function _sortTree(root) {
   const sorter = (a, b) => a.data.name.toLowerCase().localeCompare(b.data.name.toLowerCase());
   root.sort(sorter);
 }
-
-function _isDefined(e) {
-  if (e === null || typeof(e) === "undefined") {
-    return false;
-  } else {
-    return true;
-  }
-}
-
-function findNode(node, id, parent = null) {
-  if (node == null) return null;
-
-  const children = node.children || node._children;
-  // console.log(`checking ${node.id}`);
-  if (node.id === id || (node.data && node.data.id) === id) {
-    return { node, parent };
-  } else if (children) {
-    for (let index = 0; index < children.length; index++) {
-      const child = children[index];
-      const result = findNode(child, id, node);
-
-      if (_isDefined(result)) {
-        return result
-      }
-
-      // return null;
-    }
-  } else {
-    return null;
-  }
-};
 
 function _reconstructTree(treeData, changedNodeId, previousState, viewIndex: number, height: number, width: number, toggleIds?: Set<number>) {
   const newRoot: d3Node = d3.hierarchy(treeData);
@@ -56,8 +25,7 @@ function _reconstructTree(treeData, changedNodeId, previousState, viewIndex: num
   });
 
   // toggle children
-  // not actually a copy, but whatever
-  const toggleCopy = toggleIds || previousState.toggleIds;
+  const toggleCopy = toggleIds || new Set(previousState.toggleIds);
   newRoot.each((node: d3Node) => {
     if (toggleCopy.has(node.data.id)) {
       node._children = node.children;
@@ -126,12 +94,12 @@ export default function graphReducer(state = emptyTree, action): TreeReducerStat
       const { node, destNode, height, width, viewIndex } = action;
 
       const dataCopy = Object.assign({}, state.raw);
-      const toggleCopy = state.toggleIds;
+      const toggleCopy = new Set(state.toggleIds);
 
       if (toggleCopy.has(node.data.id)) {
-        state.toggleIds.delete(node.data.id);
+        toggleCopy.delete(node.data.id);
       } else {
-        state.toggleIds.add(node.data.id);
+        toggleCopy.add(node.data.id);
       }
 
       return _reconstructTree(dataCopy, node.data.id, state, viewIndex, height, width, toggleCopy);

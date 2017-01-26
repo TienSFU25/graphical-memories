@@ -34,7 +34,6 @@ export const emptyTree = {
     name: 'empty tree'
   },
   treeRoot: null,
-  editMode: 'None',
   toggleIds: new Set(),
   updateNode: null
 };

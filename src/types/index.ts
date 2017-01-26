@@ -32,7 +32,8 @@ export interface TreeReducerState<T> {
   value?: TreeNode<T>,
   raw: TreeNode<T>,
   treeRoot: d3.HierarchyNode<TreeNode<any>> & {rid: number},
-  editMode?: string
+  updateNode: TreeNode<T>,
+  toggleIds: Set<number>
 }
 
 export interface AllGraphsReducerState {
