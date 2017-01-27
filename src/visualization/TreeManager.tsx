@@ -21,7 +21,6 @@ interface ITreeManagerProps {
   onTextClick,
   onMouseOver,
   onMouseOut,
-  onDelayedHover,
   container,
   root,
   updateNode
@@ -95,15 +94,6 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
       //   self.update(thisNode);
       //   d3.event.stopPropagation();
       // });
-
-      // delayed hover
-      circle.on('mouseover', (thisNode) => {
-        timeout = setTimeout(_ => {
-          self.props.onDelayedHover(thisNode);
-        }, DELAY);
-      }).on('mouseout',() => {
-        clearTimeout(timeout);
-      });
 
       text.on('click', (thisNode) => {
         self.props.onTextClick(thisNode);

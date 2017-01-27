@@ -8,7 +8,6 @@ export default function editBoxReducer(state = initialState.editBox, action) {
       const { htmlCoords } = action;
       return Object.assign({}, state,
         {
-          popup: false,
           show: true,
           htmlCoords
         });
@@ -16,7 +15,6 @@ export default function editBoxReducer(state = initialState.editBox, action) {
     case ActionTypes.HIDE_EDIT: {
       return Object.assign({}, state,
         {
-          popup: false,
           show: false
         });
     }
@@ -34,13 +32,10 @@ export default function editBoxReducer(state = initialState.editBox, action) {
           showAdd: false
         });
     }
-    case ActionTypes.SHOW_POPUP: {
-      const { htmlCoords } = action;
+    case ActionTypes.SELECT_GRAPH: {
       return Object.assign({}, state,
         {
-          show: false,
-          popup: true,
-          htmlCoords
+          show: false
         });
     }
     default: {

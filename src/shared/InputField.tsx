@@ -7,8 +7,8 @@ interface Props {
   value?: string;
   onSave: Function;
   show: boolean;
-  className: string;
-  style: Object;
+  className?: string;
+  style?: Object;
   autoFocus?: boolean;
 }
 
@@ -46,6 +46,10 @@ class InputField extends React.Component<Props, any> {
 
       e.stopPropagation();
     }
+  }
+
+  componentDidMount() {
+    console.log('this shit mounted!');
   }
 
   componentWillReceiveProps(nextProps) {

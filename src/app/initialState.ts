@@ -12,7 +12,6 @@ export const initialState = {
   },
   editBox: {
     show: false,
-    popup: false,
     showAdd: false,
     addCoords: {
       x: 0,

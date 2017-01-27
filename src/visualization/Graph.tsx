@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as _ from 'lodash';
 
-import { GraphType } from '../types';
+import { DRAG_THRESHOLD } from './constants';
+import { d3Node, GraphType } from '../types';
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import popupActions from '../popups/popupActions';
 
@@ -65,7 +66,7 @@ class Graph extends React.Component<any, any> {
         console.log(y);
         console.log(svgP);
         console.log('--------->');
-        this.props.actions.selectGraph;
+        this.props.actions.selectGraph();
       })
       .attr('width', this.width + margin.left + margin.right)
       .attr('height', this.height + margin.top + margin.bottom);
@@ -73,27 +74,39 @@ class Graph extends React.Component<any, any> {
     const self = this;
     this.dragBehavior = d3.drag()
       .on('start', d => {
-        self.isDragging = true;
-        d3.selectAll('.ghost.disabled').attr('class', 'ghost');
+        // d3.selectAll('.ghost.disabled').attr('class', 'ghost');
         d3.event.sourceEvent.stopPropagation();
       })
+      .on('drag', (d:d3Node) => {
+        const e = d3.event;
+        if (e.x - d.x  > DRAG_THRESHOLD || e.y - d.y > DRAG_THRESHOLD) {
+          self.isDragging = true;
+          d3.selectAll('.ghost.disabled').attr('class', 'ghost');
+        }
+      })
       .on('end', d => {
+        if (self.isDragging) {
+          console.log('drag ended');
+
+          d3.selectAll('.ghost').attr('class', 'ghost disabled');
+
+          // fix this yolo code plz
+          if (d['type'] == 'IMAGE') {
+            this.props.actions.attachImageToNode(d['href'], self.destDragNode);
+          }
+          else if (self.destDragNode && d['data'].id !== self.destDragNode.data.id) {
+            console.log(`moving ${d['data'].id} to ${self.destDragNode.data.id}`)
+            self.props.actions.moveNode(d, self.destDragNode);
+          }
+
+          self.destDragNode = null;
+        } else {
+          // assume a click event
+          console.log('assume you clicked!');
+        }
+
         self.isDragging = false;
-        d3.selectAll('.ghost').attr('class', 'ghost disabled');
-
-        // fix this yolo code plz
-        if (d['type'] == 'IMAGE') {
-          this.props.actions.attachImageToNode(d['href'], self.destDragNode);
-        }
-        else if (self.destDragNode && d['data'].id !== self.destDragNode.data.id) {
-          console.log(`moving ${d['data'].id} to ${self.destDragNode.data.id}`)
-          self.props.actions.moveNode(d, self.destDragNode);
-        }
-
-        self.destDragNode = null;
       });
-
-    window['draggy'] = this.dragBehavior;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -163,7 +176,6 @@ class Graph extends React.Component<any, any> {
                           onTextClick={this.onTextClick.bind(this)}
                           onMouseOver={this.onMouseOver.bind(this)}
                           onMouseOut={this.onMouseOut.bind(this)}
-                          onDelayedHover={this.onDelayedHover.bind(this)}
                           container={this.svg}
                           root={graph.treeRoot}
                           updateNode={graph.updateNode}/>
