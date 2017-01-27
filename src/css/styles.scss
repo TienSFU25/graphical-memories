@@ -11,6 +11,10 @@
   fill: #999;
 }
 
+.node circle.selected {
+  stroke-width: 6px;
+}
+
 .node text {
   font: 10px sans-serif;
 }

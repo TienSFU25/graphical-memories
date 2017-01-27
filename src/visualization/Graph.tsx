@@ -30,6 +30,7 @@ class Graph extends React.Component<any, any> {
     super(props);
 
     this.state = {
+      selectedEntity: null,
       graphs: []
     };
   }
@@ -112,8 +113,10 @@ class Graph extends React.Component<any, any> {
   componentWillReceiveProps(nextProps) {
     console.log('graph getting some prop action...');
     const graphs = nextProps.graph.subStates;
+    const selectedEntity = nextProps.selectedEntity;
 
     this.setState({
+      selectedEntity,
       graphs
     });
   }
@@ -143,17 +146,6 @@ class Graph extends React.Component<any, any> {
     this.props.popupActions.showEditBox(htmlCoords);
   }
 
-  onDelayedHover(node) {
-    if (!node.x || !node.y) {
-      console.error('node does not have coordinates!');
-      return;
-    }
-
-    const htmlCoords = this._toHtmlCoords(node);
-    this.props.actions.selectNode(node);
-    this.props.popupActions.showPopup(htmlCoords);
-  }
-
   onMouseOver(node, context) {
     if (this.isDragging) {
       this.destDragNode = node;
@@ -170,6 +162,8 @@ class Graph extends React.Component<any, any> {
   }
 
   _graphToReactElement(graph) {
+    const selectedNode = this.state.selectedEntity.node;
+
     if (graph.type === GraphType.Tree) {
       return <TreeManager dragBehavior={this.dragBehavior}
                           onClick={this.onClick.bind(this)}
@@ -178,7 +172,8 @@ class Graph extends React.Component<any, any> {
                           onMouseOut={this.onMouseOut.bind(this)}
                           container={this.svg}
                           root={graph.treeRoot}
-                          updateNode={graph.updateNode}/>
+                          updateNode={graph.updateNode}
+                          selectedNode={selectedNode} />
     }
   }
 

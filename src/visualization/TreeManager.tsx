@@ -16,17 +16,20 @@ const DEBUG = true;
 window['d3'] = d3;
 
 interface ITreeManagerProps {
-  dragBehavior: d3.DragBehavior<any, any, any>,
-  onClick,
-  onTextClick,
-  onMouseOver,
-  onMouseOut,
-  container,
-  root,
-  updateNode
+  dragBehavior: d3.DragBehavior<any, any, any>;
+  onClick: Function;
+  onTextClick: Function;
+  onMouseOver: Function;
+  onMouseOut: Function;
+  container;
+  root;
+  updateNode;
+  selectedNode;
 }
 
 class TreeManager extends React.Component<ITreeManagerProps, any> {
+  private DOMSelectedNode;
+
   constructor(props) {
     super(props);
 
@@ -51,6 +54,12 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (nextProps.selectedNode) {
+      this.updateSelectedNode(nextProps.selectedNode);
+    } else if (this.DOMSelectedNode) {
+      this.clearSelectedNode();
+    }
+
     this.setState({
       root: nextProps.root,
       updateNode: nextProps.updateNode
@@ -65,6 +74,33 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     return (
       <div />
     );
+  }
+
+  clearSelectedNode() {
+    this.DOMSelectedNode.attr('class', 'inner');
+  }
+
+  updateSelectedNode(selectedNode) {
+    const context = this.state.g;
+    const root = this.state.root;
+    const self = this;
+
+    const nodes = context.selectAll('.node')
+      .data(root.descendants(), d => d.data.id);
+
+    // update selected node
+    nodes.selectAll('circle.inner')
+      .attr('class', function(d: d3Node) {
+        let className = 'inner';
+
+        if (selectedNode && d.data.id == selectedNode.data.id) {
+          // save node to deselect when updating
+          self.DOMSelectedNode = d3.select(this);
+          className += ' selected';
+        }
+
+        return `${className}`;
+      });
   }
 
   update(source) {
@@ -108,7 +144,8 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     let i = 0;
 
     enterNodes.append('circle')
-      .attr('r', 7.5);
+      .attr('r', 7.5)
+      .attr('class', 'inner');
 
     enterNodes.append('circle')
       .attr('r', 20)
@@ -152,7 +189,12 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
       .attr('style', 'fill-opacity: 1e-6')
       .merge(nodes)
       .transition(t)
-      .attr('class', d => { i++; const className = d['children'] ? 'internal': 'leaf'; return `node ${className}`; })
+      .attr('class', (d:d3Node) => {
+        i++;
+
+        const className = d.children ? 'internal': 'leaf';
+        return `node ${className}`;
+      })
       .attr('transform', d => `translate(${d['y']}, ${d['x']})`)
       .attr('style', 'fill-opacity: 1')
       .on('end', attachBehaviors);
