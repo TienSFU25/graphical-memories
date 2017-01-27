@@ -53,6 +53,7 @@ class Graph extends React.Component<any, any> {
     // add the svg canvas
     this.svg = d3.select('#chart')
       .append('svg')
+      .attr('id', 'main')
       .on('click', e => {
         const d3e = d3.event;
 
