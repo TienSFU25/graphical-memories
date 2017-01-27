@@ -4,7 +4,9 @@ import * as d3 from 'd3';
 // export type d3Node = d3.HierarchyNode<GraphNode<any>>;
 
 export interface d3Node extends d3.HierarchyNode<GraphNode<any>> {
-  _children?: Array<d3.HierarchyNode<GraphNode<any>>>;
+  parent: d3Node;
+  children?: Array<d3Node>;
+  _children?: Array<d3Node>;
   x?: number;
   y?: number;
 }

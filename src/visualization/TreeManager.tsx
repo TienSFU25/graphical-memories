@@ -103,7 +103,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
       });
   }
 
-  update(source) {
+  update(source: d3Node) {
     const self = this;
     const context = this.state.g;
     const root = this.state.root;
@@ -176,8 +176,8 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
         nodeContainer.append('text')
           .attr('dy', 3)
-          .attr('x', d => d['children'] ? -8 : 8)
-          .attr('class', d => d['children'] ? 'internal': 'leaf')
+          .attr('x', (d: d3Node) => d.children ? -8 : 8)
+          .attr('class', (d: d3Node) => d.children ? 'internal': 'leaf')
           .text(_ => {
             return node.data.name;
           });
@@ -185,7 +185,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
     // stick in DOM
     enterNodes
-      .attr('transform', `translate(${source['y']}, ${source['x']})` )
+      .attr('transform', `translate(${source.y}, ${source.x})` )
       .attr('style', 'fill-opacity: 1e-6')
       .merge(nodes)
       .transition(t)
@@ -195,7 +195,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
         const className = d.children ? 'internal': 'leaf';
         return `node ${className}`;
       })
-      .attr('transform', d => `translate(${d['y']}, ${d['x']})`)
+      .attr('transform', (d: d3Node) => `translate(${d.y}, ${d.x})`)
       .attr('style', 'fill-opacity: 1')
       .on('end', attachBehaviors);
 
@@ -203,7 +203,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
     const exitNodes = nodes.exit()
       .transition(t)
-      .attr('transform', `translate(${source['y']}, ${source['x']})` )
+      .attr('transform', `translate(${source.y}, ${source.x})` )
       .attr('style', 'fill-opacity: 1e-6')
       .remove();
 
@@ -213,28 +213,28 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     const enterLinks = links.enter()
       .append('path')
       .attr('d', d => {
-        return `M${source['y']},${source['x']}`
-          + `C${source['y']},${source['x']}`
-          + ` ${source['y']},${source['x']}`
-          + ` ${source['y']},${source['x']}`
+        return `M${source.y},${source.x}`
+          + `C${source.y},${source.x}`
+          + ` ${source.y},${source.x}`
+          + ` ${source.y},${source.x}`
       })
       .merge(links)
       .transition(t)
       .attr('class', 'link')
-      .attr('d', d => {
-        return `M${d['y']},${d['x']}`
-          + `C${d['parent']['y'] + 100},${d['x']}`
-          + ` ${d['parent']['y'] + 100},${d['parent']['x']}`
-          + ` ${d['parent']['y']},${d['parent']['x']}`
+      .attr('d', (d: d3Node) => {
+        return `M${d.y},${d.x}`
+          + `C${d.parent.y + 100},${d.x}`
+          + ` ${d.parent.y + 100},${d.parent.x}`
+          + ` ${d.parent.y},${d.parent.x}`
       });
 
     const exitLinks = links.exit()
       .transition(t)
       .attr('d', d => {
-        return `M${source['y']},${source['x']}`
-          + `C${source['y']},${source['x']}`
-          + ` ${source['y']},${source['x']}`
-          + ` ${source['y']},${source['x']}`
+        return `M${source.y},${source.x}`
+          + `C${source.y},${source.x}`
+          + ` ${source.y},${source.x}`
+          + ` ${source.y},${source.x}`
       })
       .remove();
   }
