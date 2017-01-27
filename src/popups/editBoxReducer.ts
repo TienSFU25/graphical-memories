@@ -32,10 +32,18 @@ export default function editBoxReducer(state = initialState.editBox, action) {
           showAdd: false
         });
     }
+    case ActionTypes.SELECT_NODE: {
+      return Object.assign({}, state,
+        {
+          show: false,
+          showAdd: false
+        });
+    }
     case ActionTypes.SELECT_GRAPH: {
       return Object.assign({}, state,
         {
-          show: false
+          show: false,
+          showAdd: false
         });
     }
     default: {

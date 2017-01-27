@@ -76,7 +76,6 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     const t = d3.transition('myT').duration(750);
 
     function attachBehaviors() {
-      let timeout = null;
       const node = d3.select(this);
       const nodeData = this;
       const text = node.select('text');
@@ -84,16 +83,6 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
       // setup drag and click behaviors
       circle.call(self.props.dragBehavior);
-
-      // circle.on('click', (thisNode) => {
-      //   self.props.onClick(thisNode);
-      //   d3.event.stopPropagation();
-      // }).on('dblclick', thisNode =>
-      // {
-      //   self._toggle(thisNode);
-      //   self.update(thisNode);
-      //   d3.event.stopPropagation();
-      // });
 
       text.on('click', (thisNode) => {
         self.props.onTextClick(thisNode);
@@ -103,12 +92,6 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
     const nodes = context.selectAll('.node')
       .data(root.descendants(), d => d.data.id);
-
-    nodes.transition(t)
-      .attr('class', d => { const className = d['children'] ? 'internal': 'leaf'; return `node ${className}`; })
-      .attr('transform', d => `translate(${d['y']}, ${d['x']})`)
-      .attr('style', 'fill-opacity: 1')
-      .on('end', attachBehaviors);
 
     // update text or image if node
     // IS THERE A BETTER WAY TO DO THESE UPDATES???
@@ -167,6 +150,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     enterNodes
       .attr('transform', `translate(${source['y']}, ${source['x']})` )
       .attr('style', 'fill-opacity: 1e-6')
+      .merge(nodes)
       .transition(t)
       .attr('class', d => { i++; const className = d['children'] ? 'internal': 'leaf'; return `node ${className}`; })
       .attr('transform', d => `translate(${d['y']}, ${d['x']})`)
