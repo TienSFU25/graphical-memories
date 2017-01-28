@@ -22,23 +22,11 @@ const ridToReducer = function(graphType) {
   }
 }
 
-const forwardActionToReducer = function(previousState: TreeReducerState<string>, actionType, viewHeight, viewIndex, params?): TreeReducerState<string> {
-  let reducer;
-
-  switch (previousState.type) {
-    case GraphType.Tree: {
-
-    }
-    default: {
-      reducer = graphReducer;
-    }
-  }
+const forwardActionToReducer = function(previousState: TreeReducerState<string>, actionType, params?): TreeReducerState<string> {
+  let reducer = ridToReducer(previousState.type);
 
   const subState = reducer(previousState, {
     type: actionType,
-    height: viewHeight,
-    width: TREE_WIDTH,
-    viewIndex,
     graph: previousState.value,
     ...params
   });
@@ -51,7 +39,7 @@ const executeActionOnNode = function(subStates: Array<TreeReducerState<string>>,
   const previousSubState = subStates[graphRid];
   const viewHeight = TREE_HEIGHT / subStates.length;
 
-  let subState = forwardActionToReducer(previousSubState, action, viewHeight, graphRid, params);
+  let subState = forwardActionToReducer(previousSubState, action, params);
 
   // we did something that deleted the root
   if (subState == emptyTree) {
@@ -73,12 +61,21 @@ export default function mainGraphReducer(state = initialState.main, action: Grap
 
       for (let i = 0; i < action.graph.length; i++) {
         const graph = action.graph[i];
-        let subState = forwardActionToReducer(graph, ActionTypes.LOAD_GRAPH_SUCCESS, viewHeight, i);
+
+        // set the viewport size
+        let subState = forwardActionToReducer(graph, ActionTypes.SET_VIEWPORT_SIZE, {
+          maxHeight: viewHeight,
+          maxWidth: TREE_WIDTH,
+          viewIndex: i
+        });
+
+        // load graph
+        let nextSubState = forwardActionToReducer(subState, ActionTypes.LOAD_GRAPH_SUCCESS);
 
         // to be able to trace a node to corresponding substate
-        subState.treeRoot.rid = i;
-        subState.type = graph.type;
-        subStates.push(subState);
+        nextSubState.treeRoot.rid = i;
+        nextSubState.type = graph.type;
+        subStates.push(nextSubState);
       }
 
       // console.log(newState);

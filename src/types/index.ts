@@ -39,13 +39,16 @@ export enum TreeType {
 
 /* Reducer states */
 export interface TreeReducerState<T> {
-  type: GraphType,
-  value?: TreeNode<T>,
-  raw: TreeNode<T>,
-  treeRoot: d3.HierarchyNode<TreeNode<any>> & {rid: number},
-  updateNode: TreeNode<T>,
-  toggleIds: Set<number>,
-  display: TreeType
+  type: GraphType;
+  value?: TreeNode<T>;
+  raw: TreeNode<T>;
+  treeRoot: d3.HierarchyNode<TreeNode<any>> & {rid: number};
+  updateNode: TreeNode<T>;
+  toggleIds: Set<number>;
+  display: TreeType;
+  maxHeight: number;
+  maxWidth: number;
+  viewIndex: number;
 }
 
 export interface AllGraphsReducerState {

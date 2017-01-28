@@ -1,6 +1,8 @@
 import { Action } from 'redux';
 
 export enum ActionTypes {
+  SET_VIEWPORT_SIZE,
+
   LOAD_GRAPH_SUCCESS,
   ADD_NODE_SUCCESS,
   SELECT_NOTHING,

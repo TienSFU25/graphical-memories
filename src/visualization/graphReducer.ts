@@ -17,15 +17,19 @@ function _project(x, y) {
   return [radius * Math.cos(angle), radius * Math.sin(angle)];
 }
 
-function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerState<string>, viewIndex: number, height: number, width: number, toggleIds?: Set<number>, display = previousState.display) {
+// function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerState<string>, viewIndex: number, height: number, width: number, toggleIds?: Set<number>, display = previousState.display) {
+function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerState<string>, toggleIds?: Set<number>, display = previousState.display) {
+  // pull view size data from previous state
+  const { maxHeight, maxWidth, viewIndex } = previousState;
+
   const newRoot: d3Node = d3.hierarchy(treeData);
   let tree;
 
   if (display == TreeType.Radial) {
     // 360 500 worked
-     tree = d3.tree().size([height / 3.33, width / 1.2]).separation(function(a, b) { return (a.parent == b.parent ? 1 : 2) / a.depth; });
+     tree = d3.tree().size([maxHeight / 3.33, maxWidth / 1.2]).separation(function(a, b) { return (a.parent == b.parent ? 1 : 2) / a.depth; });
   } else {
-     tree = d3.tree().size([height, width]);
+     tree = d3.tree().size([maxHeight, maxWidth]);
   }
 
   _sortTree(newRoot);
@@ -43,7 +47,7 @@ function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerSta
     }
 
     // shift everything down
-    node.x += height * viewIndex;
+    node.x += maxHeight * viewIndex;
   });
 
   // toggle children
@@ -77,26 +81,27 @@ function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerSta
   });
 }
 
-function replaceChild(parent, node) {
-  for (let i = 0; i < parent.children.length; i++) {
-    const child = parent.children[i];
 
-    if (child.data.id === node.data.id) {
-      parent.children[i] = node;
-      return;
-    }
-  }
-}
 
 export default function graphReducer(state = emptyTree, action): TreeReducerState<string> {
-  const { graph, height, width, viewIndex } = action;
+  // const { graph, height, width, viewIndex } = action;
+  const { graph } = action;
   const dataCopy = Object.assign({}, state.raw);
 
   switch (action.type) {
+    case ActionTypes.SET_VIEWPORT_SIZE: {
+      const { maxHeight, maxWidth, viewIndex } = action;
+
+      return Object.assign({}, state, {
+        maxHeight,
+        maxWidth,
+        viewIndex
+      });
+    }
     case ActionTypes.LOAD_GRAPH_SUCCESS: {
       attachIds(graph);
 
-      return _reconstructTree(graph, null, state, viewIndex, height, width);
+      return _reconstructTree(graph, null, state);
     }
     case ActionTypes.ADD_NODE: {
       const { newNode, destNode } = action;
@@ -112,7 +117,7 @@ export default function graphReducer(state = emptyTree, action): TreeReducerStat
         destInData.children = [newNode];
       }
 
-      return _reconstructTree(dataCopy, destNodeId, state, viewIndex, height, width);
+      return _reconstructTree(dataCopy, destNodeId, state);
     }
     case ActionTypes.TOGGLE_NODE: {
       const { node, destNode } = action;
@@ -125,7 +130,7 @@ export default function graphReducer(state = emptyTree, action): TreeReducerStat
         toggleCopy.add(node.data.id);
       }
 
-      return _reconstructTree(dataCopy, node.data.id, state, viewIndex, height, width, toggleCopy);
+      return _reconstructTree(dataCopy, node.data.id, state, toggleCopy);
     }
     case ActionTypes.EDIT_NODE: {
       const { node, editData } = action;
@@ -137,7 +142,7 @@ export default function graphReducer(state = emptyTree, action): TreeReducerStat
         nodeInData[key] = value;
       });
 
-      return _reconstructTree(dataCopy, nodeId, state, viewIndex, height, width);
+      return _reconstructTree(dataCopy, nodeId, state);
     }
     case ActionTypes.DELETE_NODE: {
       const { node } = action;
@@ -161,7 +166,7 @@ export default function graphReducer(state = emptyTree, action): TreeReducerStat
 
         parent.children.splice(childIndex, 1);
 
-        return _reconstructTree(dataCopy, parent.id, state, viewIndex, height, width);
+        return _reconstructTree(dataCopy, parent.id, state);
       }
     }
     case ActionTypes.ATTACH_IMAGE: {
@@ -172,13 +177,13 @@ export default function graphReducer(state = emptyTree, action): TreeReducerStat
 
       nodeInData.image = imageHref;
 
-      return _reconstructTree(dataCopy, nodeId, state, viewIndex, height, width);
+      return _reconstructTree(dataCopy, nodeId, state);
     }
     case ActionTypes.TOGGLE_TREE_DISPLAY: {
       const toggleCopy = new Set(state.toggleIds);
       const toggleView = state.display === TreeType.Radial ? TreeType.VerticalTree : TreeType.Radial;
 
-      return _reconstructTree(dataCopy, null, state, viewIndex, height, width, toggleCopy, toggleView);
+      return _reconstructTree(dataCopy, null, state, toggleCopy, toggleView);
     }
     default: {
       return state;
