@@ -9,6 +9,10 @@ export interface d3Node extends d3.HierarchyNode<GraphNode<any>> {
   _children?: Array<d3Node>;
   x?: number;
   y?: number;
+  x0?: number;
+  y0?: number;
+  dx?: number;
+  dy?: number;
 }
 
 export enum EntityType {
@@ -28,6 +32,11 @@ export interface ReduxStore {
   selectedEntity: SelectedEntity
 }
 
+export enum TreeType {
+  VerticalTree,
+  Radial
+}
+
 /* Reducer states */
 export interface TreeReducerState<T> {
   type: GraphType,
@@ -35,7 +44,8 @@ export interface TreeReducerState<T> {
   raw: TreeNode<T>,
   treeRoot: d3.HierarchyNode<TreeNode<any>> & {rid: number},
   updateNode: TreeNode<T>,
-  toggleIds: Set<number>
+  toggleIds: Set<number>,
+  display: TreeType
 }
 
 export interface AllGraphsReducerState {

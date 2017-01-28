@@ -21,5 +21,7 @@ export enum ActionTypes {
   HIDE_ADD,
 
   SHOW_POPUP,
-  HIDE_POPUP
+  HIDE_POPUP,
+
+  TOGGLE_TREE_DISPLAY
 }

@@ -1,4 +1,4 @@
-import { ReduxStore, EntityType, GraphType } from '../types';
+import { ReduxStore, EntityType, GraphType, TreeType } from '../types';
 
 export const initialState = {
   selectedEntity: {
@@ -29,6 +29,7 @@ export default initialState;
 /* Custom initial states */
 export const emptyTree = {
   type: GraphType.Tree,
+  display: TreeType.Radial,
   raw: {
     name: 'empty tree'
   },

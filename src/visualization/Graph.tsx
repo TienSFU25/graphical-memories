@@ -174,6 +174,7 @@ class Graph extends React.Component<any, any> {
                           container={this.svg}
                           root={graph.treeRoot}
                           updateNode={graph.updateNode}
+                          display={graph.display}
                           selectedNode={selectedNode} />
     }
   }

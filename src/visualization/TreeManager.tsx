@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import * as _ from 'lodash';
 
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
-import { d3Node } from '../types';
+import { d3Node, TreeType } from '../types';
 import { IMAGE_HEIGHT, IMAGE_WIDTH } from './constants';
 
 import '../css/styles.scss';
@@ -25,6 +25,7 @@ interface ITreeManagerProps {
   root;
   updateNode;
   selectedNode;
+  display;
 }
 
 class TreeManager extends React.Component<ITreeManagerProps, any> {
@@ -49,7 +50,8 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     this.setState({
       g: this.props.container.append('g'),
       root: this.props.root,
-      updateNode: this.props.updateNode
+      updateNode: this.props.updateNode,
+      display: this.props.display
     });
   }
 
@@ -62,7 +64,8 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
     this.setState({
       root: nextProps.root,
-      updateNode: nextProps.updateNode
+      updateNode: nextProps.updateNode,
+      display: this.props.display
     });
   }
 
@@ -110,6 +113,11 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
     const DELAY = 500;
     const t = d3.transition('myT').duration(750);
+
+    // function project(x, y) {
+    //   var angle = (x - 90) / 180 * Math.PI, radius = y;
+    //   return [radius * Math.cos(angle), radius * Math.sin(angle)];
+    // }
 
     function attachBehaviors() {
       const node = d3.select(this);
@@ -183,9 +191,39 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
           });
       });
 
+    function project(x, y, dx, dy) {
+      var angle = (x - 90) / 180 * Math.PI, radius = y;
+      return [radius * Math.cos(angle) + dx, radius * Math.sin(angle) + dy];
+    }
+
     // stick in DOM
+    const transform = `translate(${source.y}, ${source.x})`;
+    let nodeTransform;
+    let linkTransform;
+
+    if (this.state.display === TreeType.VerticalTree) {
+      nodeTransform = (d: d3Node) => `translate(${d.y}, ${d.x})`
+      linkTransform = (d: d3Node) => {
+        return `M${d.y},${d.x}`
+          + `C${d.parent.y + 100},${d.x}`
+          + ` ${d.parent.y + 100},${d.parent.x}`
+          + ` ${d.parent.y},${d.parent.x}`;
+      };
+    } else if (this.state.display === TreeType.Radial) {
+      nodeTransform = (d: d3Node) => `translate(${d.x + d.dx}, ${d.y + d.dy})`
+      linkTransform = (d: d3Node) => {
+        return "M" + project(d.x0, d.y0, d.dx, d.dy)
+            + "C" + project(d.x0, (d.y0 + d.parent.y0) / 2, d.dx, d.dy)
+            + " " + project(d.parent.x0, (d.y0 + d.parent.y0) / 2, d.dx, d.dy)
+            + " " + project(d.parent.x0, d.parent.y0, d.dx, d.dy);
+      };
+    } else {
+      console.log('wtf display??');
+    }
+    // const nodeTransform = (d: d3Node) => `translate(${project(d.x, d.y)})`;
+
     enterNodes
-      .attr('transform', `translate(${source.y}, ${source.x})` )
+      .attr('transform', transform )
       .attr('style', 'fill-opacity: 1e-6')
       .merge(nodes)
       .transition(t)
@@ -195,7 +233,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
         const className = d.children ? 'internal': 'leaf';
         return `node ${className}`;
       })
-      .attr('transform', (d: d3Node) => `translate(${d.y}, ${d.x})`)
+      .attr('transform', nodeTransform)
       .attr('style', 'fill-opacity: 1')
       .on('end', attachBehaviors);
 
@@ -212,21 +250,16 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
     const enterLinks = links.enter()
       .append('path')
-      .attr('d', d => {
-        return `M${source.y},${source.x}`
-          + `C${source.y},${source.x}`
-          + ` ${source.y},${source.x}`
-          + ` ${source.y},${source.x}`
+      .attr('d', (d: d3Node) => {
+          return `M${source.y},${source.x}`
+            + `C${source.y},${source.x}`
+            + ` ${source.y},${source.x}`
+            + ` ${source.y},${source.x}`
       })
       .merge(links)
       .transition(t)
       .attr('class', 'link')
-      .attr('d', (d: d3Node) => {
-        return `M${d.y},${d.x}`
-          + `C${d.parent.y + 100},${d.x}`
-          + ` ${d.parent.y + 100},${d.parent.x}`
-          + ` ${d.parent.y},${d.parent.x}`
-      });
+      .attr('d', linkTransform);
 
     const exitLinks = links.exit()
       .transition(t)

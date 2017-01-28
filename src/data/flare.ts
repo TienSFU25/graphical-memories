@@ -1,9 +1,10 @@
-import { GraphType } from '../types'
+import { GraphType, TreeType } from '../types'
 
 export default [
   {
     type: GraphType.Tree,
     toggleIds: new Set([37]),
+    display: TreeType.Radial,
     value: {
     "name": "flare",
     "children": [{
@@ -392,6 +393,7 @@ export default [
 {
   type: GraphType.Tree,
   toggleIds: new Set(),
+  display: TreeType.VerticalTree,
   value: {
     "name": "flare",
     "children": [{
