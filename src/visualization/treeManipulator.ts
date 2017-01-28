@@ -73,3 +73,12 @@ export function findNodeGeneric(node, condition, param, parent = null) {
   }
 };
 
+// Radial tree related
+export function project(x, y): [number, number] {
+  var angle = (x - 90) / 180 * Math.PI, radius = y;
+  return [radius * Math.cos(angle), radius * Math.sin(angle)];
+};
+
+export function translate([x, y], dx, dy) {
+  return [x + dx, y + dy];
+};

@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import * as _ from 'lodash';
 
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
+import { project, translate } from './treeManipulator';
 import { d3Node, TreeType } from '../types';
 import { IMAGE_HEIGHT, IMAGE_WIDTH } from './constants';
 
@@ -191,18 +192,13 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
           });
       });
 
-    function project(x, y, dx, dy) {
-      var angle = (x - 90) / 180 * Math.PI, radius = y;
-      return [radius * Math.cos(angle) + dx, radius * Math.sin(angle) + dy];
-    }
-
     // stick in DOM
     const transform = `translate(${source.y}, ${source.x})`;
     let nodeTransform;
     let linkTransform;
 
     if (this.state.display === TreeType.VerticalTree) {
-      nodeTransform = (d: d3Node) => `translate(${d.y}, ${d.x})`
+      nodeTransform = (d: d3Node) => `translate(${d.y}, ${d.x})`;
       linkTransform = (d: d3Node) => {
         return `M${d.y},${d.x}`
           + `C${d.parent.y + 100},${d.x}`
@@ -210,12 +206,12 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
           + ` ${d.parent.y},${d.parent.x}`;
       };
     } else if (this.state.display === TreeType.Radial) {
-      nodeTransform = (d: d3Node) => `translate(${d.x + d.dx}, ${d.y + d.dy})`
+      nodeTransform = (d: d3Node) => `translate(${d.x}, ${d.y})`;
       linkTransform = (d: d3Node) => {
-        return "M" + project(d.x0, d.y0, d.dx, d.dy)
-            + "C" + project(d.x0, (d.y0 + d.parent.y0) / 2, d.dx, d.dy)
-            + " " + project(d.parent.x0, (d.y0 + d.parent.y0) / 2, d.dx, d.dy)
-            + " " + project(d.parent.x0, d.parent.y0, d.dx, d.dy);
+        return "M" + translate(project(d.x0, d.y0), d.dx, d.dy)
+            + "C" + translate(project(d.x0, (d.y0 + d.parent.y0) / 2), d.dx, d.dy)
+            + " " + translate(project(d.parent.x0, (d.y0 + d.parent.y0) / 2), d.dx, d.dy)
+            + " " + translate(project(d.parent.x0, d.parent.y0), d.dx, d.dy);
       };
     } else {
       console.log('wtf display??');

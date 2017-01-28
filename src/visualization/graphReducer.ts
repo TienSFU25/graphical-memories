@@ -5,19 +5,13 @@ import { TREE_WIDTH, TREE_HEIGHT } from './constants';
 import { ActionTypes } from '../app/actionTypes';
 import { emptyTree } from '../app/initialState';
 import { d3Node, EntityType, SelectedEntity, TreeReducerState, TreeType } from '../types';
-import { attachIds, getNextId, findNode } from './treeManipulator';
+import { attachIds, getNextId, findNode, project, translate } from './treeManipulator';
 
 function _sortTree(root) {
   const sorter = (a, b) => a.data.name.toLowerCase().localeCompare(b.data.name.toLowerCase());
   root.sort(sorter);
 }
 
-function _project(x, y) {
-  var angle = (x - 90) / 180 * Math.PI, radius = y;
-  return [radius * Math.cos(angle), radius * Math.sin(angle)];
-}
-
-// function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerState<string>, viewIndex: number, height: number, width: number, toggleIds?: Set<number>, display = previousState.display) {
 function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerState<string>, toggleIds?: Set<number>, display = previousState.display) {
   // pull view size data from previous state
   const { maxHeight, maxWidth, viewIndex } = previousState;
@@ -35,20 +29,23 @@ function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerSta
   _sortTree(newRoot);
   tree(newRoot);
 
-  newRoot.descendants().forEach((node: d3Node) => {
-    if (display == TreeType.Radial) {
-      // stash original coordinates
+  if (display == TreeType.Radial) {
+    newRoot.each((node: d3Node) => {
+      // stash original coordinates. this is used for links
       node.x0 = node.x;
       node.y0 = node.y;
 
-      [node.x, node.y] = _project(node.x, node.y);
+      // shift everything down
       node.dx = 520;
-      node.dy = 670;
-    }
+      node.dy = 670 + maxHeight * viewIndex;
 
-    // shift everything down
-    node.x += maxHeight * viewIndex;
-  });
+      [node.x, node.y] = translate(project(node.x, node.y), node.dx, node.dy);
+    });
+  } else {
+    newRoot.each((node: d3Node) => {
+      node.x += maxHeight * viewIndex;
+    });
+  }
 
   // toggle children
   const toggleCopy = toggleIds || new Set(previousState.toggleIds);
