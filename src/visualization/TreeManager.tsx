@@ -26,7 +26,8 @@ interface ITreeManagerProps {
   updateNode;
   selectedNode;
   display;
-  yOffset;
+  dx;
+  dy;
 }
 
 class TreeManager extends React.Component<ITreeManagerProps, any> {
@@ -49,6 +50,15 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
   }
 
   componentDidMount() {
+    const zoomBehavior = d3.zoom()
+      .on('zoom', (d) => {
+        console.log('THIS IS THE G ZOOM');
+        let transform = d3.zoomTransform(this.g.node());
+        this.g.attr('transform', transform.toString());
+      });
+
+    this.g.call(zoomBehavior);
+
     this.setState({
       root: this.props.root,
       updateNode: this.props.updateNode,
@@ -76,7 +86,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     }
 
     return (
-      <g transform={`translate(0, ${this.props.yOffset})`}>
+      <g transform={`translate(${this.props.dx}, ${this.props.dy})`}>
         <g ref={(element) => this.g = d3.select(element)}/>
       </g>
     );
@@ -210,10 +220,10 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     } else if (this.state.display === TreeType.Radial) {
       nodeTransform = (d: d3Node) => `translate(${d.x}, ${d.y})`;
       linkTransform = (d: d3Node) => {
-        return "M" + translate(project(d.x0, d.y0), d.dx, d.dy)
-            + "C" + translate(project(d.x0, (d.y0 + d.parent.y0) / 2), d.dx, d.dy)
-            + " " + translate(project(d.parent.x0, (d.y0 + d.parent.y0) / 2), d.dx, d.dy)
-            + " " + translate(project(d.parent.x0, d.parent.y0), d.dx, d.dy);
+        return "M" + (project(d.x0, d.y0))
+            + "C" + (project(d.x0, (d.y0 + d.parent.y0) / 2))
+            + " " + (project(d.parent.x0, (d.y0 + d.parent.y0) / 2))
+            + " " + (project(d.parent.x0, d.parent.y0));
       };
     } else {
       console.log('wtf display??');

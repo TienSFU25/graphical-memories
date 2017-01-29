@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ControlLabel, Col, Row, Form, FormControl, FormGroup, Table } from 'react-bootstrap';
 
 import { d3Node } from '../types';
+import keyCodes from '../shared/keyCodes';
 
 interface Props {
   value?: string;
@@ -10,6 +11,7 @@ interface Props {
   className?: string;
   style?: Object;
   autoFocus?: boolean;
+  keyHandler?: Function;
 }
 
 class InputField extends React.Component<Props, any> {
@@ -39,12 +41,16 @@ class InputField extends React.Component<Props, any> {
   }
 
   onKeyDown(e) {
-    if (e.which === 13) {
+    if (e.which === keyCodes.ENTER) {
       this.props.onSave({
         name: this.state.value
       });
 
       e.stopPropagation();
+    }
+
+    if (this.props.keyHandler) {
+      this.props.keyHandler(e);
     }
   }
 

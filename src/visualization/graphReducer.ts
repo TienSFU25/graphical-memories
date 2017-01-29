@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import * as _ from 'lodash';
 
-import { TREE_WIDTH, TREE_HEIGHT } from './constants';
+import { TREE_WIDTH, TREE_HEIGHT, RADIAL_X, RADIAL_Y } from './constants';
 import { ActionTypes } from '../app/actionTypes';
 import { emptyTree } from '../app/initialState';
 import { d3Node, EntityType, SelectedEntity, TreeReducerState, TreeType } from '../types';
@@ -14,7 +14,7 @@ function _sortTree(root) {
 
 function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerState<string>, toggleIds?: Set<number>, display = previousState.display) {
   // pull view size data from previous state
-  const { maxHeight, maxWidth, yOffset } = previousState;
+  const { maxHeight, maxWidth, dx, dy } = previousState;
 
   const newRoot: d3Node = d3.hierarchy(treeData);
   let tree;
@@ -35,11 +35,7 @@ function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerSta
       node.x0 = node.x;
       node.y0 = node.y;
 
-      // shift everything down
-      node.dx = 520;
-      node.dy = 670;
-
-      [node.x, node.y] = translate(project(node.x, node.y), node.dx, node.dy);
+      [node.x, node.y] = project(node.x, node.y);
     });
   } else {
     newRoot.each((node: d3Node) => {
@@ -58,7 +54,8 @@ function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerSta
     }
 
     // need this to know absolute position
-    node.yOffset = yOffset;
+    node.dx = dx;
+    node.dy = dy;
   });
 
   // also find the node that needs rerendering
@@ -91,10 +88,19 @@ export default function graphReducer(state = emptyTree, action): TreeReducerStat
     case ActionTypes.SET_VIEWPORT_SIZE: {
       const { maxHeight, maxWidth, viewIndex } = action;
 
+      let dx = 0;
+      let dy = maxHeight * viewIndex;
+
+      if (state.display === TreeType.Radial) {
+        dx += RADIAL_X;
+        dy += RADIAL_Y;
+      }
+
       return Object.assign({}, state, {
         maxHeight,
         maxWidth,
-        yOffset: maxHeight * viewIndex
+        dx,
+        dy
       });
     }
     case ActionTypes.LOAD_GRAPH_SUCCESS: {

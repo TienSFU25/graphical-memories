@@ -13,7 +13,7 @@ export interface d3Node extends d3.HierarchyNode<GraphNode<any>> {
   y0?: number;
   dx?: number;
   dy?: number;
-  yOffset?: number;
+  // yOffset?: number;
 }
 
 export enum EntityType {
@@ -49,7 +49,8 @@ export interface TreeReducerState<T> {
   display: TreeType;
   maxHeight: number;
   maxWidth: number;
-  yOffset: number;
+  dx: number;
+  dy: number;
 }
 
 export interface AllGraphsReducerState {

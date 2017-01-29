@@ -11,6 +11,7 @@ interface IProps {
   className: string;
   onTransitionEnd: any;
   reflow: boolean;
+  eleSize: number;
   images: Array<string>;
 }
 
@@ -31,7 +32,7 @@ export default class ClassBag extends React.Component<IProps, any> {
 
   _toThumbnail(imageHref) {
     return(
-      <Col sm={2}>
+      <Col sm={this.props.eleSize}>
           <a href="#x" className="thumbnail">
             <img src={imageHref} />
           </a>

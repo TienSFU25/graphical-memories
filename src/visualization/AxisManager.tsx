@@ -6,7 +6,9 @@ import ClassBagElement from './ClassBagElement';
 
 import '../css/carousel.css';
 
-const MAX_LENGTH = 6;
+const MAX_LENGTH = 1;
+const COL_COUNT = 12;
+
 const IMAGES = [
   "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
   "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
@@ -96,10 +98,8 @@ export default class AxisManager extends React.Component<any, any> {
     carousel[this.activeIndex].addClasses('active');
 
     this.state = {
-      // hasInitialized: false,
       g: null,
       carousel
-      // children
     };
   }
 
@@ -184,14 +184,14 @@ export default class AxisManager extends React.Component<any, any> {
   }
 
   toClassBag(carouselItem: CarouselItem) {
-    return <ClassBagElement className={carouselItem.getClassName()} images={carouselItem.getImages()} reflow={carouselItem.reflow} onTransitionEnd={this.transitionEnd.bind(this)}/>
+    return <ClassBagElement eleSize={COL_COUNT / MAX_LENGTH} className={carouselItem.getClassName()} images={carouselItem.getImages()} reflow={carouselItem.reflow} onTransitionEnd={this.transitionEnd.bind(this)}/>
   }
 
   render() {
     return (
       <Grid>
         <Row>
-          <div id="myCarousel" className="carousel slide" data-interval="false" data-ride="carousel">
+          <div id="myCarousel" className="carousel slide" >
               <ol className="carousel-indicators">
                   <li data-target="#myCarousel" data-slide-to="0" className="active"></li>
                   <li data-target="#myCarousel" data-slide-to="1"></li>

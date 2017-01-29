@@ -6,6 +6,7 @@ import * as _ from 'lodash';
 
 import { DRAG_THRESHOLD } from './constants';
 import { d3Node, GraphType, TreeReducerState } from '../types';
+import { toHtmlCoords } from '../shared/svgHelper';
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import popupActions from '../popups/popupActions';
 
@@ -53,24 +54,52 @@ class Graph extends React.Component<any, any> {
     this.height = 2400 - margin.top - margin.bottom;
 
     // add the svg canvas
-    this.svg.on('click', e => {
-        const d3e = d3.event;
+    this.svg
+      .on('click', e => {
+          const d3e = d3.event;
 
-        const t = d3e.target;
-        const x = d3e.clientX;
-        const y = d3e.clientY;
-        // const target = (t == this.svg.node() ? this.svg.node() : t.parentNode);
-        const target = this.svg.node();
-        const svgP = this.svgPoint(target, x, y);
-        // console.log(target);
-        console.log(x);
-        console.log(y);
-        console.log(svgP);
-        console.log('--------->');
-        this.props.actions.selectGraph();
-      })
-      .attr('width', this.width + margin.left + margin.right)
-      .attr('height', this.height + margin.top + margin.bottom);
+          const t = d3e.target;
+          const x = d3e.clientX;
+          const y = d3e.clientY;
+          // const target = (t == this.svg.node() ? this.svg.node() : t.parentNode);
+          const target = this.svg.node();
+          const svgP = this.svgPoint(target, x, y);
+          // console.log(target);
+          console.log(x);
+          console.log(y);
+          console.log(svgP);
+          console.log('--------->');
+          this.props.actions.selectGraph();
+        })
+        .attr('width', this.width + margin.left + margin.right)
+        .attr('height', this.height + margin.top + margin.bottom);
+
+    // const zoomBehavior = d3.zoom()
+    //   .on('zoom', (d) => {
+    //     console.log('THIS IS ZOOM');
+    //     const transform = d3.zoomTransform(this.svg.node());
+    //     this.svg.attr('transform', transform.toString());
+    //     console.log(transform);
+    //   });
+
+    // this.svg.call(zoomBehavior);
+
+    // var drag = d3.drag()
+    //     .on("start", dragstarted)
+    //     .on("drag", dragged);
+
+    // function dragstarted(d) {
+    //   d3.event.sourceEvent.stopPropagation();
+    //   // d3.select(this).classed("dragging", true);
+    // }
+
+    // function dragged(d) {
+    //   console.log('THIS IS DRAG');
+    //   console.log(d);
+    //   // d3.select(this).attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y);
+    // }
+
+    // this.svg.call(drag);
 
     const self = this;
     this.dragBehavior = d3.drag()
@@ -126,26 +155,13 @@ class Graph extends React.Component<any, any> {
     d3.event.stopPropagation();
   }
 
-  _toHtmlCoords(node: d3Node) {
-    const ctm = this.svg.node().getScreenCTM();
-    const pt = this.svg.node().createSVGPoint();
-    pt.x = node.x;
-    pt.y = node.y;
-
-    const { x, y } = pt.matrixTransform(ctm);
-    return {
-      x,
-      y: y + node.yOffset
-    };
-  }
-
   onTextClick(node) {
     if (!node.x || !node.y) {
       console.error('node does not have coordinates!');
       return;
     }
 
-    const htmlCoords = this._toHtmlCoords(node);
+    const htmlCoords = toHtmlCoords(node);
     this.props.actions.selectNode(node);
     this.props.popupActions.showEditBox(htmlCoords);
   }
@@ -178,7 +194,8 @@ class Graph extends React.Component<any, any> {
                           updateNode={graph.updateNode}
                           display={graph.display}
                           selectedNode={selectedNode}
-                          yOffset={graph.yOffset} />
+                          dx={graph.dx}
+                          dy={graph.dy} />
     }
   }
 

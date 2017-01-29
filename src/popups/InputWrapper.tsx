@@ -5,9 +5,10 @@ import { bindActionCreators } from 'redux';
 
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import popupActions from '../popups/popupActions';
-import Visualizer from '../visualization/Graph';
 import EditBox from '../popups/EditBox';
 import InputField from '../shared/InputField';
+import keyCodes from '../shared/keyCodes';
+import { toHtmlCoords } from '../shared/svgHelper';
 
 class InputWrapper extends React.Component<any, any> {
   constructor(props) {
@@ -38,6 +39,26 @@ class InputWrapper extends React.Component<any, any> {
   onDelete() {
     const node = this.props.selectedEntity.node;
     this.props.actions.deleteNode(node);
+  }
+
+  inputKeyHandler(event) {
+    switch (event.which) {
+      case keyCodes.LEFT: {
+        const currNode = this.props.selectedEntity.node;
+        const parent = currNode.parent;
+
+        if (parent) {
+          this.props.actions.selectNode(parent);
+          const parentCoords = toHtmlCoords(parent);
+          this.props.popupActions.showEditBox(parentCoords);
+        }
+
+        event.preventDefault();
+      }
+      default: {
+        // do nothing
+      }
+    }
   }
 
   addNode(newNode) {
@@ -91,7 +112,7 @@ class InputWrapper extends React.Component<any, any> {
       <div>
         {EditPopup}
         <div className={'edit box ' + inputHidden} style={style}>
-          <InputField autoFocus show value={nodeName} onSave={this.saveCurrentNode.bind(this)} />
+          <InputField autoFocus show value={nodeName} onSave={this.saveCurrentNode.bind(this)} keyHandler={this.inputKeyHandler.bind(this)}/>
           <div className="expand" onClick={this.expand.bind(this)} />
         </div>
         <InputField autoFocus show={editBox.showAdd} value='default' className='edit box' style={addStyle} onSave={this.addNode.bind(this)} />
