@@ -10,6 +10,12 @@ import { d3Node, TreeType } from '../types';
 import { IMAGE_HEIGHT, IMAGE_WIDTH } from './constants';
 
 import '../css/styles.scss';
+import './dropdown.scss';
+
+import classie from './classie';
+
+declare var Snap: any;
+declare var mina: any;
 
 const DEBUG = true;
 
@@ -22,15 +28,57 @@ interface ITreeManagerProps {
   onTextClick: Function;
   onMouseOver: Function;
   onMouseOut: Function;
-  container;
   root;
   updateNode;
   selectedNode;
   display;
 }
 
+				function SVGDDMenu( el ) {
+					this.el = el;
+					this.init();
+				}
+
+				SVGDDMenu.prototype.init = function() {
+					this.shapeEl = this.el.querySelector( 'div.morph-shape' );
+
+					var s = Snap( this.shapeEl.querySelector( 'g' ) );
+					this.pathEl = s.select( 'path' );
+					this.paths = {
+						reset : this.pathEl.attr( 'd' ),
+						open : this.shapeEl.getAttribute( 'data-morph-open' )
+					};
+
+					this.isOpen = false;
+
+					this.initEvents();
+				};
+
+				SVGDDMenu.prototype.initEvents = function() {
+					this.el.addEventListener( 'click', this.toggle.bind(this) );
+				};
+
+				SVGDDMenu.prototype.toggle = function() {
+          console.log('dis me toggling');
+					var self = this;
+
+					if( this.isOpen ) {
+						classie.remove( self.el, 'menu--open' );
+					}
+					else {
+						classie.add( self.el, 'menu--open' );
+					}
+
+					this.pathEl.stop().animate( { 'path' : this.paths.open }, 320, mina.easeinout, function() {
+						self.pathEl.stop().animate( { 'path' : self.paths.reset }, 1000, mina.elastic );
+					} );
+
+					this.isOpen = !this.isOpen;
+				};
+
 class TreeManager extends React.Component<ITreeManagerProps, any> {
   private DOMSelectedNode;
+  private g;
 
   constructor(props) {
     super(props);
@@ -48,8 +96,12 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
   }
 
   componentDidMount() {
+
+
+				new SVGDDMenu( document.getElementById( 'menuism' ) );
+
+
     this.setState({
-      g: this.props.container.append('g'),
       root: this.props.root,
       updateNode: this.props.updateNode,
       display: this.props.display
@@ -76,7 +128,28 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     }
 
     return (
-      <div />
+      <g>
+        <foreignObject>
+          <nav id="menuism" className="menu">
+            <div className="morph-shape" data-morph-open="M260,500H0c0,0,8-120,8-250C8,110,0,0,0,0h260c0,0-8,110-8,250C252,380,260,500,260,500z">
+              <g width="100%" height="100%">
+                <path fill="none" d="M260,500H0c0,0,0-120,0-250C0,110,0,0,0,0h260c0,0,0,110,0,250C260,380,260,500,260,500z"></path>
+              </g>
+            </div>
+            <button className="menu__label"><i className="fa fa-fw fa-bars"></i><span>Open Menu</span></button>
+            <ul className="menu__inner">
+              <li><a href="https://tympanus.net/Development/ElasticSVGElements/dropdown.html#"><i className="fa fa-fw fa-bookmark-o"></i><span>Reading List</span></a></li>
+              <li><a href="https://tympanus.net/Development/ElasticSVGElements/dropdown.html#"><i className="fa fa-fw fa-hdd-o"></i><span>Saved Items</span></a></li>
+              <li><a href="https://tympanus.net/Development/ElasticSVGElements/dropdown.html#"><i className="fa fa-fw fa-image"></i><span>All Media</span></a></li>
+              <li><a href="https://tympanus.net/Development/ElasticSVGElements/dropdown.html#"><i className="fa fa-fw fa-heart-o"></i><span>Favorites</span></a></li>
+              <li><a href="https://tympanus.net/Development/ElasticSVGElements/dropdown.html#"><i className="fa fa-fw fa-envelope-o"></i><span>Messages</span></a></li>
+              <li><a href="https://tympanus.net/Development/ElasticSVGElements/dropdown.html#"><i className="fa fa-fw fa-bell-o"></i><span>Notifications</span></a></li>
+            </ul>
+          </nav>
+        </foreignObject>
+
+        <g ref={(element) => this.g = d3.select(element)}/>
+      </g>
     );
   }
 
@@ -85,7 +158,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
   }
 
   updateSelectedNode(selectedNode) {
-    const context = this.state.g;
+    const context = this.g;
     const root = this.state.root;
     const self = this;
 
@@ -109,16 +182,11 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
   update(source: d3Node) {
     const self = this;
-    const context = this.state.g;
+    const context = this.g;
     const root = this.state.root;
 
     const DELAY = 500;
     const t = d3.transition('myT').duration(750);
-
-    // function project(x, y) {
-    //   var angle = (x - 90) / 180 * Math.PI, radius = y;
-    //   return [radius * Math.cos(angle), radius * Math.sin(angle)];
-    // }
 
     function attachBehaviors() {
       const node = d3.select(this);
@@ -198,12 +266,12 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     let linkTransform;
 
     if (this.state.display === TreeType.VerticalTree) {
-      nodeTransform = (d: d3Node) => `translate(${d.y}, ${d.x})`;
+      nodeTransform = (d: d3Node) => `translate(${d.x}, ${d.y})`;
       linkTransform = (d: d3Node) => {
-        return `M${d.y},${d.x}`
-          + `C${d.parent.y + 100},${d.x}`
-          + ` ${d.parent.y + 100},${d.parent.x}`
-          + ` ${d.parent.y},${d.parent.x}`;
+        return `M${d.x},${d.y}`
+          + `C${d.parent.x + 100},${d.y}`
+          + ` ${d.parent.x + 100},${d.parent.y}`
+          + ` ${d.parent.x},${d.parent.y}`;
       };
     } else if (this.state.display === TreeType.Radial) {
       nodeTransform = (d: d3Node) => `translate(${d.x}, ${d.y})`;

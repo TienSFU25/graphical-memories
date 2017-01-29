@@ -393,7 +393,7 @@ export default [
 {
   type: GraphType.Tree,
   toggleIds: new Set(),
-  display: TreeType.Radial,
+  display: TreeType.VerticalTree,
   value: {
     "name": "flare",
     "children": [{

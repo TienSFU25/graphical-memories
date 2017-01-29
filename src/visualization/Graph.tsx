@@ -16,6 +16,7 @@ const DEBUG = true;
 
 // testing purposes
 window['d3'] = d3;
+declare var Snap: any;
 
 class Graph extends React.Component<any, any> {
   private margin;
@@ -27,6 +28,7 @@ class Graph extends React.Component<any, any> {
   private destDragNode;
 
   constructor(props) {
+    window['Snap'] = Snap;
     super(props);
 
     this.state = {
@@ -51,25 +53,23 @@ class Graph extends React.Component<any, any> {
     this.height = 2400 - margin.top - margin.bottom;
 
     // add the svg canvas
-    this.svg = d3.select('#chart')
-      .append('svg')
-      .attr('id', 'main')
-      .on('click', e => {
-        const d3e = d3.event;
+    // this.svg.on('click', e => {
+    //     const d3e = d3.event;
 
-        const t = d3e.target;
-        const x = d3e.clientX;
-        const y = d3e.clientY;
-        // const target = (t == this.svg.node() ? this.svg.node() : t.parentNode);
-        const target = this.svg.node();
-        const svgP = this.svgPoint(target, x, y);
-        // console.log(target);
-        console.log(x);
-        console.log(y);
-        console.log(svgP);
-        console.log('--------->');
-        this.props.actions.selectGraph();
-      })
+    //     const t = d3e.target;
+    //     const x = d3e.clientX;
+    //     const y = d3e.clientY;
+    //     // const target = (t == this.svg.node() ? this.svg.node() : t.parentNode);
+    //     const target = this.svg.node();
+    //     const svgP = this.svgPoint(target, x, y);
+    //     // console.log(target);
+    //     console.log(x);
+    //     console.log(y);
+    //     console.log(svgP);
+    //     console.log('--------->');
+    //     this.props.actions.selectGraph();
+    //   })
+    this.svg
       .attr('width', this.width + margin.left + margin.right)
       .attr('height', this.height + margin.top + margin.bottom);
 
@@ -130,8 +130,8 @@ class Graph extends React.Component<any, any> {
   _toHtmlCoords(svgCoords) {
     const ctm = this.svg.node().getScreenCTM();
     const pt = this.svg.node().createSVGPoint();
-    pt.x = svgCoords.y;
-    pt.y = svgCoords.x;
+    pt.x = svgCoords.x;
+    pt.y = svgCoords.y;
 
     return pt.matrixTransform(ctm);
   }
@@ -171,7 +171,6 @@ class Graph extends React.Component<any, any> {
                           onTextClick={this.onTextClick.bind(this)}
                           onMouseOver={this.onMouseOver.bind(this)}
                           onMouseOut={this.onMouseOut.bind(this)}
-                          container={this.svg}
                           root={graph.treeRoot}
                           updateNode={graph.updateNode}
                           display={graph.display}
@@ -189,9 +188,9 @@ class Graph extends React.Component<any, any> {
     return (
       <div>
         <AxisManager container={this.svg} dragBehavior={this.dragBehavior} />
-        <div id="chart">
+        <svg id="main" ref={(svg) => this.svg = d3.select(svg)}>
           {graphsElements}
-        </div>
+        </svg>
       </div>
     );
   }

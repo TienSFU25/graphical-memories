@@ -43,7 +43,10 @@ function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerSta
     });
   } else {
     newRoot.each((node: d3Node) => {
-      node.x += maxHeight * viewIndex;
+      const oldY = node.y;
+      // node.y = node.x + maxHeight * viewIndex;
+      node.y = node.x;
+      node.x = oldY;
     });
   }
 
