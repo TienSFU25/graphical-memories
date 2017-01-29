@@ -27,6 +27,7 @@ class Graph extends React.Component<any, any> {
   private isDragging: boolean;
   private dragBehavior: d3.DragBehavior<any, any, any>;
   private destDragNode;
+  private container;
 
   constructor(props) {
     window['Snap'] = Snap;
@@ -78,9 +79,11 @@ class Graph extends React.Component<any, any> {
     //   .on('zoom', (d) => {
     //     console.log('THIS IS ZOOM');
     //     const transform = d3.zoomTransform(this.svg.node());
-    //     this.svg.attr('transform', transform.toString());
+    //     this.container.attr('transform', transform.toString());
     //     console.log(transform);
     //   });
+
+
 
     // this.svg.call(zoomBehavior);
 
@@ -95,10 +98,10 @@ class Graph extends React.Component<any, any> {
 
     // function dragged(d) {
     //   console.log('THIS IS DRAG');
-    //   console.log(d);
+    //   console.log(d3.event.x);
+    //   console.log(d3.event.y);
     //   // d3.select(this).attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y);
     // }
-
     // this.svg.call(drag);
 
     const self = this;
@@ -195,7 +198,9 @@ class Graph extends React.Component<any, any> {
                           display={graph.display}
                           selectedNode={selectedNode}
                           dx={graph.dx}
-                          dy={graph.dy} />
+                          dy={graph.dy}
+                          dx2={graph.dx2}
+                          dy2={graph.dy2} />
     }
   }
 
@@ -210,7 +215,7 @@ class Graph extends React.Component<any, any> {
       <div>
         <AxisManager container={this.svg} dragBehavior={this.dragBehavior} />
         <svg id="main" ref={(svg) => this.svg = d3.select(svg)}>
-          {graphsElements}
+            {graphsElements}
         </svg>
       </div>
     );

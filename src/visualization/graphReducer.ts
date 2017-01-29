@@ -90,17 +90,21 @@ export default function graphReducer(state = emptyTree, action): TreeReducerStat
 
       let dx = 0;
       let dy = maxHeight * viewIndex;
+      let dx2 = 0;
+      let dy2 = 0;
 
       if (state.display === TreeType.Radial) {
-        dx += RADIAL_X;
-        dy += RADIAL_Y;
+        dx2 = RADIAL_X;
+        dy2 = RADIAL_Y;
       }
 
       return Object.assign({}, state, {
         maxHeight,
         maxWidth,
         dx,
-        dy
+        dy,
+        dx2,
+        dy2
       });
     }
     case ActionTypes.LOAD_GRAPH_SUCCESS: {

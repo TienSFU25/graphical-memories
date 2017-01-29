@@ -51,6 +51,8 @@ export interface TreeReducerState<T> {
   maxWidth: number;
   dx: number;
   dy: number;
+  dx2: number;
+  dy2: number;
 }
 
 export interface AllGraphsReducerState {
