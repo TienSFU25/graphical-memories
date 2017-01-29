@@ -41,16 +41,16 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
   constructor(props) {
     super(props);
 
-    this.state = {
-      g: null,
-      root: null,
-      updateNode: null
-    };
+    // this.state = {
+    //   g: null,
+    //   root: null,
+    //   updateNode: null
+    // };
   }
 
   // thank you redux
-  shouldComponentUpdate(nextState) {
-    return (nextState.updateNode !== this.state.updateNode);
+  shouldComponentUpdate(nextProps) {
+    return (this.props.updateNode !== nextProps.updateNode);
   }
 
   componentDidMount() {
@@ -63,11 +63,11 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
     this.callzoomonme.call(zoomBehavior);
 
-    this.setState({
-      root: this.props.root,
-      updateNode: this.props.updateNode,
-      display: this.props.display
-    });
+    // this.setState({
+    //   root: this.props.root,
+    //   updateNode: this.props.updateNode,
+    //   display: this.props.display
+    // });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -77,18 +77,21 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
       this.clearSelectedNode();
     }
 
-    this.setState({
-      root: nextProps.root,
-      updateNode: nextProps.updateNode,
-      display: this.props.display
-    });
+    if (nextProps.updateNode) {
+      console.log(`previous update node was ${this.props.updateNode.data.name}`);
+      console.log(`updating next node ${nextProps.updateNode.data.name}`);
+      console.log(`-------------->`);
+      this.update(nextProps.updateNode, nextProps.root);
+    }
+
+    // this.setState({
+    //   root: nextProps.root,
+    //   updateNode: nextProps.updateNode,
+    //   display: this.props.display
+    // });
   }
 
   render() {
-    if (this.state.updateNode) {
-      this.update(this.state.updateNode);
-    }
-
     return (
       <g transform={`translate(${this.props.dx}, ${this.props.dy})`} ref={(g) => this.callzoomonme = d3.select(g)}>
         <rect style={{fill: "none", 'pointer-events': "all"}} width={960} height={1200} ref={(rect) => this.container = d3.select(rect)} />
@@ -105,7 +108,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
   updateSelectedNode(selectedNode) {
     const context = this.g;
-    const root = this.state.root;
+    const root = this.props.root;
     const self = this;
 
     const nodes = context.selectAll('.node')
@@ -126,10 +129,10 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
       });
   }
 
-  update(source: d3Node) {
+  update(source: d3Node, root: d3Node) {
     const self = this;
     const context = this.g;
-    const root = this.state.root;
+    // const root = this.props.root;
 
     const DELAY = 500;
     const t = d3.transition('myT').duration(750);
@@ -216,7 +219,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     let nodeTransform;
     let linkTransform;
 
-    if (this.state.display === TreeType.VerticalTree) {
+    if (this.props.display === TreeType.VerticalTree) {
       nodeTransform = (d: d3Node) => `translate(${d.x}, ${d.y})`;
       linkTransform = (d: d3Node) => {
         return `M${d.x},${d.y}`
@@ -224,7 +227,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
           + ` ${d.parent.x + 100},${d.parent.y}`
           + ` ${d.parent.x},${d.parent.y}`;
       };
-    } else if (this.state.display === TreeType.Radial) {
+    } else if (this.props.display === TreeType.Radial) {
       nodeTransform = (d: d3Node) => `translate(${d.x}, ${d.y})`;
       linkTransform = (d: d3Node) => {
         return "M" + (project(d.x0, d.y0))

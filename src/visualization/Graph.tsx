@@ -75,35 +75,6 @@ class Graph extends React.Component<any, any> {
         .attr('width', this.width + margin.left + margin.right)
         .attr('height', this.height + margin.top + margin.bottom);
 
-    // const zoomBehavior = d3.zoom()
-    //   .on('zoom', (d) => {
-    //     console.log('THIS IS ZOOM');
-    //     const transform = d3.zoomTransform(this.svg.node());
-    //     this.container.attr('transform', transform.toString());
-    //     console.log(transform);
-    //   });
-
-
-
-    // this.svg.call(zoomBehavior);
-
-    // var drag = d3.drag()
-    //     .on("start", dragstarted)
-    //     .on("drag", dragged);
-
-    // function dragstarted(d) {
-    //   d3.event.sourceEvent.stopPropagation();
-    //   // d3.select(this).classed("dragging", true);
-    // }
-
-    // function dragged(d) {
-    //   console.log('THIS IS DRAG');
-    //   console.log(d3.event.x);
-    //   console.log(d3.event.y);
-    //   // d3.select(this).attr("cx", d.x = d3.event.x).attr("cy", d.y = d3.event.y);
-    // }
-    // this.svg.call(drag);
-
     const self = this;
     this.dragBehavior = d3.drag()
       .on('start', d => {
