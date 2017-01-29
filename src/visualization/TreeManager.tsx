@@ -10,12 +10,6 @@ import { d3Node, TreeType } from '../types';
 import { IMAGE_HEIGHT, IMAGE_WIDTH } from './constants';
 
 import '../css/styles.scss';
-import './dropdown.scss';
-
-import classie from './classie';
-
-declare var Snap: any;
-declare var mina: any;
 
 const DEBUG = true;
 
@@ -32,49 +26,8 @@ interface ITreeManagerProps {
   updateNode;
   selectedNode;
   display;
+  yOffset;
 }
-
-				function SVGDDMenu( el ) {
-					this.el = el;
-					this.init();
-				}
-
-				SVGDDMenu.prototype.init = function() {
-					this.shapeEl = this.el.querySelector( 'div.morph-shape' );
-
-					var s = Snap( this.shapeEl.querySelector( 'g' ) );
-					this.pathEl = s.select( 'path' );
-					this.paths = {
-						reset : this.pathEl.attr( 'd' ),
-						open : this.shapeEl.getAttribute( 'data-morph-open' )
-					};
-
-					this.isOpen = false;
-
-					this.initEvents();
-				};
-
-				SVGDDMenu.prototype.initEvents = function() {
-					this.el.addEventListener( 'click', this.toggle.bind(this) );
-				};
-
-				SVGDDMenu.prototype.toggle = function() {
-          console.log('dis me toggling');
-					var self = this;
-
-					if( this.isOpen ) {
-						classie.remove( self.el, 'menu--open' );
-					}
-					else {
-						classie.add( self.el, 'menu--open' );
-					}
-
-					this.pathEl.stop().animate( { 'path' : this.paths.open }, 320, mina.easeinout, function() {
-						self.pathEl.stop().animate( { 'path' : self.paths.reset }, 1000, mina.elastic );
-					} );
-
-					this.isOpen = !this.isOpen;
-				};
 
 class TreeManager extends React.Component<ITreeManagerProps, any> {
   private DOMSelectedNode;
@@ -96,11 +49,6 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
   }
 
   componentDidMount() {
-
-
-				new SVGDDMenu( document.getElementById( 'menuism' ) );
-
-
     this.setState({
       root: this.props.root,
       updateNode: this.props.updateNode,
@@ -128,26 +76,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     }
 
     return (
-      <g>
-        <foreignObject>
-          <nav id="menuism" className="menu">
-            <div className="morph-shape" data-morph-open="M260,500H0c0,0,8-120,8-250C8,110,0,0,0,0h260c0,0-8,110-8,250C252,380,260,500,260,500z">
-              <g width="100%" height="100%">
-                <path fill="none" d="M260,500H0c0,0,0-120,0-250C0,110,0,0,0,0h260c0,0,0,110,0,250C260,380,260,500,260,500z"></path>
-              </g>
-            </div>
-            <button className="menu__label"><i className="fa fa-fw fa-bars"></i><span>Open Menu</span></button>
-            <ul className="menu__inner">
-              <li><a href="https://tympanus.net/Development/ElasticSVGElements/dropdown.html#"><i className="fa fa-fw fa-bookmark-o"></i><span>Reading List</span></a></li>
-              <li><a href="https://tympanus.net/Development/ElasticSVGElements/dropdown.html#"><i className="fa fa-fw fa-hdd-o"></i><span>Saved Items</span></a></li>
-              <li><a href="https://tympanus.net/Development/ElasticSVGElements/dropdown.html#"><i className="fa fa-fw fa-image"></i><span>All Media</span></a></li>
-              <li><a href="https://tympanus.net/Development/ElasticSVGElements/dropdown.html#"><i className="fa fa-fw fa-heart-o"></i><span>Favorites</span></a></li>
-              <li><a href="https://tympanus.net/Development/ElasticSVGElements/dropdown.html#"><i className="fa fa-fw fa-envelope-o"></i><span>Messages</span></a></li>
-              <li><a href="https://tympanus.net/Development/ElasticSVGElements/dropdown.html#"><i className="fa fa-fw fa-bell-o"></i><span>Notifications</span></a></li>
-            </ul>
-          </nav>
-        </foreignObject>
-
+      <g transform={`translate(0, ${this.props.yOffset})`}>
         <g ref={(element) => this.g = d3.select(element)}/>
       </g>
     );
@@ -206,17 +135,6 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     const nodes = context.selectAll('.node')
       .data(root.descendants(), d => d.data.id);
 
-    // update text or image if node
-    // IS THERE A BETTER WAY TO DO THESE UPDATES???
-    nodes.each(function(node) {
-      const nodeContainer = d3.select(this);
-      const newNodeName = node.data.name;
-      const newImgHref = node.data.image;
-
-      nodeContainer.select('text').text(newNodeName);
-      nodeContainer.select('image').attr('href', newImgHref);
-    });
-
     const enterNodes = nodes.enter().append('g');
     let i = 0;
 
@@ -236,28 +154,44 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
       });
 
     enterNodes
+      .merge(nodes)
       .each(function(node) {
         const nodeContainer = d3.select(this);
+        const imageContainer = nodeContainer.select('image');
+        const textContainer = nodeContainer.select('text');
+
+        const newNodeName = node.data.name;
+        const newImgHref = node.data.image;
 
         if (node.data.image) {
-          nodeContainer.append('image')
-            .attr('href', node.data.image)
-            .attr('width', IMAGE_WIDTH)
-            .attr('height', IMAGE_HEIGHT)
-            .attr('x', IMAGE_WIDTH * -0.5)
-            .attr('y', IMAGE_HEIGHT * -0.5);
+          if (imageContainer.size() == 1) {
+            // just update the href
+            imageContainer.attr('href', newImgHref);
+          } else {
+            // create the image
+            nodeContainer.append('image')
+              .attr('href', node.data.image)
+              .attr('width', IMAGE_WIDTH)
+              .attr('height', IMAGE_HEIGHT)
+              .attr('x', IMAGE_WIDTH * -0.5)
+              .attr('y', IMAGE_HEIGHT * -0.5);
 
-          // remove the circle
-          nodeContainer.select('circle').remove();
+            // remove the circle
+            nodeContainer.select('circle').remove();
+          }
         }
 
-        nodeContainer.append('text')
-          .attr('dy', 3)
-          .attr('x', (d: d3Node) => d.children ? -8 : 8)
-          .attr('class', (d: d3Node) => d.children ? 'internal': 'leaf')
-          .text(_ => {
-            return node.data.name;
-          });
+        if (textContainer.size() == 1) {
+          textContainer.text(newNodeName);
+        } else {
+          nodeContainer.append('text')
+            .attr('dy', 3)
+            .attr('x', (d: d3Node) => d.children ? -8 : 8)
+            .attr('class', (d: d3Node) => d.children ? 'internal': 'leaf')
+            .text(_ => {
+              return node.data.name;
+            });
+        }
       });
 
     // stick in DOM

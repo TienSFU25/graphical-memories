@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import * as _ from 'lodash';
 
 import { DRAG_THRESHOLD } from './constants';
-import { d3Node, GraphType } from '../types';
+import { d3Node, GraphType, TreeReducerState } from '../types';
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import popupActions from '../popups/popupActions';
 
@@ -53,23 +53,22 @@ class Graph extends React.Component<any, any> {
     this.height = 2400 - margin.top - margin.bottom;
 
     // add the svg canvas
-    // this.svg.on('click', e => {
-    //     const d3e = d3.event;
+    this.svg.on('click', e => {
+        const d3e = d3.event;
 
-    //     const t = d3e.target;
-    //     const x = d3e.clientX;
-    //     const y = d3e.clientY;
-    //     // const target = (t == this.svg.node() ? this.svg.node() : t.parentNode);
-    //     const target = this.svg.node();
-    //     const svgP = this.svgPoint(target, x, y);
-    //     // console.log(target);
-    //     console.log(x);
-    //     console.log(y);
-    //     console.log(svgP);
-    //     console.log('--------->');
-    //     this.props.actions.selectGraph();
-    //   })
-    this.svg
+        const t = d3e.target;
+        const x = d3e.clientX;
+        const y = d3e.clientY;
+        // const target = (t == this.svg.node() ? this.svg.node() : t.parentNode);
+        const target = this.svg.node();
+        const svgP = this.svgPoint(target, x, y);
+        // console.log(target);
+        console.log(x);
+        console.log(y);
+        console.log(svgP);
+        console.log('--------->');
+        this.props.actions.selectGraph();
+      })
       .attr('width', this.width + margin.left + margin.right)
       .attr('height', this.height + margin.top + margin.bottom);
 
@@ -79,9 +78,9 @@ class Graph extends React.Component<any, any> {
         // d3.selectAll('.ghost.disabled').attr('class', 'ghost');
         d3.event.sourceEvent.stopPropagation();
       })
-      .on('drag', (d:d3Node) => {
+      .on('drag', (d) => {
         const e = d3.event;
-        if (e.x - d.x  > DRAG_THRESHOLD || e.y - d.y > DRAG_THRESHOLD) {
+        if (e.x - d['x']  > DRAG_THRESHOLD || e.y - d['y'] > DRAG_THRESHOLD || d['type'] === 'IMAGE') {
           self.isDragging = true;
           d3.selectAll('.ghost.disabled').attr('class', 'ghost');
         }
@@ -127,13 +126,17 @@ class Graph extends React.Component<any, any> {
     d3.event.stopPropagation();
   }
 
-  _toHtmlCoords(svgCoords) {
+  _toHtmlCoords(node: d3Node) {
     const ctm = this.svg.node().getScreenCTM();
     const pt = this.svg.node().createSVGPoint();
-    pt.x = svgCoords.x;
-    pt.y = svgCoords.y;
+    pt.x = node.x;
+    pt.y = node.y;
 
-    return pt.matrixTransform(ctm);
+    const { x, y } = pt.matrixTransform(ctm);
+    return {
+      x,
+      y: y + node.yOffset
+    };
   }
 
   onTextClick(node) {
@@ -162,7 +165,7 @@ class Graph extends React.Component<any, any> {
     }
   }
 
-  _graphToReactElement(graph) {
+  _graphToReactElement(graph: TreeReducerState<string>) {
     const selectedNode = this.state.selectedEntity.node;
 
     if (graph.type === GraphType.Tree) {
@@ -174,7 +177,8 @@ class Graph extends React.Component<any, any> {
                           root={graph.treeRoot}
                           updateNode={graph.updateNode}
                           display={graph.display}
-                          selectedNode={selectedNode} />
+                          selectedNode={selectedNode}
+                          yOffset={graph.yOffset} />
     }
   }
 

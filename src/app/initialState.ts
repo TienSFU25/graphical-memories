@@ -38,5 +38,5 @@ export const emptyTree = {
   updateNode: null,
   maxHeight: 0,
   maxWidth: 0,
-  viewIndex: 0
+  yOffset: 0
 };

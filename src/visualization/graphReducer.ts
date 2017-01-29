@@ -14,7 +14,7 @@ function _sortTree(root) {
 
 function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerState<string>, toggleIds?: Set<number>, display = previousState.display) {
   // pull view size data from previous state
-  const { maxHeight, maxWidth, viewIndex } = previousState;
+  const { maxHeight, maxWidth, yOffset } = previousState;
 
   const newRoot: d3Node = d3.hierarchy(treeData);
   let tree;
@@ -37,26 +37,28 @@ function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerSta
 
       // shift everything down
       node.dx = 520;
-      node.dy = 670 + maxHeight * viewIndex;
+      node.dy = 670;
 
       [node.x, node.y] = translate(project(node.x, node.y), node.dx, node.dy);
     });
   } else {
     newRoot.each((node: d3Node) => {
       const oldY = node.y;
-      // node.y = node.x + maxHeight * viewIndex;
       node.y = node.x;
       node.x = oldY;
     });
   }
 
-  // toggle children
   const toggleCopy = toggleIds || new Set(previousState.toggleIds);
   newRoot.each((node: d3Node) => {
+    // toggle children
     if (toggleCopy.has(node.data.id)) {
       node._children = node.children;
       node.children = null;
     }
+
+    // need this to know absolute position
+    node.yOffset = yOffset;
   });
 
   // also find the node that needs rerendering
@@ -81,10 +83,7 @@ function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerSta
   });
 }
 
-
-
 export default function graphReducer(state = emptyTree, action): TreeReducerState<string> {
-  // const { graph, height, width, viewIndex } = action;
   const { graph } = action;
   const dataCopy = Object.assign({}, state.raw);
 
@@ -95,7 +94,7 @@ export default function graphReducer(state = emptyTree, action): TreeReducerStat
       return Object.assign({}, state, {
         maxHeight,
         maxWidth,
-        viewIndex
+        yOffset: maxHeight * viewIndex
       });
     }
     case ActionTypes.LOAD_GRAPH_SUCCESS: {
