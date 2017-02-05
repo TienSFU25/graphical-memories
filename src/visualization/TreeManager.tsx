@@ -43,7 +43,8 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
   // thank you redux
   shouldComponentUpdate(nextProps) {
-    return (this.props.updateNode !== nextProps.updateNode);
+    const shouldUpdate = this.props.updateNode !== nextProps.updateNode;
+    return shouldUpdate;
   }
 
   componentDidMount() {
@@ -57,6 +58,8 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
       });
 
     this.panZoomContainer.call(zoomBehavior);
+
+    this.update(this.props.updateNode, this.props.root);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -66,7 +69,9 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
       this.clearSelectedNode();
     }
 
-    if (nextProps.updateNode) {
+    const shouldUpdate = this.props.updateNode !== nextProps.updateNode;
+
+    if (shouldUpdate) {
       this.update(nextProps.updateNode, nextProps.root);
     }
   }

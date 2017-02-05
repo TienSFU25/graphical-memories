@@ -2,18 +2,17 @@ import * as React from 'react';
 import * as d3 from 'd3';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { HotKeys } from 'react-hotkeys';
 import * as _ from 'lodash';
 
 import { DRAG_THRESHOLD } from './constants';
 import { d3Node, GraphType, TreeReducerState } from '../types';
 import { toHtmlCoords } from '../shared/svgHelper';
-import { findSibling } from './treeManipulator';
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import popupActions from '../popups/popupActions';
 
 import AxisManager from './AxisManager';
 import TreeManager from './TreeManager';
+import HotKeyManager from './HotKeyManager';
 
 const DEBUG = true;
 
@@ -167,6 +166,7 @@ class Graph extends React.Component<any, any> {
 
     const handlers = {
       'ctrl+left': (e) => {
+        console.log(e);
         // select ancestor
         const selectedNode = self.props.selectedEntity.node;
 
@@ -205,11 +205,11 @@ class Graph extends React.Component<any, any> {
     return (
       <div>
         <AxisManager container={this.svg} dragBehavior={this.dragBehavior} />
-        <HotKeys handlers={handlers} >
+        <HotKeyManager>
           <svg id="main" ref={(svg) => this.svg = d3.select(svg)}>
-              {graphsElements}
+            {graphsElements}
           </svg>
-        </HotKeys>
+        </HotKeyManager>
       </div>
     );
   }
