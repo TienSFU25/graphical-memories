@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Col, Row, Jumbotron } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { HotKeys } from 'react-hotkeys';
 
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import popupActions from '../popups/popupActions';
@@ -107,12 +108,23 @@ class InputWrapper extends React.Component<any, any> {
         inputHidden = '';
       }
     }
+          // <InputField autoFocus show value={nodeName} onSave={this.saveCurrentNode.bind(this)} keyHandler={this.inputKeyHandler.bind(this)}/>
+
+    const handlers = {
+      'up': () => console.log('up'),
+      'down': () => console.log('down'),
+      'left': () => console.log('left'),
+      'right': () => console.log('right'),
+      'shift+right': () => console.log('shift right')
+    };
 
     return (
       <div>
         {EditPopup}
         <div className={'edit box ' + inputHidden} style={style}>
-          <InputField autoFocus show value={nodeName} onSave={this.saveCurrentNode.bind(this)} keyHandler={this.inputKeyHandler.bind(this)}/>
+          <HotKeys handlers={handlers} >
+            <InputField autoFocus show value={nodeName} onSave={this.saveCurrentNode.bind(this)} />
+          </HotKeys>
           <div className="expand" onClick={this.expand.bind(this)} />
         </div>
         <InputField autoFocus show={editBox.showAdd} value='default' className='edit box' style={addStyle} onSave={this.addNode.bind(this)} />

@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as d3 from 'd3';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { HotKeys } from 'react-hotkeys';
 import * as _ from 'lodash';
 
 import { DRAG_THRESHOLD } from './constants';
@@ -17,7 +18,6 @@ const DEBUG = true;
 
 // testing purposes
 window['d3'] = d3;
-declare var Snap: any;
 
 class Graph extends React.Component<any, any> {
   private margin;
@@ -28,16 +28,6 @@ class Graph extends React.Component<any, any> {
   private dragBehavior: d3.DragBehavior<any, any, any>;
   private destDragNode;
   private container;
-
-  constructor(props) {
-    window['Snap'] = Snap;
-    super(props);
-
-    this.state = {
-      selectedEntity: null,
-      graphs: []
-    };
-  }
 
   svgPoint(element, x, y) {
     var pt = this.svg.node().createSVGPoint();
@@ -106,22 +96,12 @@ class Graph extends React.Component<any, any> {
           self.destDragNode = null;
         } else {
           // assume a click event
+          // handled by another handler
           console.log('assume you clicked!');
         }
 
         self.isDragging = false;
       });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    console.log('graph getting some prop action...');
-    const graphs = nextProps.graph.subStates;
-    const selectedEntity = nextProps.selectedEntity;
-
-    this.setState({
-      selectedEntity,
-      graphs
-    });
   }
 
   onClick(node) {
@@ -156,7 +136,7 @@ class Graph extends React.Component<any, any> {
   }
 
   _graphToReactElement(graph: TreeReducerState<string>) {
-    const selectedNode = this.state.selectedEntity.node;
+    const selectedNode = this.props.selectedEntity.node;
 
     if (graph.type === GraphType.Tree) {
       return <TreeManager dragBehavior={this.dragBehavior}
@@ -177,17 +157,36 @@ class Graph extends React.Component<any, any> {
 
   render() {
     let graphsElements = null;
+    let mainGraph = this.props.graph;
+    let self = this;
 
-    if (this.state.graphs && this.state.graphs.length > 0) {
-      graphsElements = this.state.graphs.map(this._graphToReactElement.bind(this));
+    if (mainGraph.subStates && mainGraph.subStates.length > 0) {
+      graphsElements = mainGraph.subStates.map(this._graphToReactElement.bind(this));
     }
+
+    const handlers = {
+      'ctrl+up': (e) => {
+        console.log('ctrl up');
+        const parent = self.state.selectedEntity.node.parent;
+
+        if (parent) {
+          self.props.actions.selectNode(parent);
+        }
+      },
+      'down': () => console.log('down'),
+      'left': () => console.log('left'),
+      'right': () => console.log('right'),
+      'shift+right': () => console.log('shift right')
+    };
 
     return (
       <div>
         <AxisManager container={this.svg} dragBehavior={this.dragBehavior} />
-        <svg id="main" ref={(svg) => this.svg = d3.select(svg)}>
-            {graphsElements}
-        </svg>
+        <HotKeys handlers={handlers} >
+          <svg id="main" ref={(svg) => this.svg = d3.select(svg)}>
+              {graphsElements}
+          </svg>
+        </HotKeys>
       </div>
     );
   }
