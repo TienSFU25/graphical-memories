@@ -1,14 +1,25 @@
+.node {
+    cursor: pointer;
+}
+
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+  z-index: 2;
+}
+
+.node text {
+  font-size:10px;
+  font-family:sans-serif;
+}
+
 .node text.leaf {
   text-anchor: start
 }
 
 .node text.internal {
   text-anchor: end
-}
-
-.node circle {
-  stroke: steelblue;
-  fill: #999;
 }
 
 .node circle.selected {
@@ -29,8 +40,7 @@
 
 .link {
   fill: none;
-  stroke: #555;
-  stroke-opacity: 0.4;
+  stroke: #ccc;
   stroke-width: 1.5px;
 }
 

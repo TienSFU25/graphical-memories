@@ -67,9 +67,6 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     }
 
     if (nextProps.updateNode) {
-      console.log(`previous update node was ${this.props.updateNode.data.name}`);
-      console.log(`updating next node ${nextProps.updateNode.data.name}`);
-      console.log(`-------------->`);
       this.update(nextProps.updateNode, nextProps.root);
     }
   }
@@ -120,9 +117,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
   update(source: d3Node, root: d3Node) {
     const self = this;
     const context = this.transformContainer;
-
-    const DELAY = 500;
-    const t = d3.transition('myT').duration(750);
+    const transitionBehavior = d3.transition('myT').duration(750);
 
     function attachBehaviors() {
       const node = d3.select(this);
@@ -143,7 +138,6 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
       .data(root.descendants(), d => d.data.id);
 
     const enterNodes = nodes.enter().append('g');
-    let i = 0;
 
     enterNodes.append('circle')
       .attr('r', 7.5)
@@ -225,15 +219,13 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     } else {
       console.log('wtf display??');
     }
-    // const nodeTransform = (d: d3Node) => `translate(${project(d.x, d.y)})`;
 
     enterNodes
       .attr('transform', transform )
       .attr('style', 'fill-opacity: 1e-6')
       .merge(nodes)
-      .transition(t)
+      .transition(transitionBehavior)
       .attr('class', (d:d3Node) => {
-        i++;
 
         const className = d.children ? 'internal': 'leaf';
         return `node ${className}`;
@@ -242,19 +234,19 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
       .attr('style', 'fill-opacity: 1')
       .on('end', attachBehaviors);
 
-    console.log(`updating ${i} nodes`);
-
     const exitNodes = nodes.exit()
-      .transition(t)
+      .transition(transitionBehavior)
       .attr('transform', `translate(${source.y}, ${source.x})` )
       .attr('style', 'fill-opacity: 1e-6')
       .remove();
+
+    const linkTransitionBehavior = d3.transition('myT').duration(700);
 
     const links = context.selectAll('.link')
       .data(root.descendants().slice(1), d => d.data.id);
 
     const enterLinks = links.enter()
-      .append('path')
+      .insert('path', 'g')
       .attr('d', (d: d3Node) => {
           return `M${source.y},${source.x}`
             + `C${source.y},${source.x}`
@@ -262,12 +254,12 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
             + ` ${source.y},${source.x}`
       })
       .merge(links)
-      .transition(t)
+      .transition(linkTransitionBehavior)
       .attr('class', 'link')
       .attr('d', linkTransform);
 
     const exitLinks = links.exit()
-      .transition(t)
+      .transition(linkTransitionBehavior)
       .attr('d', d => {
         return `M${source.y},${source.x}`
           + `C${source.y},${source.x}`
