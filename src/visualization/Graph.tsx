@@ -129,13 +129,13 @@ class Graph extends React.Component<any, any> {
     d3.event.stopPropagation();
   }
 
-  onTextClick(node) {
+  onTextClick(node, transform) {
     if (!node.x || !node.y) {
       console.error('node does not have coordinates!');
       return;
     }
 
-    const htmlCoords = toHtmlCoords(node);
+    const htmlCoords = toHtmlCoords(node, transform);
     this.props.actions.selectNode(node);
     this.props.popupActions.showEditBox(htmlCoords);
   }

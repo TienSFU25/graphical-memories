@@ -49,8 +49,8 @@ class InputWrapper extends React.Component<any, any> {
 
         if (parent) {
           this.props.actions.selectNode(parent);
-          const parentCoords = toHtmlCoords(parent);
-          this.props.popupActions.showEditBox(parentCoords);
+          // const parentCoords = toHtmlCoords(parent);
+          // this.props.popupActions.showEditBox(parentCoords);
         }
 
         event.preventDefault();

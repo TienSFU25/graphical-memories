@@ -34,18 +34,11 @@ interface ITreeManagerProps {
 
 class TreeManager extends React.Component<ITreeManagerProps, any> {
   private DOMSelectedNode;
-  private g;
-  private container;
-  private callzoomonme;
+  private transformContainer;
+  private panZoomContainer;
 
   constructor(props) {
     super(props);
-
-    // this.state = {
-    //   g: null,
-    //   root: null,
-    //   updateNode: null
-    // };
   }
 
   // thank you redux
@@ -54,20 +47,16 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
   }
 
   componentDidMount() {
+    const self = this;
+
     const zoomBehavior = d3.zoom()
       .on('zoom', (d) => {
         console.log('THIS IS THE G ZOOM');
-        let transform = d3.zoomTransform(this.callzoomonme.node());
-        this.g.attr('transform', transform.toString());
+        const transform = self._getZoomTransform();
+        this.transformContainer.attr('transform', transform.toString());
       });
 
-    this.callzoomonme.call(zoomBehavior);
-
-    // this.setState({
-    //   root: this.props.root,
-    //   updateNode: this.props.updateNode,
-    //   display: this.props.display
-    // });
+    this.panZoomContainer.call(zoomBehavior);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -83,21 +72,13 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
       console.log(`-------------->`);
       this.update(nextProps.updateNode, nextProps.root);
     }
-
-    // this.setState({
-    //   root: nextProps.root,
-    //   updateNode: nextProps.updateNode,
-    //   display: this.props.display
-    // });
   }
 
   render() {
     return (
-      <g transform={`translate(${this.props.dx}, ${this.props.dy})`} ref={(g) => this.callzoomonme = d3.select(g)}>
-        <rect style={{fill: "none", 'pointer-events': "all"}} width={960} height={1200} ref={(rect) => this.container = d3.select(rect)} />
-        <g transform={`translate(${this.props.dx2}, ${this.props.dy2})`}>
-          <g ref={(element) => this.g = d3.select(element)} />
-        </g>
+      <g transform={`translate(${this.props.dx}, ${this.props.dy})`}>
+        <rect style={{fill: "none", 'pointer-events': "all"}} width={960} height={1200} ref={(rect) => this.panZoomContainer = d3.select(rect)} />
+        <g transform={`translate(${this.props.dx2}, ${this.props.dy2})`} ref={(element) => this.transformContainer = d3.select(element)} />
       </g>
     );
   }
@@ -106,8 +87,15 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     this.DOMSelectedNode.attr('class', 'inner');
   }
 
+  _getZoomTransform() {
+    const transform = d3.zoomTransform(this.panZoomContainer.node());
+    const translatedTransform = transform.translate(this.props.dx2, this.props.dy2);
+
+    return translatedTransform;
+  }
+
   updateSelectedNode(selectedNode) {
-    const context = this.g;
+    const context = this.transformContainer;
     const root = this.props.root;
     const self = this;
 
@@ -131,15 +119,13 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
   update(source: d3Node, root: d3Node) {
     const self = this;
-    const context = this.g;
-    // const root = this.props.root;
+    const context = this.transformContainer;
 
     const DELAY = 500;
     const t = d3.transition('myT').duration(750);
 
     function attachBehaviors() {
       const node = d3.select(this);
-      const nodeData = this;
       const text = node.select('text');
       const circle = node.select('circle');
 
@@ -147,7 +133,8 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
       circle.call(self.props.dragBehavior);
 
       text.on('click', (thisNode) => {
-        self.props.onTextClick(thisNode);
+        const transform = self._getZoomTransform();
+        self.props.onTextClick(thisNode, transform);
         d3.event.stopPropagation();
       });
     }
