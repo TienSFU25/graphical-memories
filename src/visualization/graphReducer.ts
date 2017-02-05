@@ -46,6 +46,8 @@ function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerSta
   }
 
   const toggleCopy = toggleIds || new Set(previousState.toggleIds);
+  let flat = [];
+
   newRoot.each((node: d3Node) => {
     // toggle children
     if (toggleCopy.has(node.data.id)) {
@@ -56,6 +58,9 @@ function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerSta
     // need this to know absolute position
     node.dx = dx;
     node.dy = dy;
+
+    // node.each is BFS
+    flat.push(node);
   });
 
   // also find the node that needs rerendering
@@ -76,7 +81,8 @@ function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerSta
     treeRoot: newRoot,
     toggleIds: toggleCopy,
     updateNode,
-    display
+    display,
+    flat
   });
 }
 

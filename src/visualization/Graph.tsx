@@ -8,6 +8,7 @@ import * as _ from 'lodash';
 import { DRAG_THRESHOLD } from './constants';
 import { d3Node, GraphType, TreeReducerState } from '../types';
 import { toHtmlCoords } from '../shared/svgHelper';
+import { findSibling } from './treeManipulator';
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import popupActions from '../popups/popupActions';
 
@@ -165,18 +166,40 @@ class Graph extends React.Component<any, any> {
     }
 
     const handlers = {
-      'ctrl+up': (e) => {
-        console.log('ctrl up');
-        const parent = self.state.selectedEntity.node.parent;
+      'ctrl+left': (e) => {
+        // select ancestor
+        const selectedNode = self.props.selectedEntity.node;
 
-        if (parent) {
-          self.props.actions.selectNode(parent);
+        if (selectedNode && selectedNode.parent) {
+          self.props.actions.selectNode(selectedNode.parent);
         }
       },
-      'down': () => console.log('down'),
-      'left': () => console.log('left'),
-      'right': () => console.log('right'),
-      'shift+right': () => console.log('shift right')
+      'ctrl+right': () => {
+        // select first descendant
+        const selectedNode = self.props.selectedEntity.node;
+
+        if (selectedNode && selectedNode.children) {
+          self.props.actions.selectNode(selectedNode.children[0]);
+        }
+      },
+      'ctrl+up': () => {
+        // first "younger" sibling
+        const selectedNode = self.props.selectedEntity.node;
+
+        if (selectedNode) {
+          const sibling = findSibling(selectedNode, self.props.graph.subStates);
+          self.props.actions.selectNode(sibling);
+        }
+      },
+      'ctrl+down': () => {
+        // first "older" sibling
+        const selectedNode = self.props.selectedEntity.node;
+
+        if (selectedNode) {
+          const sibling = findSibling(selectedNode, self.props.graph.subStates, false);
+          self.props.actions.selectNode(sibling);
+        }
+      }
     };
 
     return (

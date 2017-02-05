@@ -82,3 +82,34 @@ export function project(x, y): [number, number] {
 export function translate([x, y], dx, dy) {
   return [x + dx, y + dy];
 };
+
+// BFS sibling search
+export function findSibling(findNode, subgraphs, younger=true) {
+  // find which graph this node belongs in
+  let root = findNode;
+
+  while (root.parent) {
+    root = root.parent;
+  }
+
+  const subgraph = subgraphs[root.rid];
+  const subflat = subgraph.flat;
+
+  // linear search. binary search might not work since sort key (name) can be duplicated
+  let nodeIndex = -1;
+
+  for (let i = 0; i < subflat.length; i ++) {
+    if (subflat[i].data.id == findNode.data.id) {
+      nodeIndex = i;
+      break;
+    }
+  }
+
+  const offset = younger ? -1: 1;
+
+  if (nodeIndex + offset >= 0 && nodeIndex + offset < subflat.length) {
+    return subflat[nodeIndex + offset];
+  } else {
+    return subflat[nodeIndex];
+  }
+}

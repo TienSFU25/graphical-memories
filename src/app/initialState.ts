@@ -41,5 +41,6 @@ export const emptyTree = {
   dx: 0,
   dy: 0,
   dx2: 0,
-  dy2: 0
+  dy2: 0,
+  flat: []
 };

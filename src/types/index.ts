@@ -53,6 +53,7 @@ export interface TreeReducerState<T> {
   dy: number;
   dx2: number;
   dy2: number;
+  flat: Array<TreeNode<T>>;
 }
 
 export interface AllGraphsReducerState {
