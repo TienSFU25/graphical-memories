@@ -37,9 +37,10 @@ class HotKeyManager extends React.Component<any, any> {
         if (selectedNode && selectedNode.parent) {
           self.props.actions.selectNode(selectedNode.parent);
           showIfAlreadyVisible(editBoxShow, selectedNode.parent);
+          e.preventDefault();
         }
       },
-      'ctrl+right': () => {
+      'ctrl+right': (e) => {
         // select first descendant
         const [ selectedNode, editBoxShow ] = getInfo();
 
@@ -47,9 +48,10 @@ class HotKeyManager extends React.Component<any, any> {
         if (selectedNode && selectedNode.children) {
           self.props.actions.selectNode(selectedNode.children[0]);
           showIfAlreadyVisible(editBoxShow, selectedNode.children[0]);
+          e.preventDefault();
         }
       },
-      'ctrl+up': () => {
+      'ctrl+up': (e) => {
         // first "younger" sibling
         const [ selectedNode, editBoxShow ] = getInfo();
 
@@ -57,9 +59,10 @@ class HotKeyManager extends React.Component<any, any> {
           const sibling = findSibling(selectedNode, self.props.graph.subStates);
           self.props.actions.selectNode(sibling);
           showIfAlreadyVisible(editBoxShow, sibling);
+          e.preventDefault();
         }
       },
-      'ctrl+down': () => {
+      'ctrl+down': (e) => {
         // first "older" sibling
         const [ selectedNode, editBoxShow ] = getInfo();
 
@@ -67,9 +70,10 @@ class HotKeyManager extends React.Component<any, any> {
           const sibling = findSibling(selectedNode, self.props.graph.subStates, false);
           self.props.actions.selectNode(sibling);
           showIfAlreadyVisible(editBoxShow, sibling);
+          e.preventDefault();
         }
       },
-      'tab': () => {
+      'tab': (e) => {
         // first "older" sibling
         const [ selectedNode, editBoxShow ] = getInfo();
 
@@ -77,9 +81,10 @@ class HotKeyManager extends React.Component<any, any> {
           const sibling = findSibling(selectedNode, self.props.graph.subStates, false);
           self.props.actions.selectNode(sibling);
           showIfAlreadyVisible(editBoxShow, sibling);
+          e.preventDefault();
         }
       },
-      'shift+tab': () => {
+      'shift+tab': (e) => {
         // first "younger" sibling
         const [ selectedNode, editBoxShow ] = getInfo();
 
@@ -87,6 +92,7 @@ class HotKeyManager extends React.Component<any, any> {
           const sibling = findSibling(selectedNode, self.props.graph.subStates);
           self.props.actions.selectNode(sibling);
           showIfAlreadyVisible(editBoxShow, sibling);
+          e.preventDefault();
         }
       }
     };
