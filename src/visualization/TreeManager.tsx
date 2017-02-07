@@ -138,8 +138,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
       });
 
       text.on('click', (thisNode) => {
-        const transform = self._getZoomTransform();
-        self.props.onTextClick(thisNode, transform);
+        self.props.onTextClick(thisNode);
         d3.event.stopPropagation();
       });
     }
@@ -147,7 +146,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     const nodes = context.selectAll('.node')
       .data(root.descendants(), d => d.data.id);
 
-    const enterNodes = nodes.enter().append('g');
+    const enterNodes = nodes.enter().append('g').attr('id', d => d.data.id);
 
     enterNodes.append('circle')
       .attr('r', 7.5)

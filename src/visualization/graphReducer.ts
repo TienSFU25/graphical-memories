@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 import { TREE_WIDTH, TREE_HEIGHT, RADIAL_X, RADIAL_Y } from './constants';
 import { ActionTypes } from '../app/actionTypes';
 import { emptyTree } from '../app/initialState';
-import { d3Node, EntityType, SelectedEntity, TreeReducerState, TreeType } from '../types';
+import { d3Node, d3RootNode, EntityType, SelectedEntity, TreeReducerState, TreeType } from '../types';
 import { attachIds, getNextId, findNode, project, translate } from './treeManipulator';
 
 function _sortTree(root) {
@@ -14,9 +14,9 @@ function _sortTree(root) {
 
 function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerState<string>, toggleIds?: Set<number>, display = previousState.display) {
   // pull view size data from previous state
-  const { maxHeight, maxWidth, dx, dy } = previousState;
+  const { maxHeight, maxWidth, dx, dy, dx2, dy2 } = previousState;
 
-  const newRoot: d3Node = d3.hierarchy(treeData);
+  const newRoot: d3RootNode = d3.hierarchy(treeData);
   let tree;
 
   if (display == TreeType.Radial) {
@@ -75,6 +75,10 @@ function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerSta
   } else {
     updateNode = newRoot;
   }
+
+  // for determining zoom
+  newRoot.dx2 = dx2;
+  newRoot.dy2 = dy2;
 
   return Object.assign({}, previousState, {
     raw: treeData,

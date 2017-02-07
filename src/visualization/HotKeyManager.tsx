@@ -4,10 +4,12 @@ import { bindActionCreators } from 'redux';
 import { HotKeys } from 'react-hotkeys';
 
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
+import popupActions from '../popups/popupActions';
 import { findSibling } from './treeManipulator';
 
 class HotKeyManager extends React.Component<any, any> {
   private _handlerInstance;
+  private hotKeyWrapper;
 
   getHandlerInstance() {
     if (this._handlerInstance) return this._handlerInstance;
@@ -16,11 +18,13 @@ class HotKeyManager extends React.Component<any, any> {
 
     const handlers = {
       'ctrl+left': (e) => {
+        console.log('ctrl left');
         // select ancestor
         const selectedNode = self.props.selectedEntity.node;
 
         if (selectedNode && selectedNode.parent) {
           self.props.actions.selectNode(selectedNode.parent);
+          self.hotKeyWrapper.focus();
         }
       },
       'ctrl+right': () => {
@@ -57,8 +61,10 @@ class HotKeyManager extends React.Component<any, any> {
 
   render() {
     return (
-      <HotKeys handlers={this.getHandlerInstance.bind(this)} >
-        {this.props.children}
+      <HotKeys handlers={this.getHandlerInstance()}>
+        <div ref={(wrapper) => this.hotKeyWrapper = wrapper }>
+          {this.props.children}
+        </div>
       </HotKeys>
     );
   }
@@ -68,13 +74,15 @@ class HotKeyManager extends React.Component<any, any> {
 function mapStateToProps({ selectedEntity, editBox, graph }) {
   return {
     selectedEntity,
+    editBox,
     graph
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(graphManipulationActions, dispatch)
+    actions: bindActionCreators(graphManipulationActions, dispatch),
+    popupActions: bindActionCreators(popupActions, dispatch)
   };
 }
 

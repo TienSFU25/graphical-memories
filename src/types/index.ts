@@ -3,6 +3,11 @@ import * as d3 from 'd3';
 
 // export type d3Node = d3.HierarchyNode<GraphNode<any>>;
 
+export interface d3RootNode extends d3Node {
+  dx2?: number;
+  dy2?: number;
+}
+
 export interface d3Node extends d3.HierarchyNode<GraphNode<any>> {
   parent: d3Node;
   children?: Array<d3Node>;

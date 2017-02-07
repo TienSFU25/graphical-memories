@@ -109,13 +109,13 @@ class Graph extends React.Component<any, any> {
     d3.event.stopPropagation();
   }
 
-  onTextClick(node, transform) {
+  onTextClick(node) {
     if (!node.x || !node.y) {
       console.error('node does not have coordinates!');
       return;
     }
 
-    const htmlCoords = toHtmlCoords(node, transform);
+    const htmlCoords = toHtmlCoords(node);
     this.props.actions.selectNode(node);
     this.props.popupActions.showEditBox(htmlCoords);
   }
@@ -163,44 +163,6 @@ class Graph extends React.Component<any, any> {
     if (mainGraph.subStates && mainGraph.subStates.length > 0) {
       graphsElements = mainGraph.subStates.map(this._graphToReactElement.bind(this));
     }
-
-    const handlers = {
-      'ctrl+left': (e) => {
-        console.log(e);
-        // select ancestor
-        const selectedNode = self.props.selectedEntity.node;
-
-        if (selectedNode && selectedNode.parent) {
-          self.props.actions.selectNode(selectedNode.parent);
-        }
-      },
-      'ctrl+right': () => {
-        // select first descendant
-        const selectedNode = self.props.selectedEntity.node;
-
-        if (selectedNode && selectedNode.children) {
-          self.props.actions.selectNode(selectedNode.children[0]);
-        }
-      },
-      'ctrl+up': () => {
-        // first "younger" sibling
-        const selectedNode = self.props.selectedEntity.node;
-
-        if (selectedNode) {
-          const sibling = findSibling(selectedNode, self.props.graph.subStates);
-          self.props.actions.selectNode(sibling);
-        }
-      },
-      'ctrl+down': () => {
-        // first "older" sibling
-        const selectedNode = self.props.selectedEntity.node;
-
-        if (selectedNode) {
-          const sibling = findSibling(selectedNode, self.props.graph.subStates, false);
-          self.props.actions.selectNode(sibling);
-        }
-      }
-    };
 
     return (
       <div>

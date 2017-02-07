@@ -8,6 +8,7 @@ import graphManipulationActions from '../graphMetadata/graphManipulationActions'
 import popupActions from '../popups/popupActions';
 import EditBox from '../popups/EditBox';
 import InputField from '../shared/InputField';
+import HotKeyManager from '../visualization/HotKeyManager';
 import keyCodes from '../shared/keyCodes';
 import { toHtmlCoords } from '../shared/svgHelper';
 
@@ -108,23 +109,14 @@ class InputWrapper extends React.Component<any, any> {
         inputHidden = '';
       }
     }
-          // <InputField autoFocus show value={nodeName} onSave={this.saveCurrentNode.bind(this)} keyHandler={this.inputKeyHandler.bind(this)}/>
-
-    const handlers = {
-      'up': () => console.log('up'),
-      'down': () => console.log('down'),
-      'left': () => console.log('left'),
-      'right': () => console.log('right'),
-      'shift+right': () => console.log('shift right')
-    };
 
     return (
       <div>
         {EditPopup}
         <div className={'edit box ' + inputHidden} style={style}>
-          <HotKeys handlers={handlers} >
+          <HotKeyManager>
             <InputField autoFocus show value={nodeName} onSave={this.saveCurrentNode.bind(this)} />
-          </HotKeys>
+          </HotKeyManager>
           <div className="expand" onClick={this.expand.bind(this)} />
         </div>
         <InputField autoFocus show={editBox.showAdd} value='default' className='edit box' style={addStyle} onSave={this.addNode.bind(this)} />
