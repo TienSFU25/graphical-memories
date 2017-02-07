@@ -43,26 +43,6 @@ class InputWrapper extends React.Component<any, any> {
     this.props.actions.deleteNode(node);
   }
 
-  inputKeyHandler(event) {
-    switch (event.which) {
-      case keyCodes.LEFT: {
-        const currNode = this.props.selectedEntity.node;
-        const parent = currNode.parent;
-
-        if (parent) {
-          this.props.actions.selectNode(parent);
-          // const parentCoords = toHtmlCoords(parent);
-          // this.props.popupActions.showEditBox(parentCoords);
-        }
-
-        event.preventDefault();
-      }
-      default: {
-        // do nothing
-      }
-    }
-  }
-
   addNode(newNode) {
     console.log(`trying to add newNode ${JSON.stringify(newNode)}`);
     const destNode = this.props.selectedEntity.node;

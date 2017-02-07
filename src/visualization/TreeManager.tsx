@@ -155,7 +155,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     enterNodes.append('circle')
       .attr('r', 20)
       .attr('class', 'ghost disabled')
-      .attr('pointer-events', 'mouseover')
+      .attr('pointerEvents', 'mouseover')
       .on('mouseover', function(node) {
         self.props.onMouseOver(node, this);
       })

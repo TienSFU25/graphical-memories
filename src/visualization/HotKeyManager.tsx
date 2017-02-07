@@ -6,6 +6,7 @@ import { HotKeys } from 'react-hotkeys';
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import popupActions from '../popups/popupActions';
 import { findSibling } from './treeManipulator';
+import { toHtmlCoords } from '../shared/svgHelper';
 
 class HotKeyManager extends React.Component<any, any> {
   private _handlerInstance;
@@ -16,41 +17,76 @@ class HotKeyManager extends React.Component<any, any> {
 
     const self = this;
 
+    // code reuse
+    const getInfo = () => {
+      return [ self.props.selectedEntity.node, self.props.editBox.show ];
+    };
+
+    const showIfAlreadyVisible = (editBoxShow, nodeToMove) => {
+      if (editBoxShow) {
+        const htmlCoords = toHtmlCoords(nodeToMove);
+        self.props.popupActions.showEditBox(htmlCoords);
+      }
+    };
+
     const handlers = {
       'ctrl+left': (e) => {
-        console.log('ctrl left');
         // select ancestor
-        const selectedNode = self.props.selectedEntity.node;
+        const [ selectedNode, editBoxShow ] = getInfo();
 
         if (selectedNode && selectedNode.parent) {
           self.props.actions.selectNode(selectedNode.parent);
-          self.hotKeyWrapper.focus();
+          showIfAlreadyVisible(editBoxShow, selectedNode.parent);
         }
       },
       'ctrl+right': () => {
         // select first descendant
-        const selectedNode = self.props.selectedEntity.node;
+        const [ selectedNode, editBoxShow ] = getInfo();
+
 
         if (selectedNode && selectedNode.children) {
           self.props.actions.selectNode(selectedNode.children[0]);
+          showIfAlreadyVisible(editBoxShow, selectedNode.children[0]);
         }
       },
       'ctrl+up': () => {
         // first "younger" sibling
-        const selectedNode = self.props.selectedEntity.node;
+        const [ selectedNode, editBoxShow ] = getInfo();
 
         if (selectedNode) {
           const sibling = findSibling(selectedNode, self.props.graph.subStates);
           self.props.actions.selectNode(sibling);
+          showIfAlreadyVisible(editBoxShow, sibling);
         }
       },
       'ctrl+down': () => {
         // first "older" sibling
-        const selectedNode = self.props.selectedEntity.node;
+        const [ selectedNode, editBoxShow ] = getInfo();
 
         if (selectedNode) {
           const sibling = findSibling(selectedNode, self.props.graph.subStates, false);
           self.props.actions.selectNode(sibling);
+          showIfAlreadyVisible(editBoxShow, sibling);
+        }
+      },
+      'tab': () => {
+        // first "older" sibling
+        const [ selectedNode, editBoxShow ] = getInfo();
+
+        if (selectedNode) {
+          const sibling = findSibling(selectedNode, self.props.graph.subStates, false);
+          self.props.actions.selectNode(sibling);
+          showIfAlreadyVisible(editBoxShow, sibling);
+        }
+      },
+      'shift+tab': () => {
+        // first "younger" sibling
+        const [ selectedNode, editBoxShow ] = getInfo();
+
+        if (selectedNode) {
+          const sibling = findSibling(selectedNode, self.props.graph.subStates);
+          self.props.actions.selectNode(sibling);
+          showIfAlreadyVisible(editBoxShow, sibling);
         }
       }
     };
