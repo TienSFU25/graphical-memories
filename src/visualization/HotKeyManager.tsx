@@ -80,7 +80,7 @@ class HotKeyManager extends React.Component<any, any> {
         if (selectedNode) {
           const sibling = findSibling(selectedNode, self.props.graph.subStates, false);
           self.props.actions.selectNode(sibling);
-          showIfAlreadyVisible(editBoxShow, sibling);
+          // showIfAlreadyVisible(editBoxShow, sibling);
           e.preventDefault();
         }
       },

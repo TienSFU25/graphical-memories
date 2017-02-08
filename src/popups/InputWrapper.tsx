@@ -13,21 +13,51 @@ import keyCodes from '../shared/keyCodes';
 import { toHtmlCoords } from '../shared/svgHelper';
 
 class InputWrapper extends React.Component<any, any> {
+  private _handlerInstance;
+
   constructor(props) {
     super(props);
 
     this.state = {
       showEdit: false,
-      showPopup: false
+      showPopup: false,
+      addValue: 'default',
+      editValue: ''
     };
   }
 
-  saveCurrentNode(nodeData) {
+  getHandlerInstance() {
+    if (this._handlerInstance) return this._handlerInstance;
+
+    const self = this;
+    const handlers = {
+      'tab': (e) => {
+        self.addNode(self.state.addValue);
+        e.preventDefault();
+      },
+      'enter': (e) => {
+        self.addNode(self.state.addValue);
+        e.preventDefault();
+      }
+    };
+
+    this._handlerInstance = handlers;
+    return handlers;
+  }
+
+  onChange(id, value) {
+    const newState = {};
+
+    newState[`${id}Value`] = value;
+    this.setState(newState);
+  }
+
+  saveCurrentNode() {
     // save current node if any. also hides the box
     const prevNode = this.props.selectedEntity.node;
 
-    if (prevNode.data.name !== nodeData.name) {
-      this.props.actions.editNode(prevNode, nodeData);
+    if (prevNode.data.name !== this.state.editValue) {
+      this.props.actions.editNode(prevNode, { name: this.state.editValue });
     }
   }
 
@@ -43,7 +73,8 @@ class InputWrapper extends React.Component<any, any> {
     this.props.actions.deleteNode(node);
   }
 
-  addNode(newNode) {
+  addNode(newNodeName) {
+    const newNode = { name: newNodeName };
     console.log(`trying to add newNode ${JSON.stringify(newNode)}`);
     const destNode = this.props.selectedEntity.node;
     this.props.actions.addNode(newNode, destNode);
@@ -56,50 +87,69 @@ class InputWrapper extends React.Component<any, any> {
     });
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.selectedEntity.node) {
+      const currNode = this.props.selectedEntity.node;
+
+      // autosave
+      if (currNode && currNode !== nextProps.selectedEntity.node) {
+        this.saveCurrentNode();
+      }
+
+      this.setState({
+        editValue: nextProps.selectedEntity.node.data.name
+      });
+    }
+  }
+
   render() {
     const { editBox } = this.props;
-    const nodeName = this.props.selectedEntity.node ? this.props.selectedEntity.node.data.name : '';
 
-    let addStyle = {};
-    let style;
-    let inputHidden = 'hide';
-    let EditPopup = <div />;
+    let addStyle = { visibility: 'hidden', top: 0, left: 0, zIndex: 0 };
+    let inputStyle = { visibility: 'hidden', top: 0, left: 0 };
+    let editBoxStyle = { visibility: 'hidden', top: 0, left: 0 };
 
     if (editBox.showAdd) {
       addStyle = {
         top: this.props.editBox.addCoords.y + window.pageYOffset,
         left: this.props.editBox.addCoords.x,
-        zIndex: 3
+        zIndex: 3,
+        visibility: 'visible'
       };
     }
 
     if (editBox && editBox.show) {
-      style = {
-        top: editBox.htmlCoords.y + window.pageYOffset,
-        left: editBox.htmlCoords.x
-      };
+      inputStyle.top = editBox.htmlCoords.y + window.pageYOffset;
+      inputStyle.left = editBox.htmlCoords.x;
+
+      editBoxStyle.top = editBox.htmlCoords.y + window.pageYOffset;
+      editBoxStyle.left = editBox.htmlCoords.x;
 
       if (this.state.showPopup) {
-        EditPopup = <EditBox htmlCoords={this.props.editBox.htmlCoords}
-                          node={this.props.selectedEntity.node}
-                          onAdd={this.onAdd.bind(this)}
-                          onDelete={this.onDelete.bind(this)}
-                          onSave={this.saveCurrentNode.bind(this)} />
+        editBoxStyle.visibility = 'visible';
+        inputStyle.visibility = 'hidden';
       } else {
-        inputHidden = '';
+        editBoxStyle.visibility = 'hidden';
+        inputStyle.visibility = 'visible';
       }
     }
 
     return (
       <div>
-        {EditPopup}
-        <div className={'edit box ' + inputHidden} style={style}>
+        <EditBox value={this.state.editValue}
+                onAdd={this.onAdd.bind(this)}
+                onDelete={this.onDelete.bind(this)}
+                onEdit={this.onChange.bind(this)}
+                style={editBoxStyle} />
+        <div className='edit box' style={inputStyle}>
           <HotKeyManager>
-            <InputField autoFocus show value={nodeName} onSave={this.saveCurrentNode.bind(this)} />
+            <InputField autoFocus value={this.state.editValue} id='edit' onChange={this.onChange.bind(this)} />
           </HotKeyManager>
           <div className="expand" onClick={this.expand.bind(this)} />
         </div>
-        <InputField autoFocus show={editBox.showAdd} value='default' className='edit box' style={addStyle} onSave={this.addNode.bind(this)} />
+        <HotKeys handlers={this.getHandlerInstance()}>
+          <InputField autoFocus={editBox.showAdd} value={this.state.addValue} className='edit box' style={addStyle} id='add' onChange={this.onChange.bind(this)}/>
+        </HotKeys>
       </div>
     );
   }

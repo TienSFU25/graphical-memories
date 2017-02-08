@@ -6,7 +6,7 @@ import ClassBagElement from './ClassBagElement';
 
 import '../css/carousel.css';
 
-const MAX_LENGTH = 1;
+const MAX_LENGTH = 6;
 const COL_COUNT = 12;
 
 const IMAGES = [

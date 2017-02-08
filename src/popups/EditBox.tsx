@@ -15,14 +15,17 @@ interface Coordinates {
 }
 
 interface Props {
-  htmlCoords: Coordinates;
-  className: string;
-  onSave: Function;
+  // htmlCoords: Coordinates;
+  // className: string;
+  // onSave: Function;
   actions: any;
   selectedEntity: any;
-  node: any;
+  // node: any;
+  value: string;
   onAdd: Function;
   onDelete: Function;
+  onEdit: Function;
+  style: Object;
 }
 
 class EditBox extends React.Component<Props, any> {
@@ -38,55 +41,57 @@ class EditBox extends React.Component<Props, any> {
     this.props.onDelete();
   }
 
+  onChange(id, value) {
+    this.props.onEdit(id, value);
+  }
+
   render() {
     const allRows = [];
     const currNode: d3Node = this.props.selectedEntity.node;
 
-    const style = {
-      top: this.props.htmlCoords.y + window.pageYOffset,
-      left: this.props.htmlCoords.x
-    };
+    if (currNode) {
+      const EditBox = (
+        <Form horizontal className={`edit`} style={this.props.style} >
+          <Row>
+            <Col sm={4}>
+              <div className='icon add' onClick={this.onClickAdd.bind(this)} />
+            </Col>
+            <Col sm={4}>
+              <div className='icon delete' onClick={this.onClickDelete.bind(this)}/>
+            </Col>
+            <Col sm={4}>
+              <div className='icon -collapse' onClick={this.collapseNode.bind(this)}/>
+            </Col>
+          </Row>
+          <FormGroup controlId='id'>
+            <Col componentClass={ControlLabel} sm={2}>
+              id
+            </Col>
+            <Col sm={10}>
+              <FormControl type="text" value={currNode.data.id} />
+            </Col>
+          </FormGroup>
+          <FormGroup controlId='name'>
+            <Col componentClass={ControlLabel} sm={2}>
+              name
+            </Col>
+            <Col sm={10}>
+              <InputField autoFocus id='edit' value={this.props.value} className='form-control' onChange={this.onChange.bind(this)} />
+            </Col>
+          </FormGroup>
+        </Form>
+      )
 
-    const EditBox = (
-      <Form horizontal className={`edit ${this.props.className}`} style={style} >
-        <Row>
-          <Col sm={4}>
-            <div className='icon add' onClick={this.onClickAdd.bind(this)} />
-          </Col>
-          <Col sm={4}>
-            <div className='icon delete' onClick={this.onClickDelete.bind(this)}/>
-          </Col>
-          <Col sm={4}>
-            <div className='icon -collapse' onClick={this.collapseNode.bind(this)}/>
-          </Col>
-        </Row>
-        <FormGroup controlId='id'>
-          <Col componentClass={ControlLabel} sm={2}>
-            id
-          </Col>
-          <Col sm={10}>
-            <FormControl type="text" value={currNode.data.id} />
-          </Col>
-        </FormGroup>
-        <FormGroup controlId='name'>
-          <Col componentClass={ControlLabel} sm={2}>
-            name
-          </Col>
-          <Col sm={10}>
-            <InputField show autoFocus={false} value={currNode.data.name} className='form-control' style={{}} onSave={this.props.onSave.bind(this)}/>
-          </Col>
-        </FormGroup>
-      </Form>
-    )
-
-    return EditBox;
+      return EditBox;
+    } else {
+      return <div />
+    }
   }
 };
 
-function mapStateToProps({ selectedEntity, editBox }) {
+function mapStateToProps({ selectedEntity }) {
   return {
-    selectedEntity,
-    editBox
+    selectedEntity
   };
 }
 
