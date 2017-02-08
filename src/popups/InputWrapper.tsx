@@ -12,6 +12,8 @@ import HotKeyManager from '../visualization/HotKeyManager';
 import keyCodes from '../shared/keyCodes';
 import { toHtmlCoords } from '../shared/svgHelper';
 
+const DEFAULT_NODE_NAME = 'default';
+
 class InputWrapper extends React.Component<any, any> {
   private _handlerInstance;
 
@@ -19,9 +21,12 @@ class InputWrapper extends React.Component<any, any> {
     super(props);
 
     this.state = {
+      showAdd: false,
+      addX: 0,
+      addY: 0,
       showEdit: false,
       showPopup: false,
-      addValue: 'default',
+      addValue: DEFAULT_NODE_NAME,
       editValue: ''
     };
   }
@@ -62,9 +67,10 @@ class InputWrapper extends React.Component<any, any> {
   }
 
   onAdd(e) {
-    this.props.popupActions.showAddBox({
-      x: e.clientX,
-      y: e.clientY
+    this.setState({
+      showAdd: true,
+      addX: e.clientX,
+      addY: e.clientY
     });
   }
 
@@ -78,7 +84,11 @@ class InputWrapper extends React.Component<any, any> {
     console.log(`trying to add newNode ${JSON.stringify(newNode)}`);
     const destNode = this.props.selectedEntity.node;
     this.props.actions.addNode(newNode, destNode);
-    this.props.popupActions.hideAddBox();
+
+    this.setState({
+      showAdd: false,
+      addValue: DEFAULT_NODE_NAME
+    });
   }
 
   expand() {
@@ -109,11 +119,11 @@ class InputWrapper extends React.Component<any, any> {
     let inputStyle = { visibility: 'hidden', top: 0, left: 0 };
     let editBoxStyle = { visibility: 'hidden', top: 0, left: 0 };
 
-    if (editBox.showAdd) {
+    if (this.state.showAdd) {
       addStyle = {
-        top: this.props.editBox.addCoords.y + window.pageYOffset,
-        left: this.props.editBox.addCoords.x,
-        zIndex: 3,
+        top: this.state.addY + window.pageYOffset,
+        left: this.state.addX,
+        zIndex: 1,
         visibility: 'visible'
       };
     }
@@ -148,7 +158,7 @@ class InputWrapper extends React.Component<any, any> {
           <div className="expand" onClick={this.expand.bind(this)} />
         </div>
         <HotKeys handlers={this.getHandlerInstance()}>
-          <InputField autoFocus={editBox.showAdd} value={this.state.addValue} className='edit box' style={addStyle} id='add' onChange={this.onChange.bind(this)}/>
+          <InputField autoFocus={this.state.showAdd} value={this.state.addValue} className='edit box' style={addStyle} id='add' onChange={this.onChange.bind(this)}/>
         </HotKeys>
       </div>
     );

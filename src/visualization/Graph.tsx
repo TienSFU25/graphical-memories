@@ -177,10 +177,9 @@ class Graph extends React.Component<any, any> {
   }
 }
 
-function mapStateToProps({ selectedEntity, editBox, graph }) {
+function mapStateToProps({ selectedEntity, graph }) {
   return {
     selectedEntity,
-    editBox,
     graph
   };
 }

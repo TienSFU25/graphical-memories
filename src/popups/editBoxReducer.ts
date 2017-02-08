@@ -18,20 +18,6 @@ export default function editBoxReducer(state = initialState.editBox, action) {
           show: false
         });
     }
-    case ActionTypes.SHOW_ADD: {
-      const { addCoords } = action;
-      return Object.assign({}, state,
-        {
-          showAdd: true,
-          addCoords
-        });
-    }
-    case ActionTypes.HIDE_ADD: {
-      return Object.assign({}, state,
-        {
-          showAdd: false
-        });
-    }
     case ActionTypes.SELECT_NODE: {
       return Object.assign({}, state,
         {
