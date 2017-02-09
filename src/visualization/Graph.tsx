@@ -115,9 +115,9 @@ class Graph extends React.Component<any, any> {
       return;
     }
 
-    const htmlCoords = toHtmlCoords(node);
+    // const htmlCoords = toHtmlCoords(node);
     this.props.actions.selectNode(node);
-    this.props.popupActions.showEditBox(htmlCoords);
+    this.props.popupActions.showEditBox(node);
   }
 
   onMouseOver(node, context) {

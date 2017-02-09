@@ -6,7 +6,6 @@ import { HotKeys } from 'react-hotkeys';
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import popupActions from '../popups/popupActions';
 import { findSibling } from './treeManipulator';
-import { toHtmlCoords } from '../shared/svgHelper';
 
 class HotKeyManager extends React.Component<any, any> {
   private _handlerInstance;
@@ -24,8 +23,7 @@ class HotKeyManager extends React.Component<any, any> {
 
     const showIfAlreadyVisible = (editBoxShow, nodeToMove) => {
       if (editBoxShow) {
-        const htmlCoords = toHtmlCoords(nodeToMove);
-        self.props.popupActions.showEditBox(htmlCoords);
+        self.props.popupActions.showEditBox(nodeToMove);
       }
     };
 
@@ -80,7 +78,7 @@ class HotKeyManager extends React.Component<any, any> {
         if (selectedNode) {
           const sibling = findSibling(selectedNode, self.props.graph.subStates, false);
           self.props.actions.selectNode(sibling);
-          // showIfAlreadyVisible(editBoxShow, sibling);
+          showIfAlreadyVisible(editBoxShow, sibling);
           e.preventDefault();
         }
       },

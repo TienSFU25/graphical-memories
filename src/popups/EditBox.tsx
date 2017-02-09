@@ -26,6 +26,7 @@ interface Props {
   onDelete: Function;
   onEdit: Function;
   style: Object;
+  show: boolean;
 }
 
 class EditBox extends React.Component<Props, any> {
@@ -47,9 +48,10 @@ class EditBox extends React.Component<Props, any> {
 
   render() {
     const allRows = [];
-    const currNode: d3Node = this.props.selectedEntity.node;
 
-    if (currNode) {
+    if (this.props.show) {
+      const currNode: d3Node = this.props.selectedEntity.node;
+
       const EditBox = (
         <Form horizontal className={`edit`} style={this.props.style} >
           <Row>
@@ -76,7 +78,7 @@ class EditBox extends React.Component<Props, any> {
               name
             </Col>
             <Col sm={10}>
-              <InputField autoFocus id='edit' value={this.props.value} className='form-control' onChange={this.onChange.bind(this)} />
+              <InputField autoFocus={this.props.show} id='edit' value={this.props.value} className='form-control' onChange={this.onChange.bind(this)} />
             </Col>
           </FormGroup>
         </Form>

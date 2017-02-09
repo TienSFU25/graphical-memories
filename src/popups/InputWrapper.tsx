@@ -113,6 +113,12 @@ class InputWrapper extends React.Component<any, any> {
   }
 
   render() {
+    const n = this.props.selectedEntity.node;
+
+    if (n) {
+      console.log(`rerendering with node ${n.data.name}`);
+    }
+
     const { editBox } = this.props;
 
     let addStyle = { visibility: 'hidden', top: 0, left: 0, zIndex: 0 };
@@ -147,6 +153,7 @@ class InputWrapper extends React.Component<any, any> {
     return (
       <div>
         <EditBox value={this.state.editValue}
+                show={this.state.showPopup}
                 onAdd={this.onAdd.bind(this)}
                 onDelete={this.onDelete.bind(this)}
                 onEdit={this.onChange.bind(this)}
