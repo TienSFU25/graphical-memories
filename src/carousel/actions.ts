@@ -1,6 +1,7 @@
 import { Action, ActionCreatorsMapObject } from 'redux';
 import { ActionTypes } from '../app/actionTypes';
 import { getImages } from './openClipartApi';
+import { mapOpenClipArtResponseToImages } from '../dataMappers';
 
 function getImageSuccess(imageList) {
   return {
@@ -9,18 +10,17 @@ function getImageSuccess(imageList) {
   }
 }
 
-export function initCarouselImages() {
+export function getCarouselImages(keyword = 'valentines') {
   return function(dispatch) {
-    return getImages().then(images => {
-      dispatch(getImageSuccess(images));
-    }).catch(err => {
-      throw(err);
+    return getImages(keyword).then(response => {
+      const imageList = mapOpenClipArtResponseToImages(response);
+      dispatch(getImageSuccess(imageList));
     });
   }
 }
 
 const ActionsCreatorsMap: ActionCreatorsMapObject = {
-  initCarouselImages
+  getCarouselImages
 }
 
 export default ActionsCreatorsMap;

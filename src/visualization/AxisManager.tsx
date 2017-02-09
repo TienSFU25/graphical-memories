@@ -1,9 +1,11 @@
 import * as d3 from 'd3';
 import * as React from 'react';
-import {Grid, Row, Col} from 'react-bootstrap';
+import { Grid, Row, Col } from 'react-bootstrap';
+import { HotKeys } from 'react-hotkeys';
 
 import ClassBagElement from './ClassBagElement';
 import Loader from '../shared/Loader';
+import InputField from '../shared/InputField';
 
 import '../css/carousel.css';
 
@@ -61,11 +63,13 @@ export default class AxisManager extends React.Component<any, any> {
   private prevIndex;
   private isGoingRight;
   private hasJustLoadedImages: boolean = false;
+  private _handlers;
 
   constructor(props) {
     super(props);
 
     this.state = {
+      searchBoxValue: '',
       images: [],
       carousel: []
     };
@@ -127,7 +131,6 @@ export default class AxisManager extends React.Component<any, any> {
         hasTransitionEnded: true
       });
     }
-
   }
 
   _onClickNext(e) {
@@ -172,6 +175,28 @@ export default class AxisManager extends React.Component<any, any> {
     }
   }
 
+  onChange(searchBoxValue) {
+    this.setState({
+      searchBoxValue
+    });
+  }
+
+  getHandlersInstance() {
+    if (this._handlers) return this._handlers;
+
+    const self = this;
+
+    const handlers = {
+      'tab': (e) => {
+        e.preventDefault();
+        self.props.onSearch(self.state.searchBoxValue);
+      }
+    };
+
+    this._handlers = handlers;
+    return handlers;
+  }
+
   toClassBag(carouselItem: CarouselItem) {
     return <ClassBagElement eleSize={COL_COUNT / MAX_LENGTH} className={carouselItem.getClassName()} images={carouselItem.getImages()} reflow={carouselItem.reflow} onTransitionEnd={this.transitionEnd.bind(this)}/>
   }
@@ -187,6 +212,11 @@ export default class AxisManager extends React.Component<any, any> {
 
     return (
       <Grid>
+        <Row>
+          <HotKeys handlers={this.getHandlersInstance()} >
+            <InputField onChange={this.onChange.bind(this)} />
+          </HotKeys>
+        </Row>
         <Row>
           <div id="myCarousel" className="carousel slide" >
               <ol className="carousel-indicators">

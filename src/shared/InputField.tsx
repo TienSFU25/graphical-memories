@@ -5,7 +5,7 @@ interface Props {
   className?: string;
   style?: Object;
   onChange: Function;
-  id: string;
+  id?: string;
   autoFocus?: boolean;
 }
 
@@ -14,7 +14,12 @@ class InputField extends React.Component<Props, any> {
 
   onChange(e) {
     const value = e.target.value;
-    this.props.onChange(this.props.id, value);
+
+    if (this.props.id) {
+      this.props.onChange(this.props.id, value);
+    } else {
+      this.props.onChange(value);
+    }
   }
 
   componentDidUpdate() {

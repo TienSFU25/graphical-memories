@@ -7,14 +7,14 @@ import { Router, browserHistory } from 'react-router';
 import initializeStore from './app/initializeStore';
 import routes from './routes';
 import { loadGraph } from './graphMetadata/loadGraphActions';
-import { initCarouselImages } from './carousel/actions';
+import { getCarouselImages } from './carousel/actions';
 
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../node_modules/toastr/build/toastr.min.css';
 
 const store = initializeStore();
 store.dispatch(loadGraph());
-store.dispatch(initCarouselImages());
+store.dispatch(getCarouselImages());
 
 render(
   <Provider store={store}>

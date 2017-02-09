@@ -1,29 +1,12 @@
 import { Promise } from 'bluebird';
+import * as $ from 'jquery';
 
-export function getImages() {
-  return new Promise((res, rej) => {
-    setTimeout(() => {
-      const IMAGES = [
-        "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-        "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-        "https://openclipart.org/image/90px/svg_to_png/271075/donkey-pegasus-brown-and-gold.png",
-        "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-        "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-        "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-        "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-        "https://openclipart.org/image/90px/svg_to_png/271075/donkey-pegasus-brown-and-gold.png",
-        "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-        "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-        "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-        "https://openclipart.org/image/90px/svg_to_png/271075/donkey-pegasus-brown-and-gold.png",
-        "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-        "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-        "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-        "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-        "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png"
-      ];
+const CLIP_ART_ENDPOINT = 'https://openclipart.org/search/json/';
 
-      res(IMAGES);
-    }, 3000);
-  });
+export function getImages(keyword) {
+  let options: JQueryAjaxSettings = {
+      url: `${CLIP_ART_ENDPOINT}?query=${keyword}&amount=20`
+  };
+
+  return $.ajax(options);
 }

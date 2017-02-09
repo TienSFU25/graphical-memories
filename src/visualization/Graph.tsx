@@ -9,6 +9,7 @@ import { d3Node, GraphType, TreeReducerState } from '../types';
 import { toHtmlCoords } from '../shared/svgHelper';
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import popupActions from '../popups/popupActions';
+import carouselActions from '../carousel/actions';
 
 import AxisManager from './AxisManager';
 import TreeManager from './TreeManager';
@@ -155,6 +156,10 @@ class Graph extends React.Component<any, any> {
     }
   }
 
+  onSearch(searchBoxValue) {
+    this.props.carouselActions.getCarouselImages(searchBoxValue);
+  }
+
   render() {
     let graphsElements = null;
     let mainGraph = this.props.graph;
@@ -166,7 +171,7 @@ class Graph extends React.Component<any, any> {
 
     return (
       <div>
-        <AxisManager container={this.svg} dragBehavior={this.dragBehavior} imageList={this.props.carouselImages} />
+        <AxisManager container={this.svg} dragBehavior={this.dragBehavior} imageList={this.props.carouselImages} onSearch={this.onSearch.bind(this)} />
         <HotKeyManager>
           <svg id="main" ref={(svg) => this.svg = d3.select(svg)}>
             {graphsElements}
@@ -188,7 +193,8 @@ function mapStateToProps({ selectedEntity, graph, carouselImages }) {
 function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(graphManipulationActions, dispatch),
-    popupActions: bindActionCreators(popupActions, dispatch)
+    popupActions: bindActionCreators(popupActions, dispatch),
+    carouselActions: bindActionCreators(carouselActions, dispatch)
   };
 }
 
