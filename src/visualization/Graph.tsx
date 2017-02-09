@@ -166,7 +166,7 @@ class Graph extends React.Component<any, any> {
 
     return (
       <div>
-        <AxisManager container={this.svg} dragBehavior={this.dragBehavior} />
+        <AxisManager container={this.svg} dragBehavior={this.dragBehavior} imageList={this.props.carouselImages} />
         <HotKeyManager>
           <svg id="main" ref={(svg) => this.svg = d3.select(svg)}>
             {graphsElements}
@@ -177,10 +177,11 @@ class Graph extends React.Component<any, any> {
   }
 }
 
-function mapStateToProps({ selectedEntity, graph }) {
+function mapStateToProps({ selectedEntity, graph, carouselImages }) {
   return {
     selectedEntity,
-    graph
+    graph,
+    carouselImages
   };
 }
 

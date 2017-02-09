@@ -9,26 +9,6 @@ import '../css/carousel.css';
 const MAX_LENGTH = 6;
 const COL_COUNT = 12;
 
-const IMAGES = [
-  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-  "https://openclipart.org/image/90px/svg_to_png/271075/donkey-pegasus-brown-and-gold.png",
-  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-  "https://openclipart.org/image/90px/svg_to_png/271075/donkey-pegasus-brown-and-gold.png",
-  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-  "https://openclipart.org/image/90px/svg_to_png/271075/donkey-pegasus-brown-and-gold.png",
-  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png",
-  "https://openclipart.org/image/90px/svg_to_png/271083/donkey-pegasus-on-a-mission.png"
-];
-
 class CarouselItem {
   private classNames: Set<string>;
   private imageList: Array<string>;
@@ -79,38 +59,46 @@ export default class AxisManager extends React.Component<any, any> {
   private activeIndex;
   private prevIndex;
   private isGoingRight;
-  private hasInitialized: boolean = false;
+  private hasJustLoadedImages: boolean = false;
 
   constructor(props) {
     super(props);
 
-    // initialize carousel
-    const carousel = new Array<CarouselItem>();
-
-    for (let i = 0; i < IMAGES.length; i+= MAX_LENGTH) {
-      const imgSlice = IMAGES.slice(i, i + MAX_LENGTH);
-      const carouselItem = new CarouselItem(imgSlice);
-      carousel.push(carouselItem);
-    }
-
-    this.activeIndex = 0;
-    this.prevIndex = 2;
-    carousel[this.activeIndex].addClasses('active');
-
     this.state = {
-      g: null,
-      carousel
+      images: [],
+      carousel: []
     };
   }
 
-  shouldComponentUpdate(nextState) {
-    return (!nextState.hasInitialized);
+  componentWillReceiveProps(nextProps) {
+    if (this.props.imageList !== nextProps.imageList && nextProps.imageList && nextProps.imageList.length > 0) {
+      // initialize carousel
+      const IMAGES = nextProps.imageList;
+      const carousel = new Array<CarouselItem>();
+
+      for (let i = 0; i < IMAGES.length; i+= MAX_LENGTH) {
+        const imgSlice = IMAGES.slice(i, i + MAX_LENGTH);
+        const carouselItem = new CarouselItem(imgSlice);
+        carousel.push(carouselItem);
+      }
+
+      this.activeIndex = 0;
+      this.prevIndex = 2;
+      carousel[this.activeIndex].addClasses('active');
+
+      // code smell
+      this.hasJustLoadedImages = true;
+      this.setState({
+        images: IMAGES,
+        carousel
+      });
+    }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.dragBehavior !== undefined && !this.hasInitialized) {
+  componentDidUpdate() {
+    if (this.props.dragBehavior !== undefined && this.hasJustLoadedImages) {
       // attach drag data and behavior to images
-      const imagesWithDescriptor = IMAGES.map((image) => {
+      const imagesWithDescriptor = this.state.images.map((image) => {
         return {
           type: 'IMAGE',
           href: image
@@ -118,8 +106,8 @@ export default class AxisManager extends React.Component<any, any> {
       });
 
       d3.select('#myCarousel').selectAll('img').data(imagesWithDescriptor);
-      d3.select('#myCarousel').selectAll('img').call(nextProps.dragBehavior);
-      this.hasInitialized = true;
+      d3.select('#myCarousel').selectAll('img').call(this.props.dragBehavior);
+      this.hasJustLoadedImages = false;
     }
   }
 

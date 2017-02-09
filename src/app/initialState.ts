@@ -16,7 +16,8 @@ export const initialState = {
       x: 0,
       y: 0
     }
-  }
+  },
+  carouselImages: []
 };
 
 export default initialState;
