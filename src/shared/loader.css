@@ -10,9 +10,8 @@
   transform: translateY(-50%);
   top: 50%;
   position: absolute;
-  width: calc(100% - 200px);
+  width: 100%;
   color: darkslateblue;
-  padding: 0 100px;
   text-align: center;
 }
 

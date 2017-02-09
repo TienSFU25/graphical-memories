@@ -24,6 +24,6 @@ export function getImages() {
       ];
 
       res(IMAGES);
-    }, 1000);
+    }, 3000);
   });
 }

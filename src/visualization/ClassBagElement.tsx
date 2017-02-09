@@ -33,7 +33,7 @@ export default class ClassBag extends React.Component<IProps, any> {
   _toThumbnail(imageHref) {
     return(
       <Col sm={this.props.eleSize}>
-          <a href="#x" className="thumbnail">
+          <a href="#" className="thumbnail" >
             <img src={imageHref} />
           </a>
       </Col>

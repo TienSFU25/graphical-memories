@@ -3,6 +3,7 @@ import * as React from 'react';
 import {Grid, Row, Col} from 'react-bootstrap';
 
 import ClassBagElement from './ClassBagElement';
+import Loader from '../shared/Loader';
 
 import '../css/carousel.css';
 
@@ -176,6 +177,14 @@ export default class AxisManager extends React.Component<any, any> {
   }
 
   render() {
+    let CarouselContents;
+
+    if (this.state.carousel.length > 0) {
+      CarouselContents = this.state.carousel.map(this.toClassBag.bind(this));
+    } else {
+      CarouselContents = <Loader />;
+    }
+
     return (
       <Grid>
         <Row>
@@ -185,7 +194,7 @@ export default class AxisManager extends React.Component<any, any> {
                   <li data-target="#myCarousel" data-slide-to="1"></li>
               </ol>
               <div className="carousel-inner">
-                {this.state.carousel.map(this.toClassBag.bind(this))}
+                {CarouselContents}
               </div>
               <a className="left carousel-control" href="#myCarousel" role="button" data-slide="prev" onClick={this._onClickPrev.bind(this)} >
                 <span className="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
