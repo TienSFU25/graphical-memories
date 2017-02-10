@@ -14,34 +14,27 @@ form.edit {
   height: 20px;
 }
 
-.expand {
-  display: inline-block;
-  background-color: green;
-  height: 20px;
-  width: 20px;
-}
-
 .hide {
   display: none;
 }
 
-.icon {
-  display: inline-block;
-  background-color: #E7E7E7;
-  height: 55px;
-  width: 50px;
-  background: url('../images/office.jpg');
-  background-repeat: no-repeat;
+.panel-action {
+    padding: 5px;
+    text-align: center;
+}
 
-  &.add {
-    background-position: -443px -250px;
-  }
+.details {
+    // width: 280px;
+}
 
-  &.delete {
-    background-position: -443px -171px;
-  }
+.details ul {
+    padding: 0 20px;
+}
 
-  &.-collapse {
-    background-position: -272px -250px;
-  }
+.details ul li {
+    margin-left: 0px;
+}
+
+.panel-heading input {
+    margin: -7px -12px;
 }

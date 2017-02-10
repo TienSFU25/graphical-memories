@@ -5,6 +5,7 @@ import Visualizer from '../visualization/Graph';
 import InputWrapper from '../popups/InputWrapper';
 
 import '../css/app.scss';
+import '../css/edit.scss';
 
 class HomePage extends React.Component<any, any> {
   render() {
@@ -14,11 +15,7 @@ class HomePage extends React.Component<any, any> {
         <Jumbotron>
           <h2>Ruby is learning Python!</h2>
         </Jumbotron>
-        <Row>
-          <Col sm={12}>
-            <Visualizer />
-          </Col>
-        </Row>
+        <Visualizer />
       </div>
     );
   }

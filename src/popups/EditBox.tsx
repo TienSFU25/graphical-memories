@@ -7,25 +7,14 @@ import { d3Node } from '../types';
 import InputField from '../shared/InputField';
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 
-import '../css/edit.scss';
-
-interface Coordinates {
-  x: number;
-  y: number;
-}
-
 interface Props {
-  // htmlCoords: Coordinates;
-  // className: string;
-  // onSave: Function;
   actions: any;
   selectedEntity: any;
-  // node: any;
   value: string;
   onAdd: Function;
   onDelete: Function;
   onEdit: Function;
-  style: Object;
+  onSave: Function;
   show: boolean;
 }
 
@@ -46,6 +35,10 @@ class EditBox extends React.Component<Props, any> {
     this.props.onEdit(id, value);
   }
 
+  onSave() {
+    this.props.onSave();
+  }
+
   render() {
     const allRows = [];
 
@@ -53,34 +46,39 @@ class EditBox extends React.Component<Props, any> {
       const currNode: d3Node = this.props.selectedEntity.node;
 
       const EditBox = (
-        <Form horizontal className={`edit`} style={this.props.style} >
-          <Row>
-            <Col sm={4}>
-              <div className='icon add' onClick={this.onClickAdd.bind(this)} />
-            </Col>
-            <Col sm={4}>
-              <div className='icon delete' onClick={this.onClickDelete.bind(this)}/>
-            </Col>
-            <Col sm={4}>
-              <div className='icon -collapse' onClick={this.collapseNode.bind(this)}/>
-            </Col>
-          </Row>
-          <FormGroup controlId='id'>
-            <Col componentClass={ControlLabel} sm={2}>
-              id
-            </Col>
-            <Col sm={10}>
-              <FormControl type="text" value={currNode.data.id} />
-            </Col>
-          </FormGroup>
-          <FormGroup controlId='name'>
-            <Col componentClass={ControlLabel} sm={2}>
-              name
-            </Col>
-            <Col sm={10}>
-              <InputField autoFocus={this.props.show} id='edit' value={this.props.value} className='form-control' onChange={this.onChange.bind(this)} />
-            </Col>
-          </FormGroup>
+        <Form horizontal className={`edit`} >
+          <div className="details panel panel-info">
+              <div className="panel-heading">
+                  <div>Panel</div>
+              </div>
+              <div className="panel-body">
+                <FormGroup controlId='id'>
+                  <Col componentClass={ControlLabel} sm={2}>
+                    id
+                  </Col>
+                  <Col sm={10}>
+                    <FormControl type="text" value={currNode.data.id} />
+                  </Col>
+                </FormGroup>
+                <FormGroup controlId='name'>
+                  <Col componentClass={ControlLabel} sm={2}>
+                    name
+                  </Col>
+                  <Col sm={10}>
+                    <InputField autoFocus={this.props.show} id='edit' value={this.props.value} className='form-control' onChange={this.onChange.bind(this)} />
+                  </Col>
+                </FormGroup>
+              </div>
+              <div className="panel-action">
+                  <button type="button" onClick={this.onClickAdd.bind(this)} className="btn btn-default"><span className="glyphicon glyphicon-plus"></span> Add</button>
+                  <button type="button" onClick={this.collapseNode.bind(this)} className="btn btn-default"><span className="glyphicon glyphicon-share-alt"></span> Collapse</button>
+                  <button type="button" onClick={this.onClickDelete.bind(this)} className="btn btn-warning"><span className="glyphicon glyphicon-trash"></span> Delete</button>
+              </div>
+              <div className="panel-action">
+                  <button type="button" className="btn btn-primary" onClick={this.onSave.bind(this)}><span className="glyphicon glyphicon-ok"></span> Save</button>
+                  <button type="button" ng-click="leaveEdit()" className="btn btn-default"><span className="glyphicon glyphicon-remove"></span> Cancel</button>
+              </div>
+          </div>
         </Form>
       )
 

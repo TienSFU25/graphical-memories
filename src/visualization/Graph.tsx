@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as d3 from 'd3';
 import { connect } from 'react-redux';
+import { Grid, Col, Row } from 'react-bootstrap';
 import { bindActionCreators } from 'redux';
 import * as _ from 'lodash';
 
@@ -14,6 +15,7 @@ import carouselActions from '../carousel/actions';
 import AxisManager from './AxisManager';
 import TreeManager from './TreeManager';
 import HotKeyManager from './HotKeyManager';
+import SelectedEntity from '../graphMetadata/SelectedEntity';
 
 const DEBUG = true;
 
@@ -171,12 +173,21 @@ class Graph extends React.Component<any, any> {
 
     return (
       <div>
-        <AxisManager container={this.svg} dragBehavior={this.dragBehavior} imageList={this.props.carouselImages} onSearch={this.onSearch.bind(this)} />
-        <HotKeyManager>
-          <svg id="main" ref={(svg) => this.svg = d3.select(svg)}>
-            {graphsElements}
-          </svg>
-        </HotKeyManager>
+        <Row>
+          <AxisManager container={this.svg} dragBehavior={this.dragBehavior} imageList={this.props.carouselImages} onSearch={this.onSearch.bind(this)} />
+        </Row>
+        <Row>
+          <Col xs={8}>
+            <HotKeyManager>
+              <svg id="main" ref={(svg) => this.svg = d3.select(svg)}>
+                {graphsElements}
+              </svg>
+            </HotKeyManager>
+          </Col>
+          <Col xs={4}>
+            <SelectedEntity />
+          </Col>
+        </Row>
       </div>
     );
   }

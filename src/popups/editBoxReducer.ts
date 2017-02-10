@@ -28,8 +28,7 @@ export default function editBoxReducer(state = initialState.editBox, action) {
     case ActionTypes.SELECT_GRAPH: {
       return Object.assign({}, state,
         {
-          show: false,
-          showAdd: false
+          show: false
         });
     }
     default: {
