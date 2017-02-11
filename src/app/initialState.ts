@@ -1,4 +1,4 @@
-import { ReduxStore, EntityType, GraphType, TreeType } from '../types';
+import { ReduxStore, EntityType, GraphType, EditMode, TreeType } from '../types';
 
 export const initialState = {
   selectedEntity: {
@@ -17,7 +17,8 @@ export const initialState = {
       y: 0
     }
   },
-  carouselImages: []
+  carouselImages: [],
+  editMode: EditMode.Standard
 };
 
 export default initialState;

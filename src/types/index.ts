@@ -98,3 +98,9 @@ export interface GraphAction extends Action {
   editData?: any,
   imageHref?: string
 }
+
+
+export enum EditMode {
+  Standard,
+  Quick
+}

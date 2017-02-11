@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import * as _ from 'lodash';
 
 import { DRAG_THRESHOLD } from './constants';
-import { d3Node, GraphType, TreeReducerState } from '../types';
+import { d3Node, EditMode, GraphType, TreeReducerState } from '../types';
 import { toHtmlCoords } from '../shared/svgHelper';
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import popupActions from '../popups/popupActions';
@@ -118,9 +118,10 @@ class Graph extends React.Component<any, any> {
       return;
     }
 
-    // const htmlCoords = toHtmlCoords(node);
     this.props.actions.selectNode(node);
-    this.props.popupActions.showEditBox(node);
+    if (this.props.editMode === EditMode.Quick) {
+      this.props.popupActions.showEditBox(node);
+    }
   }
 
   onMouseOver(node, context) {
@@ -189,11 +190,12 @@ class Graph extends React.Component<any, any> {
   }
 }
 
-function mapStateToProps({ selectedEntity, graph, carouselImages }) {
+function mapStateToProps({ selectedEntity, graph, carouselImages, editMode }) {
   return {
     selectedEntity,
     graph,
-    carouselImages
+    carouselImages,
+    editMode
   };
 }
 

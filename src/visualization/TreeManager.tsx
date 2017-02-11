@@ -144,7 +144,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     }
 
     const nodes = context.selectAll('.node')
-      .data(root.descendants(), d => d.data.id);
+      .data(root.descendants(), d => d.data.name);
 
     const enterNodes = nodes.enter().append('g').attr('id', d => d.data.id);
 

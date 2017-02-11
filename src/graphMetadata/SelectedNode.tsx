@@ -11,6 +11,7 @@ import InputField from '../shared/InputField';
 import HotKeyManager from '../visualization/HotKeyManager';
 import keyCodes from '../shared/keyCodes';
 import { toHtmlCoords } from '../shared/svgHelper';
+import { EditMode } from '../types';
 
 const DEFAULT_NODE_NAME = 'default';
 
@@ -92,18 +93,17 @@ class SelectedNode extends React.Component<any, any> {
       // autosave
       if (currNode && currNode !== nextProps.selectedEntity.node) {
         this.saveCurrentNode();
+        this.setState({
+          editValue: nextProps.selectedEntity.node.data.name
+        });
       }
-
-      this.setState({
-        editValue: nextProps.selectedEntity.node.data.name
-      });
     }
   }
 
   render() {
     return (
       <EditBox value={this.state.editValue}
-              show
+              show={this.props.editMode === EditMode.Standard}
               onAdd={this.onAdd.bind(this)}
               onDelete={this.onDelete.bind(this)}
               onEdit={this.onChange.bind(this)}
@@ -112,10 +112,11 @@ class SelectedNode extends React.Component<any, any> {
   }
 }
 
-function mapStateToProps({ selectedEntity, editBox }) {
+function mapStateToProps({ selectedEntity, editBox, editMode }) {
   return {
     selectedEntity,
-    editBox
+    editBox,
+    editMode
   };
 }
 
