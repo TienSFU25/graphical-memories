@@ -172,23 +172,21 @@ class Graph extends React.Component<any, any> {
     }
 
     return (
-      <div>
-        <Row>
+      <Row>
+        <Col xs={2}>
           <AxisManager container={this.svg} dragBehavior={this.dragBehavior} imageList={this.props.carouselImages} onSearch={this.onSearch.bind(this)} />
-        </Row>
-        <Row>
-          <Col xs={8}>
-            <HotKeyManager>
-              <svg id="main" ref={(svg) => this.svg = d3.select(svg)}>
-                {graphsElements}
-              </svg>
-            </HotKeyManager>
-          </Col>
-          <Col xs={4}>
-            <SelectedEntity />
-          </Col>
-        </Row>
-      </div>
+        </Col>
+        <Col xs={6}>
+          <HotKeyManager>
+            <svg id="main" ref={(svg) => this.svg = d3.select(svg)}>
+              {graphsElements}
+            </svg>
+          </HotKeyManager>
+        </Col>
+        <Col xs={4}>
+          <SelectedEntity />
+        </Col>
+      </Row>
     );
   }
 }

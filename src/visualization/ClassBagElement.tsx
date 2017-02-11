@@ -32,20 +32,16 @@ export default class ClassBag extends React.Component<IProps, any> {
 
   _toThumbnail(imageHref) {
     return(
-      <Col sm={this.props.eleSize}>
-          <a href="#" className="thumbnail" >
-            <img src={imageHref} />
-          </a>
-      </Col>
+      <a href="#" className="thumbnail" >
+        <img src={imageHref} />
+      </a>
     );
   }
 
   render() {
     return (
       <div className={this.props.className} ref={(d) => { this.element = d; }} onTransitionEnd={this._onTransitionEnd.bind(this)}>
-        <Row>
-          {this.props.images.map(this._toThumbnail.bind(this))}
-        </Row>
+        {this.props.images.map(this._toThumbnail.bind(this))}
       </div>
     );
   }

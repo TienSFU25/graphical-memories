@@ -211,32 +211,24 @@ export default class AxisManager extends React.Component<any, any> {
     }
 
     return (
-      <Grid>
-        <Row>
-          <HotKeys handlers={this.getHandlersInstance()} >
-            <InputField onChange={this.onChange.bind(this)} />
-          </HotKeys>
-        </Row>
-        <Row>
-          <div id="myCarousel" className="carousel slide" >
-              <ol className="carousel-indicators">
-                  <li data-target="#myCarousel" data-slide-to="0" className="active"></li>
-                  <li data-target="#myCarousel" data-slide-to="1"></li>
-              </ol>
-              <div className="carousel-inner">
-                {CarouselContents}
-              </div>
-              <a className="left carousel-control" href="#myCarousel" role="button" data-slide="prev" onClick={this._onClickPrev.bind(this)} >
-                <span className="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                <span className="sr-only">Previous</span>
-              </a>
-              <a className="right carousel-control" href="#myCarousel" role="button" data-slide="next" onClick={this._onClickNext.bind(this)} >
-                <span className="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                <span className="sr-only">Next</span>
-              </a>
+      <div>
+        <HotKeys handlers={this.getHandlersInstance()} >
+          <InputField onChange={this.onChange.bind(this)} />
+        </HotKeys>
+        <div className="my-carousel slide" >
+            <div className="my-carousel-inner">
+              {CarouselContents}
             </div>
-          </Row>
-      </Grid>
+            <a className="left my-carousel-control" role="button" onClick={this._onClickPrev.bind(this)} >
+              <span className="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+              <span className="sr-only">Previous</span>
+            </a>
+            <a className="right my-carousel-control" role="button" onClick={this._onClickNext.bind(this)} >
+              <span className="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+              <span className="sr-only">Next</span>
+            </a>
+          </div>
+      </div>
     );
   }
 }
