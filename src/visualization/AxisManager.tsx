@@ -146,7 +146,7 @@ export default class AxisManager extends React.Component<any, any> {
   }
 
   _getTypeAndDirection() {
-    return this.isGoingRight ? ['next', 'left'] : ['prev', 'right'];
+    return this.isGoingRight ? ['next', 'up'] : ['prev', 'down'];
   }
 
   _update() {
@@ -219,11 +219,11 @@ export default class AxisManager extends React.Component<any, any> {
             <div className="my-carousel-inner">
               {CarouselContents}
             </div>
-            <a className="left my-carousel-control" role="button" onClick={this._onClickPrev.bind(this)} >
+            <a className="up my-carousel-control" role="button" onClick={this._onClickPrev.bind(this)} >
               <span className="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
               <span className="sr-only">Previous</span>
             </a>
-            <a className="right my-carousel-control" role="button" onClick={this._onClickNext.bind(this)} >
+            <a className="down my-carousel-control" role="button" onClick={this._onClickNext.bind(this)} >
               <span className="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
               <span className="sr-only">Next</span>
             </a>
