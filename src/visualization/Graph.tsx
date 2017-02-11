@@ -176,14 +176,12 @@ class Graph extends React.Component<any, any> {
         <Col xs={2}>
           <AxisManager container={this.svg} dragBehavior={this.dragBehavior} imageList={this.props.carouselImages} onSearch={this.onSearch.bind(this)} />
         </Col>
-        <Col xs={6}>
-          <HotKeyManager>
-            <svg id="main" ref={(svg) => this.svg = d3.select(svg)}>
-              {graphsElements}
-            </svg>
-          </HotKeyManager>
-        </Col>
-        <Col xs={4}>
+        <HotKeyManager>
+          <svg id="main" ref={(svg) => this.svg = d3.select(svg)} className="col-xs-7">
+            {graphsElements}
+          </svg>
+        </HotKeyManager>
+        <Col xs={3}>
           <SelectedEntity />
         </Col>
       </Row>

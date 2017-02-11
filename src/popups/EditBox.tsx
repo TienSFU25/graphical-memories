@@ -46,7 +46,7 @@ class EditBox extends React.Component<Props, any> {
       const currNode: d3Node = this.props.selectedEntity.node;
 
       const EditBox = (
-        <Form horizontal className={`edit`} >
+        <Form horizontal>
           <div className="details panel panel-info">
               <div className="panel-heading">
                   <div>Panel</div>

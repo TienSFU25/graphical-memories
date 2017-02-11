@@ -7,6 +7,7 @@ interface Props {
   onChange: Function;
   id?: string;
   autoFocus?: boolean;
+  placeholder?: string;
 }
 
 class InputField extends React.Component<Props, any> {
@@ -31,9 +32,15 @@ class InputField extends React.Component<Props, any> {
   }
 
   render() {
-    let InputField = <input type="text" value={this.props.value} className={this.props.className} id={this.props.id} onChange={this.onChange.bind(this)} style={this.props.style} ref={(input) => this.editInput = input} />;
-
-    return InputField;
+    return (
+      <input type="text" value={this.props.value}
+                        className={this.props.className}
+                        id={this.props.id}
+                        onChange={this.onChange.bind(this)}
+                        style={this.props.style}
+                        ref={(input) => this.editInput = input}
+                        placeholder={this.props.placeholder} />
+    );
   }
 };
 

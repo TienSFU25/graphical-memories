@@ -1,67 +1,21 @@
 import * as d3 from 'd3';
 import * as React from 'react';
-import { Grid, Row, Col } from 'react-bootstrap';
+import { Grid, Row, Col, FormGroup } from 'react-bootstrap';
 import { HotKeys } from 'react-hotkeys';
 
 import ClassBagElement from './ClassBagElement';
 import Loader from '../shared/Loader';
 import InputField from '../shared/InputField';
+import CarouselItem from './CarouselItem';
 
 import '../css/carousel.css';
 
 const MAX_LENGTH = 6;
-const COL_COUNT = 12;
-
-class CarouselItem {
-  private classNames: Set<string>;
-  private imageList: Array<string>;
-  public reflow: boolean;
-
-  constructor(images?: Array<string>) {
-    this.classNames = new Set<string>();
-    this.classNames.add('item');
-    this.reflow = false;
-    this.imageList = [];
-    this.addImages(images);
-  }
-
-  addImages(images) {
-    if (images) {
-      this.imageList = this.imageList.concat(images);
-    }
-  }
-
-  getImages() {
-    return this.imageList;
-  }
-
-  addClasses(...cs: Array<string>): void {
-    for (let c of cs) {
-      this.classNames.add(c);
-    }
-  }
-
-  removeClasses(...cs: Array<string>): void {
-    for (let c of cs) {
-      this.classNames.delete(c);
-    }
-  }
-
-  getClassName(): string {
-    return ([...this.classNames]).join(' ');
-  }
-}
 
 export default class AxisManager extends React.Component<any, any> {
-  private width: number;
-  private height: number;
-  private g;
-  private scrollable;
-  private leftButton;
-  private rightButton;
   private activeIndex;
   private prevIndex;
-  private isGoingRight;
+  private isGoingNext;
   private hasJustLoadedImages: boolean = false;
   private _handlers;
 
@@ -110,8 +64,8 @@ export default class AxisManager extends React.Component<any, any> {
         };
       });
 
-      d3.select('#myCarousel').selectAll('img').data(imagesWithDescriptor);
-      d3.select('#myCarousel').selectAll('img').call(this.props.dragBehavior);
+      d3.select('.my-carousel').selectAll('img').data(imagesWithDescriptor);
+      d3.select('.my-carousel').selectAll('img').call(this.props.dragBehavior);
       this.hasJustLoadedImages = false;
     }
   }
@@ -134,19 +88,17 @@ export default class AxisManager extends React.Component<any, any> {
   }
 
   _onClickNext(e) {
-    e.preventDefault();
-    this.isGoingRight = true;
+    this.isGoingNext = true;
     this._update();
   }
 
   _onClickPrev(e) {
-    e.preventDefault();
-    this.isGoingRight = false;
+    this.isGoingNext = false;
     this._update();
   }
 
   _getTypeAndDirection() {
-    return this.isGoingRight ? ['next', 'up'] : ['prev', 'down'];
+    return this.isGoingNext ? ['next', 'up'] : ['prev', 'down'];
   }
 
   _update() {
@@ -198,7 +150,7 @@ export default class AxisManager extends React.Component<any, any> {
   }
 
   toClassBag(carouselItem: CarouselItem) {
-    return <ClassBagElement eleSize={COL_COUNT / MAX_LENGTH} className={carouselItem.getClassName()} images={carouselItem.getImages()} reflow={carouselItem.reflow} onTransitionEnd={this.transitionEnd.bind(this)}/>
+    return <ClassBagElement className={carouselItem.getClassName()} images={carouselItem.getImages()} reflow={carouselItem.reflow} onTransitionEnd={this.transitionEnd.bind(this)}/>
   }
 
   render() {
@@ -213,7 +165,9 @@ export default class AxisManager extends React.Component<any, any> {
     return (
       <div>
         <HotKeys handlers={this.getHandlersInstance()} >
-          <InputField onChange={this.onChange.bind(this)} />
+          <FormGroup>
+            <InputField className='form-control' onChange={this.onChange.bind(this)} placeholder="Search..." />
+          </FormGroup>
         </HotKeys>
         <div className="my-carousel slide" >
             <div className="my-carousel-inner">

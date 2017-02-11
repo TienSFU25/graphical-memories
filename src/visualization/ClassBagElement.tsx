@@ -1,17 +1,9 @@
 import * as React from 'react';
-import { PropTypes } from 'react';
-import { Button, ButtonGroup } from 'react-bootstrap';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import {Grid, Row, Col} from 'react-bootstrap';
-
-import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 
 interface IProps {
   className: string;
   onTransitionEnd: any;
   reflow: boolean;
-  eleSize: number;
   images: Array<string>;
 }
 
