@@ -1,15 +1,11 @@
 import * as React from 'react';
-import { Col, Row, Jumbotron } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { HotKeys } from 'react-hotkeys';
 
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import popupActions from '../popups/popupActions';
 import InputField from '../shared/InputField';
 import HotKeyManager from '../visualization/HotKeyManager';
-import keyCodes from '../shared/keyCodes';
-// import { EditMode } from '../types';
 
 const DEFAULT_NODE_NAME = 'default';
 
@@ -41,24 +37,8 @@ class InputWrapper extends React.Component<any, any> {
     }
   }
 
-  componentDidMount() {
-    // this.setState({
-    //   editValue: this.props.selectedEntity.node.data.name
-    // });
-  }
-
   componentWillReceiveProps(nextProps) {
-    const { editBox } = this.props;
-
-    // if (editBox && editBox.show && nextProps.selectedEntity.node) {
     if (nextProps.selectedEntity.node) {
-      // const currNode = this.props.selectedEntity.node;
-
-      // autosave
-      // if (currNode && currNode !== nextProps.selectedEntity.node) {
-      //   this.saveCurrentNode();
-      // }
-
       this.setState({
         editValue: nextProps.selectedEntity.node.data.name
       });
@@ -97,11 +77,10 @@ class InputWrapper extends React.Component<any, any> {
   }
 }
 
-function mapStateToProps({ selectedEntity, editBox, editMode }) {
+function mapStateToProps({ selectedEntity, editBox }) {
   return {
     selectedEntity,
-    editBox,
-    // editMode
+    editBox
   };
 }
 

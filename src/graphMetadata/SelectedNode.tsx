@@ -88,10 +88,6 @@ class SelectedNode extends React.Component<any, any> {
     });
   }
 
-  componentWillUpdate() {
-    console.log('shit will update!');
-  }
-
   addNode(newNodeName) {
     const newNode = { name: newNodeName };
     console.log(`trying to add newNode ${JSON.stringify(newNode)}`);
@@ -106,14 +102,9 @@ class SelectedNode extends React.Component<any, any> {
   componentWillReceiveProps(nextProps) {
     console.log('shit will receive props');
     if (nextProps.node) {
-      // const currNode = this.props.node;
-
-      // if (currNode && currNode !== nextProps.node) {
-        // this.saveCurrentNode();
-        this.setState({
-          editValue: nextProps.node.data.name
-        });
-      // }
+      this.setState({
+        editValue: nextProps.node.data.name
+      });
     }
   }
 

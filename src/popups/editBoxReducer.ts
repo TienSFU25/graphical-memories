@@ -13,13 +13,6 @@ function _getShouldShowEdit(editMode, state) {
 
 export default function editBoxReducer(state = initialState.editBox, action) {
   switch (action.type) {
-    case ActionTypes.SET_EDIT_COORDS: {
-      // const { htmlCoords } = action;
-      // return Object.assign({}, state,
-      //   {
-      //     htmlCoords
-      //   });
-    }
     case ActionTypes.TOGGLE_EDIT: {
       const { editMode } = action;
       const shouldShowEdit = _getShouldShowEdit(editMode, state);
