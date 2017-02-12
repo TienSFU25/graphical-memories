@@ -12,7 +12,12 @@ import '../css/carousel.css';
 
 const MAX_LENGTH = 6;
 
-export default class AxisManager extends React.Component<any, any> {
+import { PropsFromState, PropsFromActions, PropsPassedIn } from './props';
+
+type Props = PropsFromState & PropsFromActions & PropsPassedIn;
+// type State = {};
+
+export default class Carousel extends React.Component<Props, any> {
   private activeIndex;
   private prevIndex;
   private isGoingNext;

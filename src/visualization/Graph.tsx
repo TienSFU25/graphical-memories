@@ -12,7 +12,7 @@ import graphManipulationActions from '../graphMetadata/graphManipulationActions'
 import popupActions from '../popups/popupActions';
 import carouselActions from '../carousel/actions';
 
-import AxisManager from './AxisManager';
+import Carousel from '../carousel';
 import TreeManager from './TreeManager';
 import HotKeyManager from './HotKeyManager';
 import SelectedEntity from '../graphMetadata/SelectedEntity';
@@ -176,7 +176,7 @@ class Graph extends React.Component<any, any> {
     return (
       <Row>
         <Col xs={2}>
-          <AxisManager container={this.svg} dragBehavior={this.dragBehavior} imageList={this.props.carouselImages} onSearch={this.onSearch.bind(this)} />
+          <Carousel container={this.svg} dragBehavior={this.dragBehavior} imageList={this.props.carouselImages} onSearch={this.onSearch.bind(this)} />
         </Col>
         <HotKeyManager selectedNode={this.props.selectedEntity.node} handler={this.handleHotKey.bind(this)}>
           <svg id="main" ref={(svg) => this.svg = d3.select(svg)} className="col-xs-7">
