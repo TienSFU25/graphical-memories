@@ -11,6 +11,7 @@ import InputField from '../shared/InputField';
 import HotKeyManager from '../visualization/HotKeyManager';
 import keyCodes from '../shared/keyCodes';
 import { toHtmlCoords } from '../shared/svgHelper';
+import { EditMode } from '../types';
 
 const DEFAULT_NODE_NAME = 'default';
 
@@ -43,7 +44,7 @@ class InputWrapper extends React.Component<any, any> {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.selectedEntity.node) {
+    if (nextProps.selectedEntity.node && nextProps.editMode === EditMode.Quick) {
       const currNode = this.props.selectedEntity.node;
 
       // autosave
@@ -78,10 +79,11 @@ class InputWrapper extends React.Component<any, any> {
   }
 }
 
-function mapStateToProps({ selectedEntity, editBox }) {
+function mapStateToProps({ selectedEntity, editBox, editMode }) {
   return {
     selectedEntity,
-    editBox
+    editBox,
+    editMode
   };
 }
 

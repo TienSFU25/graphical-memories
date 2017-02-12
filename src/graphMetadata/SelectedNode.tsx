@@ -55,7 +55,7 @@ class SelectedNode extends React.Component<any, any> {
 
   saveCurrentNode() {
     // save current node if any. also hides the box
-    const prevNode = this.props.selectedEntity.node;
+    const prevNode = this.props.node;
 
     if (prevNode.data.name !== this.state.editValue) {
       this.props.actions.editNode(prevNode, { name: this.state.editValue });
@@ -71,14 +71,14 @@ class SelectedNode extends React.Component<any, any> {
   }
 
   onDelete() {
-    const node = this.props.selectedEntity.node;
+    const node = this.props.node;
     this.props.actions.deleteNode(node);
   }
 
   addNode(newNodeName) {
     const newNode = { name: newNodeName };
     console.log(`trying to add newNode ${JSON.stringify(newNode)}`);
-    const destNode = this.props.selectedEntity.node;
+    const destNode = this.props.node;
     this.props.actions.addNode(newNode, destNode);
 
     this.setState({
@@ -87,14 +87,13 @@ class SelectedNode extends React.Component<any, any> {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.selectedEntity.node) {
-      const currNode = this.props.selectedEntity.node;
+    if (nextProps.node) {
+      const currNode = this.props.node;
 
-      // autosave
-      if (currNode && currNode !== nextProps.selectedEntity.node) {
-        this.saveCurrentNode();
+      if (currNode && currNode !== nextProps.node) {
+        // this.saveCurrentNode();
         this.setState({
-          editValue: nextProps.selectedEntity.node.data.name
+          editValue: nextProps.node.data.name
         });
       }
     }
@@ -114,8 +113,8 @@ class SelectedNode extends React.Component<any, any> {
 
 function mapStateToProps({ selectedEntity, editBox, editMode }) {
   return {
-    selectedEntity,
-    editBox,
+    // selectedEntity,
+    // editBox,
     editMode
   };
 }
