@@ -2,30 +2,41 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 
 import { ActionTypes } from '../app/actionTypes';
+import { getImages } from './openClipartApi';
+import { mapOpenClipArtResponseToImages } from '../dataMappers';
 import Carousel from './Carousel';
 
 import { PropsFromState, PropsFromActions, PropsPassedIn } from './props'
 
-function actionCreators (): PropsFromActions {
+function getImageSuccess(imageList) {
   return {
-    toggleEdit(editMode) {
-      return {
-        type: ActionTypes.TOGGLE_EDIT,
-        editMode
-      };
-    }
-  };
+    type: ActionTypes.LOAD_IMAGES_SUCCESS,
+    imageList
+  }
 }
 
-function mapStateToProps (): PropsFromState  {
+const actionCreators: PropsFromActions = {
+  search(searchValue='valentines') {
+    return function(dispatch) {
+      return getImages(searchValue).then(response => {
+        const imageList = mapOpenClipArtResponseToImages(response);
+        dispatch(getImageSuccess(imageList));
+      });
+    }
+  }
+}
+
+function mapStateToProps({ carouselImages }): PropsFromState  {
     return {
+      carouselImages
     };
 }
 
 function mapActionsToProps (dispatch: Dispatch<{}>, props: PropsPassedIn): PropsFromActions {
-  return bindActionCreators(actionCreators(), dispatch)
+  return bindActionCreators(actionCreators, dispatch)
 }
 
+export { actionCreators as carouselActions };
 export default connect(
   mapStateToProps,
   mapActionsToProps

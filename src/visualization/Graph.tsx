@@ -10,7 +10,6 @@ import { d3Node, GraphType, TreeReducerState } from '../types';
 import { toHtmlCoords } from '../shared/svgHelper';
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import popupActions from '../popups/popupActions';
-import carouselActions from '../carousel/actions';
 
 import Carousel from '../carousel';
 import TreeManager from './TreeManager';
@@ -156,10 +155,6 @@ class Graph extends React.Component<any, any> {
     }
   }
 
-  onSearch(searchBoxValue) {
-    this.props.carouselActions.getCarouselImages(searchBoxValue);
-  }
-
   handleHotKey(node) {
     this.props.actions.selectNode(node);
   }
@@ -176,7 +171,7 @@ class Graph extends React.Component<any, any> {
     return (
       <Row>
         <Col xs={2}>
-          <Carousel container={this.svg} dragBehavior={this.dragBehavior} imageList={this.props.carouselImages} onSearch={this.onSearch.bind(this)} />
+          <Carousel dragBehavior={this.dragBehavior} />
         </Col>
         <HotKeyManager selectedNode={this.props.selectedEntity.node} handler={this.handleHotKey.bind(this)}>
           <svg id="main" ref={(svg) => this.svg = d3.select(svg)} className="col-xs-7">
@@ -191,20 +186,17 @@ class Graph extends React.Component<any, any> {
   }
 }
 
-function mapStateToProps({ selectedEntity, graph, carouselImages, editMode }) {
+function mapStateToProps({ selectedEntity, graph }) {
   return {
     selectedEntity,
-    graph,
-    carouselImages,
-    editMode
+    graph
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(graphManipulationActions, dispatch),
-    popupActions: bindActionCreators(popupActions, dispatch),
-    carouselActions: bindActionCreators(carouselActions, dispatch)
+    popupActions: bindActionCreators(popupActions, dispatch)
   };
 }
 

@@ -29,19 +29,18 @@ export default class Carousel extends React.Component<Props, any> {
 
     this.state = {
       searchBoxValue: '',
-      images: [],
       carousel: []
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.imageList !== nextProps.imageList && nextProps.imageList && nextProps.imageList.length > 0) {
+  componentWillReceiveProps(nextProps: Props) {
+    if (this.props.carouselImages !== nextProps.carouselImages && nextProps.carouselImages && nextProps.carouselImages.length > 0) {
       // initialize carousel
-      const IMAGES = nextProps.imageList;
+      const carouselImages = nextProps.carouselImages;
       const carousel = new Array<CarouselItem>();
 
-      for (let i = 0; i < IMAGES.length; i+= MAX_LENGTH) {
-        const imgSlice = IMAGES.slice(i, i + MAX_LENGTH);
+      for (let i = 0; i < carouselImages.length; i+= MAX_LENGTH) {
+        const imgSlice = carouselImages.slice(i, i + MAX_LENGTH);
         const carouselItem = new CarouselItem(imgSlice);
         carousel.push(carouselItem);
       }
@@ -53,7 +52,6 @@ export default class Carousel extends React.Component<Props, any> {
       // code smell
       this.hasJustLoadedImages = true;
       this.setState({
-        images: IMAGES,
         carousel
       });
     }
@@ -62,7 +60,7 @@ export default class Carousel extends React.Component<Props, any> {
   componentDidUpdate() {
     if (this.props.dragBehavior !== undefined && this.hasJustLoadedImages) {
       // attach drag data and behavior to images
-      const imagesWithDescriptor = this.state.images.map((image) => {
+      const imagesWithDescriptor = this.props.carouselImages.map((image) => {
         return {
           type: 'IMAGE',
           href: image
@@ -146,7 +144,7 @@ export default class Carousel extends React.Component<Props, any> {
     const handlers = {
       'tab': (e) => {
         e.preventDefault();
-        self.props.onSearch(self.state.searchBoxValue);
+        self.props.search(self.state.searchBoxValue);
       }
     };
 

@@ -49,6 +49,7 @@
     "@types/mocha": "^2.2.35",
     "@types/node": "^6.0.55",
     "@types/react-bootstrap": "0.0.44",
+    "@types/react-redux": "^4.4.36",
     "@types/sinon": "^1.16.34",
     "@types/vis": "^4.17.0",
     "awesome-typescript-loader": "^3.0.0-beta.17",
