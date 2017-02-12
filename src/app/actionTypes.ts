@@ -17,6 +17,7 @@ export enum ActionTypes {
   MOVE_NODE,
   ATTACH_IMAGE,
 
+  SET_EDIT_COORDS,
   SHOW_EDIT,
   HIDE_EDIT,
   SHOW_ADD,
@@ -27,5 +28,5 @@ export enum ActionTypes {
   LOAD_IMAGES_SUCCESS,
   LOAD_IMAGES_ERROR,
 
-  TOGGLE_EDIT
+  // TOGGLE_EDIT
 }

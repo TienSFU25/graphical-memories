@@ -1,6 +1,7 @@
 import { Action, ActionCreator, ActionCreatorsMapObject } from 'redux';
 import { ActionTypes } from '../app/actionTypes';
 import { d3Node } from '../types';
+import { toHtmlCoords } from '../shared/svgHelper';
 
 export function addNode(newNode, destNode) {
   return {
@@ -25,8 +26,11 @@ export function deleteNode(node) {
 }
 
 export function selectNode(node: d3Node) {
+  const htmlCoords = toHtmlCoords(node);
+
   return {
     type: ActionTypes.SELECT_NODE,
+    htmlCoords,
     node
   };
 }

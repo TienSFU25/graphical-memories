@@ -7,7 +7,17 @@ import graphManipulationActions from '../graphMetadata/graphManipulationActions'
 import popupActions from '../popups/popupActions';
 import { findSibling } from './treeManipulator';
 
-class HotKeyManager extends React.Component<any, any> {
+interface Props {
+  selectedNode: any;
+  handler: Function;
+}
+
+interface PropsFromActions {
+  popupActions: any;
+  graph: any;
+}
+
+class HotKeyManager extends React.Component<Props & PropsFromActions, any> {
   private _handlerInstance;
   private hotKeyWrapper;
 
@@ -15,10 +25,11 @@ class HotKeyManager extends React.Component<any, any> {
     if (this._handlerInstance) return this._handlerInstance;
 
     const self = this;
+    const propsHandler = this.props.handler;
 
     // code reuse
     const getInfo = () => {
-      return [ self.props.selectedEntity.node, self.props.editBox.show ];
+      // return [ self.props.selectedEntity.node, self.props.editBox.show ];
     };
 
     const showIfAlreadyVisible = (editBoxShow, nodeToMove) => {
@@ -30,67 +41,83 @@ class HotKeyManager extends React.Component<any, any> {
     const handlers = {
       'ctrl+left': (e) => {
         // select ancestor
-        const [ selectedNode, editBoxShow ] = getInfo();
+        e.preventDefault();
+
+        // const [ selectedNode, editBoxShow ] = getInfo();
+        const selectedNode = self.props.selectedNode;
 
         if (selectedNode && selectedNode.parent) {
-          self.props.actions.selectNode(selectedNode.parent);
-          showIfAlreadyVisible(editBoxShow, selectedNode.parent);
-          e.preventDefault();
+          propsHandler(selectedNode.parent);
+          // self.props.actions.selectNode(selectedNode.parent);
+          // showIfAlreadyVisible(editBoxShow, selectedNode.parent);
         }
       },
       'ctrl+right': (e) => {
         // select first descendant
-        const [ selectedNode, editBoxShow ] = getInfo();
+        e.preventDefault();
 
+        // const [ selectedNode, editBoxShow ] = getInfo();
+        const selectedNode = self.props.selectedNode;
 
         if (selectedNode && selectedNode.children) {
-          self.props.actions.selectNode(selectedNode.children[0]);
-          showIfAlreadyVisible(editBoxShow, selectedNode.children[0]);
-          e.preventDefault();
+          propsHandler(selectedNode.children[0]);
+          // self.props.actions.selectNode(selectedNode.children[0]);
+          // showIfAlreadyVisible(editBoxShow, selectedNode.children[0]);
         }
       },
       'ctrl+up': (e) => {
         // first "younger" sibling
-        const [ selectedNode, editBoxShow ] = getInfo();
+        e.preventDefault();
+        const selectedNode = self.props.selectedNode;
+        // const [ selectedNode, editBoxShow ] = getInfo();
 
         if (selectedNode) {
           const sibling = findSibling(selectedNode, self.props.graph.subStates);
-          self.props.actions.selectNode(sibling);
-          showIfAlreadyVisible(editBoxShow, sibling);
-          e.preventDefault();
+          propsHandler(sibling);
+          // self.props.actions.selectNode(sibling);
+          // showIfAlreadyVisible(editBoxShow, sibling);
         }
       },
       'ctrl+down': (e) => {
         // first "older" sibling
-        const [ selectedNode, editBoxShow ] = getInfo();
+        e.preventDefault();
+
+        // const [ selectedNode, editBoxShow ] = getInfo();
+        const selectedNode = self.props.selectedNode;
 
         if (selectedNode) {
           const sibling = findSibling(selectedNode, self.props.graph.subStates, false);
-          self.props.actions.selectNode(sibling);
-          showIfAlreadyVisible(editBoxShow, sibling);
-          e.preventDefault();
+          propsHandler(sibling);
+          // self.props.actions.selectNode(sibling);
+          // showIfAlreadyVisible(editBoxShow, sibling);
         }
       },
       'tab': (e) => {
         // first "older" sibling
-        const [ selectedNode, editBoxShow ] = getInfo();
+        e.preventDefault();
+
+        // const [ selectedNode, editBoxShow ] = getInfo();
+        const selectedNode = self.props.selectedNode;
 
         if (selectedNode) {
           const sibling = findSibling(selectedNode, self.props.graph.subStates, false);
-          self.props.actions.selectNode(sibling);
-          showIfAlreadyVisible(editBoxShow, sibling);
-          e.preventDefault();
+          propsHandler(sibling);
+          // self.props.actions.selectNode(sibling);
+          // showIfAlreadyVisible(editBoxShow, sibling);
         }
       },
       'shift+tab': (e) => {
         // first "younger" sibling
-        const [ selectedNode, editBoxShow ] = getInfo();
+        e.preventDefault();
+
+        // const [ selectedNode, editBoxShow ] = getInfo();
+        const selectedNode = self.props.selectedNode;
 
         if (selectedNode) {
           const sibling = findSibling(selectedNode, self.props.graph.subStates);
-          self.props.actions.selectNode(sibling);
-          showIfAlreadyVisible(editBoxShow, sibling);
-          e.preventDefault();
+          propsHandler(sibling);
+          // self.props.actions.selectNode(sibling);
+          // showIfAlreadyVisible(editBoxShow, sibling);
         }
       }
     };
@@ -113,8 +140,8 @@ class HotKeyManager extends React.Component<any, any> {
 
 function mapStateToProps({ selectedEntity, editBox, graph }) {
   return {
-    selectedEntity,
-    editBox,
+    // selectedEntity,
+    // editBox,
     graph
   };
 }

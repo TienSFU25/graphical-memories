@@ -11,7 +11,7 @@ import InputField from '../shared/InputField';
 import HotKeyManager from '../visualization/HotKeyManager';
 import keyCodes from '../shared/keyCodes';
 import { toHtmlCoords } from '../shared/svgHelper';
-import { EditMode } from '../types';
+// import { EditMode } from '../types';
 
 const DEFAULT_NODE_NAME = 'default';
 
@@ -44,7 +44,9 @@ class InputWrapper extends React.Component<any, any> {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.selectedEntity.node && nextProps.editMode === EditMode.Quick) {
+    const { editBox } = this.props;
+
+    if (editBox && editBox.show && nextProps.selectedEntity.node) {
       const currNode = this.props.selectedEntity.node;
 
       // autosave
@@ -56,6 +58,17 @@ class InputWrapper extends React.Component<any, any> {
         editValue: nextProps.selectedEntity.node.data.name
       });
     }
+  }
+
+  handleHotKeys(node) {
+    const currNode = this.props.selectedEntity.node;
+
+    // autosave
+    if (currNode && currNode !== node) {
+      this.saveCurrentNode();
+    }
+
+    this.props.actions.selectNode(node);
   }
 
   render() {
@@ -71,7 +84,7 @@ class InputWrapper extends React.Component<any, any> {
 
     return (
       <div className='edit box' style={inputStyle}>
-        <HotKeyManager>
+        <HotKeyManager selectedNode={this.props.selectedEntity.node} handler={this.handleHotKeys.bind(this)}>
           <InputField autoFocus value={this.state.editValue} id='edit' onChange={this.onChange.bind(this)} />
         </HotKeyManager>
       </div>

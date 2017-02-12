@@ -3,12 +3,18 @@ import { ActionTypes } from '../app/actionTypes';
 import { d3Node } from '../types';
 import { toHtmlCoords } from '../shared/svgHelper';
 
-export function showEditBox(node) {
-  const htmlCoords = toHtmlCoords(node);
+// export function setEditCoords(node) {
+  // const htmlCoords = toHtmlCoords(node);
 
+  // return {
+    // type: ActionTypes.SET_EDIT_COORDS,
+    // htmlCoords
+  // };
+// }
+
+export function showEditBox() {
   return {
-    type: ActionTypes.SHOW_EDIT,
-    htmlCoords
+    type: ActionTypes.SHOW_EDIT
   };
 }
 
@@ -19,6 +25,7 @@ export function hideEditBox() {
 }
 
 const PopupActionsCreatorsMap: ActionCreatorsMapObject = {
+  // setEditCoords
   showEditBox,
   hideEditBox
 }

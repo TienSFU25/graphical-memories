@@ -20,11 +20,14 @@ export default function selectedEntityReducer(state: SelectedEntity = initialSta
         });
     }
     case ActionTypes.SELECT_NODE: {
+      const { htmlCoords } = action;
+
       return Object.assign({}, state,
         {
           type: EntityType.Node,
           id: 2,
-          node: action.node
+          node: action.node,
+          htmlCoords
         });
     }
     default: {

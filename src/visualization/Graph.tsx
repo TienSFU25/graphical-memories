@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import * as _ from 'lodash';
 
 import { DRAG_THRESHOLD } from './constants';
-import { d3Node, EditMode, GraphType, TreeReducerState } from '../types';
+import { d3Node, GraphType, TreeReducerState } from '../types';
 import { toHtmlCoords } from '../shared/svgHelper';
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import popupActions from '../popups/popupActions';
@@ -119,9 +119,6 @@ class Graph extends React.Component<any, any> {
     }
 
     this.props.actions.selectNode(node);
-    if (this.props.editMode === EditMode.Quick) {
-      this.props.popupActions.showEditBox(node);
-    }
   }
 
   onMouseOver(node, context) {
@@ -163,6 +160,10 @@ class Graph extends React.Component<any, any> {
     this.props.carouselActions.getCarouselImages(searchBoxValue);
   }
 
+  handleHotKey(node) {
+    this.props.actions.selectNode(node);
+  }
+
   render() {
     let graphsElements = null;
     let mainGraph = this.props.graph;
@@ -177,7 +178,7 @@ class Graph extends React.Component<any, any> {
         <Col xs={2}>
           <AxisManager container={this.svg} dragBehavior={this.dragBehavior} imageList={this.props.carouselImages} onSearch={this.onSearch.bind(this)} />
         </Col>
-        <HotKeyManager>
+        <HotKeyManager selectedNode={this.props.selectedEntity.node} handler={this.handleHotKey.bind(this)}>
           <svg id="main" ref={(svg) => this.svg = d3.select(svg)} className="col-xs-7">
             {graphsElements}
           </svg>

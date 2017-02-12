@@ -5,7 +5,11 @@ export const initialState = {
     type: EntityType.Nothing,
     id: 0,
     data: null,
-    node: null
+    node: null,
+    htmlCoords: {
+      x: 0,
+      y: 0
+    }
   },
   main: {
     subStates: []

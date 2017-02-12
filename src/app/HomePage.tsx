@@ -13,7 +13,6 @@ class HomePage extends React.Component<any, any> {
     return (
       <div>
         <Header />
-        <InputWrapper />
         <Visualizer />
       </div>
     );
