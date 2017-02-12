@@ -7,7 +7,7 @@ import { PropsFromState, PropsFromActions, PropsPassedIn } from './props';
 type Props = PropsFromState & PropsFromActions & PropsPassedIn
 type State = {}
 
-export default class StickyNote extends React.Component<Props, State> {
+export default class EditDropdown extends React.Component<Props, State> {
   constructor (props: Props) {
     super(props)
   }

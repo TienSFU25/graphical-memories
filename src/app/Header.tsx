@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
-import EditDropdown from '../editMode';
+import { EditDropdown } from '../popups';
 
 export default class Header extends React.Component<any, any> {
   render() {

@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { HotKeys } from 'react-hotkeys';
 
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
-import popupActions from '../popups/popupActions';
+import { popupActions } from '../popups';
 import { findSibling } from '../visualization/treeManipulator';
 
 import { PropsFromState, PropsFromActions, PropsPassedIn } from './props'

@@ -3,7 +3,7 @@ import * as React from 'react';
 
 import Header from './Header';
 import Visualizer from '../visualization/Graph';
-import InputWrapper from '../popups/InputWrapper';
+import { InputWrapper } from '../popups';
 
 import '../css/app.scss';
 import '../css/edit.scss';

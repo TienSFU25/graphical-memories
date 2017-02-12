@@ -9,7 +9,7 @@ import { DRAG_THRESHOLD } from './constants';
 import { d3Node, GraphType, TreeReducerState } from '../types';
 import { toHtmlCoords } from '../shared/svgHelper';
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
-import popupActions from '../popups/popupActions';
+import { popupActions } from '../popups';
 
 import Carousel from '../carousel';
 import TreeManager from './TreeManager';
