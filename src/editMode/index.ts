@@ -10,16 +10,17 @@ import { PropsFromState, PropsFromActions, PropsPassedIn } from './props'
 function actionCreators (): PropsFromActions {
   return {
     toggleEdit(editMode) {
-      let actionType;
+      // let actionType;
 
-      if (editMode == EditMode.Quick) {
-        actionType = ActionTypes.SHOW_EDIT;
-      } else if (editMode == EditMode.Standard) {
-        actionType = ActionTypes.HIDE_EDIT;
-      }
+      // if (editMode == EditMode.Quick) {
+      //   actionType = ActionTypes.SHOW_EDIT;
+      // } else if (editMode == EditMode.Standard) {
+      //   actionType = ActionTypes.HIDE_EDIT;
+      // }
 
       return {
-        type: actionType
+        type: ActionTypes.TOGGLE_EDIT,
+        editMode
       };
     }
   };

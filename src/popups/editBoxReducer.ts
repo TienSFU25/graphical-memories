@@ -1,6 +1,15 @@
 import { ActionTypes } from '../app/actionTypes';
 import initialState from '../app/initialState';
-import { EntityType } from '../types';
+import { EditMode } from '../types';
+
+function _getShouldShowEdit(editMode, state) {
+  let shouldShowEdit = state.show;
+
+  if (editMode === EditMode.Quick)
+    shouldShowEdit = true;
+
+  return shouldShowEdit;
+}
 
 export default function editBoxReducer(state = initialState.editBox, action) {
   switch (action.type) {
@@ -11,6 +20,12 @@ export default function editBoxReducer(state = initialState.editBox, action) {
       //     htmlCoords
       //   });
     }
+    case ActionTypes.TOGGLE_EDIT: {
+      const { editMode } = action;
+      const shouldShowEdit = _getShouldShowEdit(editMode, state);
+
+      return Object.assign({}, state, { editMode, show: shouldShowEdit });
+    }
     case ActionTypes.HIDE_EDIT: {
       return Object.assign({}, state,
         {
@@ -20,13 +35,11 @@ export default function editBoxReducer(state = initialState.editBox, action) {
     case ActionTypes.SHOW_EDIT: {
       return Object.assign({}, state, {show: true});
     }
-    // case ActionTypes.SELECT_NODE: {
-    //   return Object.assign({}, state,
-    //     {
-    //       show: false,
-    //       showAdd: false
-    //     });
-    // }
+    case ActionTypes.SELECT_NODE: {
+      const shouldShowEdit = _getShouldShowEdit(state.editMode, state);
+
+      return Object.assign({}, state, { show: shouldShowEdit });
+    }
     case ActionTypes.SELECT_GRAPH: {
       return Object.assign({}, state,
         {

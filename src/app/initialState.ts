@@ -16,13 +16,9 @@ export const initialState = {
   },
   editBox: {
     show: false,
-    htmlCoords: {
-      x: 0,
-      y: 0
-    }
+    editMode: EditMode.Standard
   },
   carouselImages: [],
-  editMode: EditMode.Standard
 };
 
 export default initialState;

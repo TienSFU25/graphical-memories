@@ -6,11 +6,9 @@ import { HotKeys } from 'react-hotkeys';
 
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import popupActions from '../popups/popupActions';
-import EditBox from '../popups/EditBox';
 import InputField from '../shared/InputField';
 import HotKeyManager from '../visualization/HotKeyManager';
 import keyCodes from '../shared/keyCodes';
-import { toHtmlCoords } from '../shared/svgHelper';
 // import { EditMode } from '../types';
 
 const DEFAULT_NODE_NAME = 'default';
@@ -43,16 +41,23 @@ class InputWrapper extends React.Component<any, any> {
     }
   }
 
+  componentDidMount() {
+    // this.setState({
+    //   editValue: this.props.selectedEntity.node.data.name
+    // });
+  }
+
   componentWillReceiveProps(nextProps) {
     const { editBox } = this.props;
 
-    if (editBox && editBox.show && nextProps.selectedEntity.node) {
-      const currNode = this.props.selectedEntity.node;
+    // if (editBox && editBox.show && nextProps.selectedEntity.node) {
+    if (nextProps.selectedEntity.node) {
+      // const currNode = this.props.selectedEntity.node;
 
       // autosave
-      if (currNode && currNode !== nextProps.selectedEntity.node) {
-        this.saveCurrentNode();
-      }
+      // if (currNode && currNode !== nextProps.selectedEntity.node) {
+      //   this.saveCurrentNode();
+      // }
 
       this.setState({
         editValue: nextProps.selectedEntity.node.data.name
@@ -72,13 +77,13 @@ class InputWrapper extends React.Component<any, any> {
   }
 
   render() {
-    const { editBox } = this.props;
+    const { editBox, selectedEntity } = this.props;
 
     let inputStyle = { visibility: 'hidden', top: 0, left: 0 };
 
     if (editBox && editBox.show) {
-      inputStyle.top = editBox.htmlCoords.y + window.pageYOffset;
-      inputStyle.left = editBox.htmlCoords.x;
+      inputStyle.top = selectedEntity.htmlCoords.y + window.pageYOffset;
+      inputStyle.left = selectedEntity.htmlCoords.x;
       inputStyle.visibility = 'visible';
     }
 
@@ -96,7 +101,7 @@ function mapStateToProps({ selectedEntity, editBox, editMode }) {
   return {
     selectedEntity,
     editBox,
-    editMode
+    // editMode
   };
 }
 
