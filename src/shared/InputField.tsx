@@ -25,8 +25,6 @@ class InputField extends React.Component<Props, any> {
 
   componentDidUpdate() {
     if (this.editInput && this.props.autoFocus) {
-      console.log(`focusing!`);
-      console.log(this.editInput);
       this.editInput.focus();
     }
   }

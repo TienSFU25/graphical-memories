@@ -20,28 +20,8 @@ class SelectedNode extends React.Component<any, any> {
     super(props);
 
     this.state = {
-      addValue: '',
       editValue: ''
     };
-  }
-
-  getHandlerInstance() {
-    if (this._handlerInstance) return this._handlerInstance;
-
-    const self = this;
-    const handlers = {
-      'tab': (e) => {
-        self.addNode(self.state.addValue);
-        e.preventDefault();
-      },
-      'enter': (e) => {
-        self.addNode(self.state.addValue);
-        e.preventDefault();
-      }
-    };
-
-    this._handlerInstance = handlers;
-    return handlers;
   }
 
   onChange(id, value) {
@@ -60,11 +40,10 @@ class SelectedNode extends React.Component<any, any> {
   }
 
   onAdd(e) {
-    // this.setState({
-    //   showAdd: true,
-    //   addX: e.clientX,
-    //   addY: e.clientY
-    // });
+    const newNode = { name: DEFAULT_NODE_NAME };
+    console.log(`trying to add newNode ${JSON.stringify(newNode)}`);
+    const destNode = this.props.node;
+    this.props.actions.addNode(newNode, destNode);
   }
 
   onDelete() {
@@ -85,17 +64,6 @@ class SelectedNode extends React.Component<any, any> {
   componentDidMount() {
     this.setState({
       editValue: this.props.node.data.name
-    });
-  }
-
-  addNode(newNodeName) {
-    const newNode = { name: newNodeName };
-    console.log(`trying to add newNode ${JSON.stringify(newNode)}`);
-    const destNode = this.props.node;
-    this.props.actions.addNode(newNode, destNode);
-
-    this.setState({
-      addValue: DEFAULT_NODE_NAME
     });
   }
 
@@ -169,9 +137,7 @@ class SelectedNode extends React.Component<any, any> {
 
 function mapStateToProps({ editBox }) {
   return {
-    // selectedEntity,
-    editBox,
-    // editMode
+    editBox
   };
 }
 

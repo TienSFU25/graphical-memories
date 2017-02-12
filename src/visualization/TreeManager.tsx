@@ -120,6 +120,8 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
   }
 
   update(source: d3Node, root: d3Node) {
+    // console.log(`updating tree from ${source.data.name}`);
+
     const self = this;
     const context = this.transformContainer;
     const transitionBehavior = d3.transition('myT').duration(750);
@@ -144,7 +146,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     }
 
     const nodes = context.selectAll('.node')
-      .data(root.descendants(), d => d.data.name);
+      .data(root.descendants(), d => d.data.id);
 
     const enterNodes = nodes.enter().append('g').attr('id', d => d.data.id);
 
@@ -205,21 +207,21 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
       });
 
     // stick in DOM
-    const transform = `translate(${source.y}, ${source.x})`;
-    let nodeTransform;
-    let linkTransform;
+    const sourceTransform = `translate(${source.x}, ${source.y})`;
+    let nodeDestTransform;
+    let linkDestTransform;
 
     if (this.props.display === TreeType.VerticalTree) {
-      nodeTransform = (d: d3Node) => `translate(${d.x}, ${d.y})`;
-      linkTransform = (d: d3Node) => {
+      nodeDestTransform = (d: d3Node) => `translate(${d.x}, ${d.y})`;
+      linkDestTransform = (d: d3Node) => {
         return `M${d.x},${d.y}`
           + `C${d.parent.x + 100},${d.y}`
           + ` ${d.parent.x + 100},${d.parent.y}`
           + ` ${d.parent.x},${d.parent.y}`;
       };
     } else if (this.props.display === TreeType.Radial) {
-      nodeTransform = (d: d3Node) => `translate(${d.x}, ${d.y})`;
-      linkTransform = (d: d3Node) => {
+      nodeDestTransform = (d: d3Node) => `translate(${d.x}, ${d.y})`;
+      linkDestTransform = (d: d3Node) => {
         return "M" + (project(d.x0, d.y0))
             + "C" + (project(d.x0, (d.y0 + d.parent.y0) / 2))
             + " " + (project(d.parent.x0, (d.y0 + d.parent.y0) / 2))
@@ -230,26 +232,23 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     }
 
     enterNodes
-      .attr('transform', transform )
+      .attr('transform', sourceTransform )
       .attr('style', 'fill-opacity: 1e-6')
       .merge(nodes)
       .transition(transitionBehavior)
       .attr('class', (d:d3Node) => {
-
         const className = d.children ? 'internal': 'leaf';
         return `node ${className}`;
       })
-      .attr('transform', nodeTransform)
+      .attr('transform', nodeDestTransform)
       .attr('style', 'fill-opacity: 1')
       .on('end', attachBehaviors);
 
     const exitNodes = nodes.exit()
       .transition(transitionBehavior)
-      .attr('transform', `translate(${source.y}, ${source.x})` )
+      .attr('transform', sourceTransform)
       .attr('style', 'fill-opacity: 1e-6')
       .remove();
-
-    const linkTransitionBehavior = d3.transition('myT').duration(700);
 
     const links = context.selectAll('.link')
       .data(root.descendants().slice(1), d => d.data.id);
@@ -257,23 +256,23 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     const enterLinks = links.enter()
       .insert('path', 'g')
       .attr('d', (d: d3Node) => {
-          return `M${source.y},${source.x}`
-            + `C${source.y},${source.x}`
-            + ` ${source.y},${source.x}`
-            + ` ${source.y},${source.x}`
+          return `M${source.x},${source.y}`
+            + `C${source.x},${source.y}`
+            + ` ${source.x},${source.y}`
+            + ` ${source.x},${source.y}`
       })
       .merge(links)
-      .transition(linkTransitionBehavior)
+      .transition(transitionBehavior)
       .attr('class', 'link')
-      .attr('d', linkTransform);
+      .attr('d', linkDestTransform);
 
     const exitLinks = links.exit()
-      .transition(linkTransitionBehavior)
+      .transition(transitionBehavior)
       .attr('d', d => {
-        return `M${source.y},${source.x}`
-          + `C${source.y},${source.x}`
-          + ` ${source.y},${source.x}`
-          + ` ${source.y},${source.x}`
+        return `M${source.x},${source.y}`
+          + `C${source.x},${source.y}`
+          + ` ${source.x},${source.y}`
+          + ` ${source.x},${source.y}`
       })
       .remove();
   }
