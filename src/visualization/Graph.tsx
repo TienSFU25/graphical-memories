@@ -13,7 +13,7 @@ import popupActions from '../popups/popupActions';
 
 import Carousel from '../carousel';
 import TreeManager from './TreeManager';
-import HotKeyManager from './HotKeyManager';
+import QuickKeys from '../QuickKeys';
 import SelectedEntity from '../graphMetadata/SelectedEntity';
 
 const DEBUG = true;
@@ -173,11 +173,11 @@ class Graph extends React.Component<any, any> {
         <Col xs={2}>
           <Carousel dragBehavior={this.dragBehavior} />
         </Col>
-        <HotKeyManager selectedNode={this.props.selectedEntity.node} handler={this.handleHotKey.bind(this)}>
+        <QuickKeys selectedNode={this.props.selectedEntity.node} handler={this.handleHotKey.bind(this)}>
           <svg id="main" ref={(svg) => this.svg = d3.select(svg)} className="col-xs-7">
             {graphsElements}
           </svg>
-        </HotKeyManager>
+        </QuickKeys>
         <Col xs={3}>
           <SelectedEntity />
         </Col>

@@ -1,11 +1,13 @@
 import { ActionCreator } from 'redux';
 
 export type PropsFromState = {
-  carouselImages: Array<any>;
+  graph: any;
 }
 export type PropsFromActions = {
-  search: ActionCreator<any>;
+  showEditBox: ActionCreator<any>;
+  hideEditBox: ActionCreator<any>;
 }
 export type PropsPassedIn = {
-  dragBehavior: any;
+  selectedNode: any;
+  handler: Function;
 }

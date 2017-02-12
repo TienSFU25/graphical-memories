@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import popupActions from '../popups/popupActions';
 import InputField from '../shared/InputField';
-import HotKeyManager from '../visualization/HotKeyManager';
+import QuickKeys from '../QuickKeys';
 
 const DEFAULT_NODE_NAME = 'default';
 
@@ -69,9 +69,9 @@ class InputWrapper extends React.Component<any, any> {
 
     return (
       <div className='edit box' style={inputStyle}>
-        <HotKeyManager selectedNode={this.props.selectedEntity.node} handler={this.handleHotKeys.bind(this)}>
+        <QuickKeys selectedNode={this.props.selectedEntity.node} handler={this.handleHotKeys.bind(this)}>
           <InputField autoFocus value={this.state.editValue} id='edit' onChange={this.onChange.bind(this)} />
-        </HotKeyManager>
+        </QuickKeys>
       </div>
     );
   }

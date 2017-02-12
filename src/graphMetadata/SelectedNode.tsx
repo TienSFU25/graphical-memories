@@ -2,18 +2,11 @@ import * as React from 'react';
 import { ControlLabel, Col, Row, Form, FormControl, FormGroup, Table } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { HotKeys } from 'react-hotkeys';
 
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
-import popupActions from '../popups/popupActions';
 import InputField from '../shared/InputField';
-import HotKeyManager from '../visualization/HotKeyManager';
-import keyCodes from '../shared/keyCodes';
-import { toHtmlCoords } from '../shared/svgHelper';
 
-const DEFAULT_NODE_NAME = 'default';
-
-class SelectedNode extends React.Component<any, any> {
+export default class SelectedNode extends React.Component<any, any> {
   private _handlerInstance;
 
   constructor(props) {
@@ -24,41 +17,14 @@ class SelectedNode extends React.Component<any, any> {
     };
   }
 
+  onSave() {
+    this.props.onSave(this.state.editValue);
+  }
+
   onChange(id, value) {
     this.setState({
       editValue: value
     });
-  }
-
-  saveCurrentNode() {
-    // save current node if any. also hides the box
-    const prevNode = this.props.node;
-
-    if (prevNode.data.name !== this.state.editValue) {
-      this.props.actions.editNode(prevNode, { name: this.state.editValue });
-    }
-  }
-
-  onAdd(e) {
-    const newNode = { name: DEFAULT_NODE_NAME };
-    console.log(`trying to add newNode ${JSON.stringify(newNode)}`);
-    const destNode = this.props.node;
-    this.props.actions.addNode(newNode, destNode);
-  }
-
-  onDelete() {
-    const node = this.props.node;
-    this.props.actions.deleteNode(node);
-  }
-
-  onCollapse() {
-    const currNode = this.props.node;
-    this.props.actions.toggleNode(currNode);
-  }
-
-  onSave() {
-    const currNode = this.props.node;
-    this.props.actions.editNode(currNode, { name: this.state.editValue });
   }
 
   componentDidMount() {
@@ -78,15 +44,6 @@ class SelectedNode extends React.Component<any, any> {
 
   render() {
     const currNode = this.props.node;
-
-    // return (
-    //   <EditBox value={this.state.editValue}
-    //           show={!this.props.editBox.show}
-    //           onAdd={this.onAdd.bind(this)}
-    //           onDelete={this.onDelete.bind(this)}
-    //           onEdit={this.onChange.bind(this)}
-    //           onSave={this.saveCurrentNode.bind(this)} />
-    // );
 
     let EditNodePanel;
 
@@ -113,18 +70,18 @@ class SelectedNode extends React.Component<any, any> {
                       name
                     </Col>
                     <Col sm={10}>
-                      <InputField autoFocus={!this.props.editBox.show} id='edit' value={this.state.editValue} className='form-control' onChange={this.onChange.bind(this)} />
+                      <InputField autoFocus={this.props.shouldFocus} id='edit' value={this.state.editValue} className='form-control' onChange={this.onChange.bind(this)} />
                     </Col>
                   </FormGroup>
                 </div>
                 <div className="panel-action">
-                    <button type="button" onClick={this.onAdd.bind(this)} className="btn btn-default"><span className="glyphicon glyphicon-plus"></span> Add</button>
-                    <button type="button" onClick={this.onCollapse.bind(this)} className="btn btn-default"><span className="glyphicon glyphicon-share-alt"></span> Collapse</button>
-                    <button type="button" onClick={this.onDelete.bind(this)} className="btn btn-warning"><span className="glyphicon glyphicon-trash"></span> Delete</button>
+                    <button type="button" onClick={this.props.onAdd.bind(this)} className="btn btn-default"><span className="glyphicon glyphicon-plus"></span> Add</button>
+                    <button type="button" onClick={this.props.onCollapse.bind(this)} className="btn btn-default"><span className="glyphicon glyphicon-share-alt"></span> Collapse</button>
+                    <button type="button" onClick={this.props.onDelete.bind(this)} className="btn btn-warning"><span className="glyphicon glyphicon-trash"></span> Delete</button>
                 </div>
                 <div className="panel-action">
                     <button type="button" className="btn btn-primary" onClick={this.onSave.bind(this)}><span className="glyphicon glyphicon-ok"></span> Save</button>
-                    <button type="button" ng-click="leaveEdit()" className="btn btn-default"><span className="glyphicon glyphicon-remove"></span> Cancel</button>
+                    <button type="button" className="btn btn-default"><span className="glyphicon glyphicon-remove"></span> Cancel</button>
                 </div>
             </div>
           </Form>
@@ -134,18 +91,3 @@ class SelectedNode extends React.Component<any, any> {
     return EditNodePanel;
   }
 }
-
-function mapStateToProps({ editBox }) {
-  return {
-    editBox
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(graphManipulationActions, dispatch),
-    popupActions: bindActionCreators(popupActions, dispatch)
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(SelectedNode);

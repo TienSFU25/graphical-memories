@@ -8,25 +8,45 @@ import graphManipulationActions from './graphManipulationActions';
 import SelectedGraph from './SelectedGraph';
 import SelectedNode from './SelectedNode';
 
+const DEFAULT_NODE_NAME = 'default';
+
 class SelectedEntity extends React.Component<any, any> {
   constructor(props) {
     super(props);
   }
 
-  onNodeChange(event: React.SyntheticEvent<any>) {
-    // const fieldName = event.currentTarget.labels[0].textContent;
-    // const nodeId = event.currentTarget.labels[1].textContent;
-    // const val = event.currentTarget.value;
+  onAdd() {
+    const newNode = { name: DEFAULT_NODE_NAME };
+    console.log(`trying to add newNode ${JSON.stringify(newNode)}`);
+    const destNode = this.props.selectedEntity.node;
+    this.props.actions.addNode(newNode, destNode);
+  }
 
-    // this.props.actions.editNode(nodeId, fieldName, val);
-    console.log('Implement the on node change in selectedEntity!');
+  onDelete() {
+    const node = this.props.selectedEntity.node;
+    this.props.actions.deleteNode(node);
+  }
+
+  onCollapse() {
+    const currNode = this.props.selectedEntity.node;
+    this.props.actions.toggleNode(currNode);
+  }
+
+  onSave(editValue) {
+    const currNode = this.props.selectedEntity.node;
+    this.props.actions.editNode(currNode, { name: editValue });
   }
 
   render() {
     if (this.props.selectedEntity.type === EntityType.Graph) {
       return <SelectedGraph />;
     } else if (this.props.selectedEntity.type === EntityType.Node) {
-      return <SelectedNode onChange={this.onNodeChange.bind(this)} node={this.props.selectedEntity.node} />;
+      return <SelectedNode node={this.props.selectedEntity.node}
+                           onAdd={this.onAdd.bind(this)}
+                           onSave={this.onSave.bind(this)}
+                           onCollapse={this.onCollapse.bind(this)}
+                           onDelete={this.onDelete.bind(this)}
+                           shouldFocus={!this.props.editBox.show} />;
     } else if (this.props.selectedEntity.type === EntityType.Nothing) {
       return <div>You havent selected shit!</div>;
     } else {
@@ -35,8 +55,9 @@ class SelectedEntity extends React.Component<any, any> {
   }
 }
 
-function mapStateToProps({ selectedEntity }) {
+function mapStateToProps({ selectedEntity, editBox }) {
   return {
+    editBox,
     selectedEntity
   };
 }
