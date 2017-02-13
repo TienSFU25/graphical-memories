@@ -63,7 +63,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     const shouldUpdate = this.props.graph.updateNode !== nextProps.graph.updateNode;
 
     if (shouldUpdate) {
-      // this.update(nextProps.graph.updateNode, nextProps.graph.treeRoot, nextProps.graph.display);
+      this.update(nextProps.graph.updateNode, nextProps.graph.treeRoot, nextProps.graph.display);
     }
   }
 

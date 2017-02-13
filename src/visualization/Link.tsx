@@ -50,22 +50,26 @@ export default class Link extends React.Component<any, any> {
   componentWillAppear(callback) {
     console.log("this crap will appear!");
     const el = this.container;
-    TweenMax.fromTo(el, 0.5, {attr: {d: calc(this.props.data)}}, {attr: {d: p.linkDestTransform(this.props.data)}, onComplete: callback});
+    callback();
+    // TweenMax.fromTo(el, 0.5, {attr: {d: calc(this.props.data)}}, {attr: {d: p.linkDestTransform(this.props.data)}, onComplete: callback});
   }
 
   // componentDidEnter() {
   //   console.log('entered');
   // }
 
-  componentWillUpdate() {
-    // console.log(`link ${this.props.data.data.name} updating`);
+  componentWillUpdate(nextProps) {
+    // console.log(`link ${this.props.data.data.name} entering`);
+    // callback();
+    const el = this.container;
+    TweenMax.to(el, 0.75, {attr: {d: p.linkDestTransform(nextProps.data)}});
   }
 
   componentWillEnter (callback) {
     console.log(`link ${this.props.data.data.name} entering`);
     // callback();
     const el = this.container;
-    TweenMax.fromTo(el, 0.3, {d: calc(this.props.data), opacity: 0}, {d: p.linkDestTransform(this.props.data), onComplete: callback});
+    TweenMax.fromTo(el, 0.3, {attr: {d: calc(this.props.data)}}, {attr: {d: p.linkDestTransform(this.props.data)}, onComplete: callback});
   }
 
   componentWillLeave (callback) {
@@ -73,7 +77,7 @@ export default class Link extends React.Component<any, any> {
     console.warn(`from ${p.linkDestTransform(this.props.data)} to ${calc(this.props.data)}`);
     // callback();
     const el = this.container;
-    TweenMax.fromTo(el, 0.5, {attr:{d: p.linkDestTransform(this.props.data)}, opacity: 1}, {attr:{d: calc(this.props.data)}, opacity: 0, onComplete: callback});
+    TweenMax.fromTo(el, 0.75, {attr:{d: p.linkDestTransform(this.props.data)}, opacity: 1}, {attr:{d: calc(this.props.data)}, opacity: 0, onComplete: callback});
   }
 
   // componentDidLeave() {
