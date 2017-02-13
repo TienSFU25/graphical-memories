@@ -49,6 +49,7 @@ class Graph extends React.Component<any, any> {
       .on('start', d => {
         // d3.selectAll('.ghost.disabled').attr('class', 'ghost');
         d3.event.sourceEvent.stopPropagation();
+        console.log('drag started');
       })
       .on('drag', (d) => {
         const e = d3.event;
@@ -80,6 +81,7 @@ class Graph extends React.Component<any, any> {
         }
 
         self.isDragging = false;
+        // console.log('drag ended');
       });
   }
 

@@ -48,10 +48,11 @@ export default class Link extends React.Component<any, any> {
   }
 
   componentWillAppear(callback) {
-    console.log("this crap will appear!");
+    // console.log("this crap will appear!");
     const el = this.container;
     callback();
-    // TweenMax.fromTo(el, 0.5, {attr: {d: calc(this.props.data)}}, {attr: {d: p.linkDestTransform(this.props.data)}, onComplete: callback});
+    // console.warn(`from ${calc(this.props.data)} to ${p.linkDestTransform(this.props.data)}`);
+    // TweenMax.fromTo(el, 3, {attr: {d: calc(this.props.data)}}, {attr: {d: p.linkDestTransform(this.props.data)}, onComplete: callback});
   }
 
   // componentDidEnter() {
@@ -59,7 +60,8 @@ export default class Link extends React.Component<any, any> {
   // }
 
   componentWillUpdate(nextProps) {
-    // console.log(`link ${this.props.data.data.name} entering`);
+    // console.log(`link ${this.props.data.data.name} updating`);
+    // console.warn(`to ${p.linkDestTransform(nextProps.data)}`);
     // callback();
     const el = this.container;
     TweenMax.to(el, 0.75, {attr: {d: p.linkDestTransform(nextProps.data)}});
@@ -69,7 +71,7 @@ export default class Link extends React.Component<any, any> {
     console.log(`link ${this.props.data.data.name} entering`);
     // callback();
     const el = this.container;
-    TweenMax.fromTo(el, 0.3, {attr: {d: calc(this.props.data)}}, {attr: {d: p.linkDestTransform(this.props.data)}, onComplete: callback});
+    TweenMax.fromTo(el, 0.75, {attr: {d: calc(this.props.data)}}, {attr: {d: p.linkDestTransform(this.props.data)}, onComplete: callback});
   }
 
   componentWillLeave (callback) {
@@ -86,7 +88,7 @@ export default class Link extends React.Component<any, any> {
 
   render () {
     return (
-      <path d={p.linkDestTransform(this.props.data)} className="link" ref={c => this.container=c} />
+      <path className="link" ref={c => this.container=c} />
     );
   }
 }

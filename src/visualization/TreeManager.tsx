@@ -20,14 +20,15 @@ const DEBUG = true;
 window['d3'] = d3;
 
 interface ITreeManagerProps {
+  graph: any;
+  selectedNode: any;
+  onRectClick: Function;
+  // node specific
   dragBehavior: d3.DragBehavior<any, any, any>;
   onClick: Function;
-  onRectClick: Function;
   onTextClick: Function;
   onMouseOver: Function;
   onMouseOut: Function;
-  graph: any;
-  selectedNode;
 }
 
 class TreeManager extends React.Component<ITreeManagerProps, any> {
@@ -49,7 +50,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
         this.transformContainer.attr('transform', transform.toString());
       });
 
-    // this.panZoomContainer.call(zoomBehavior);
+    this.panZoomContainer.call(zoomBehavior);
 
     // this.update(this.props.graph.updateNode, this.props.graph.treeRoot, this.props.graph.display);
   }
@@ -73,28 +74,8 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     console.log(`clicked the rect`);
   }
 
-  onDragStart() {
-    console.log(`starting to drag CIRC`);
-  }
-
-  onDragEnd() {
-    console.log(`ending drag on CIRC`);
-  }
-
-  onDragOver() {
-    console.log('dragging over CIRC');
-  }
-
-  onMouseDown() {
-    console.log('mouse downy');
-  }
-
-  onMouseUp() {
-    console.log('mouse upy');
-  }
-
   render() {
-    const { graph } = this.props;
+    const { graph, selectedNode, onRectClick, ...passThroughProps } = this.props;
     let links = <g />;
     let nodes = <g />;
 
@@ -109,13 +90,12 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
       });
 
       nodes = all.map((d) => {
-        return <Node display={graph.display} node={d} onNodeClick={this.props.onClick} onTextClick={this.props.onTextClick} key={`node-${d.data.id}`} />
+        return <Node display={graph.display} node={d} key={`node-${d.data.id}`} {...passThroughProps}/>
       });
     }
 
     return (
       <g transform={`translate(${graph.dx}, ${graph.dy})`}>
-        <circle r={40} draggable onDragStart={this.onDragStart.bind(this)} onDragEnd={this.onDragEnd.bind(this)} onDragOver={this.onDragOver.bind(this)} onMouseDown={this.onMouseDown.bind(this)} onMouseUp={this.onMouseUp.bind(this)} />
         <rect style={{fill: graph.color, 'pointer-events': "all"}} width={960} height={1200} ref={(rect) => this.panZoomContainer = d3.select(rect)} onClick={this.onRectClick.bind(this)} />
         <g transform={`translate(${graph.treeRoot.dx2}, ${graph.treeRoot.dy2})`} ref={(element) => this.transformContainer = d3.select(element)}>
           <TransitionGroup component="g">

@@ -1,6 +1,8 @@
 import * as React from 'react';
 import * as TransitionGroup from 'react-addons-transition-group';
+import * as d3 from 'd3';
 import { TweenMax } from 'gsap';
+import { DragSource, DropTarget } from 'react-dnd';
 
 import { d3Node } from '../types';
 import graphProcessor from './graphProcessor';
@@ -18,6 +20,8 @@ function calc(d) {
 
 export default class Node extends React.Component<any, any> {
   private container;
+  private circ;
+  private ghostCirc;
 
   // componentWillAppear(callback) {
   //   console.log("this crap will appear!");
@@ -47,9 +51,24 @@ export default class Node extends React.Component<any, any> {
   //   const el = this.container;
   //   TweenMax.fromTo(el, 0.75, {attr:{d: p.linkDestTransform(this.props.data)}, opacity: 1}, {attr:{d: calc(this.props.data)}, opacity: 0, onComplete: callback});
   // }
+
+  // dragBehavior: d3.DragBehavior<any, any, any>;
+  // onClick: Function;
+  // onTextClick: Function;
+  // onMouseOver: Function;
+  // onMouseOut: Function;
+
+  componentDidMount() {
+    // YOLO
+    this.circ.__data__ = this.props.node;
+
+    const d3Circle = d3.select(this.circ);
+    d3Circle.call(this.props.dragBehavior);
+  }
+
   onCircleClick() {
     const node = this.props.node;
-    this.props.onNodeClick(node);
+    this.props.onClick(node);
   }
 
   onTextClick() {
@@ -57,16 +76,14 @@ export default class Node extends React.Component<any, any> {
     this.props.onTextClick(node);
   }
 
-  onDragStart() {
-    console.log(`starting to drag node ${this.props.node.data.name}`);
+  onMouseOver() {
+    const node = this.props.node;
+    this.props.onMouseOver(node, this.ghostCirc);
   }
 
-  onDragEnd() {
-    console.log(`ending drag on ${this.props.node.data.name}`);
-  }
-
-  onDragOver() {
-    console.log('dragging over');
+  onMouseOut() {
+    const node = this.props.node;
+    this.props.onMouseOut(node, this.ghostCirc);
   }
 
   render () {
@@ -79,13 +96,52 @@ export default class Node extends React.Component<any, any> {
 
     return (
       <g id={node.data.id} className={`node ${nodeClassName}`} transform={nodeDestTransform(node)}>
-        <circle r={20} className="ghost disabled" />
-        <circle r={15} className="inner" draggable onDragStart={this.onDragStart.bind(this)} onDragEnd={this.onDragEnd.bind(this)} onDragOver={this.onDragOver.bind(this)} />
+        <circle r={20} className="ghost disabled" onMouseOver={this.onMouseOver.bind(this)} onMouseOut={this.onMouseOut.bind(this)} ref={c => this.ghostCirc = c}/>
+        <circle r={7.5} className="inner" ref={c => this.circ = c} />
         <text dy={3} x={x} className={nodeClassName} onClick={this.onTextClick.bind(this)}>{nodeName}</text>
       </g>
     );
   }
 }
+
+    // this.dragBehavior = d3.drag()
+    //   .on('start', d => {
+    //     // d3.selectAll('.ghost.disabled').attr('class', 'ghost');
+    //     d3.event.sourceEvent.stopPropagation();
+    //   })
+    //   .on('drag', (d) => {
+    //     const e = d3.event;
+    //     if (e.x - d['x']  > DRAG_THRESHOLD || e.y - d['y'] > DRAG_THRESHOLD || d['type'] === 'IMAGE') {
+    //       self.isDragging = true;
+    //       d3.selectAll('.ghost.disabled').attr('class', 'ghost');
+    //     }
+    //   })
+    //   .on('end', d => {
+    //     if (self.isDragging) {
+    //       console.log('drag ended');
+
+    //       d3.selectAll('.ghost').attr('class', 'ghost disabled');
+
+    //       // fix this yolo code plz
+    //       if (d['type'] == 'IMAGE') {
+    //         this.props.actions.attachImageToNode(d['href'], self.destDragNode);
+    //       }
+    //       else if (self.destDragNode && d['data'].id !== self.destDragNode.data.id) {
+    //         console.log(`moving ${d['data'].id} to ${self.destDragNode.data.id}`)
+    //         self.props.actions.moveNode(d,  );
+    //       }
+
+    //       self.destDragNode = null;
+    //     } else {
+    //       // assume a click event
+    //       // handled by another handler
+    //       console.log('assume you clicked!');
+    //     }
+
+    //     self.isDragging = false;
+    //   });
+
+
 
    // stick in DOM
     // const sourceTransform = `translate(${source.x}, ${source.y})`;

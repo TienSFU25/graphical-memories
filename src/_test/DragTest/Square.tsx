@@ -11,8 +11,14 @@ const squareTarget = {
     return true;
   },
 
-  drop(props) {
+  drop(props, monitor, component) {
+    console.log('----------->');
     console.log(`dropped into ${props.x}, ${props.y}`);
+    console.log("stuff in beginDrag");
+    console.log(monitor.getItem());
+    return {
+      message: "THIS IS THE RESULT"
+    };
   },
 };
 
@@ -34,13 +40,17 @@ function collect2(connect, monitor) {
 }
 
 const knightSource = {
-  beginDrag(props) {
+  beginDrag(props, monitor, component) {
     console.log(`begun dragging ${props.x}, ${props.y}`);
     return {
       foo: "BAR",
       wtf: "does this do"
     };
   },
+
+  endDrag(props, monitor) {
+    console.log(monitor.getDropResult());
+  }
 };
 
 @DragSource(ItemTypes.KNIGHT, knightSource, collect2)
@@ -51,11 +61,23 @@ export default class Square extends Component<any, any> {
     const black = (x + y) % 2 === 1;
     let fill = black ? "white" : "black";
     fill = isOver ? "lightsalmon" : fill;
+    const GRID = 20;
+    const offset = 10;
+    const gx = GRID * x + offset;
+    const gy = GRID * y + offset;
 
-    return connectDragSource(connectDropTarget(
-      <div width={30} height={30} style={{backgroundColor: fill, display: "inline"}}>
+    let translate = `translate(${gx}, ${gy})`;
+
+    const DraggableThing = connectDragSource(connectDropTarget(
+      <circle r={5} transform={translate}>
         DRAG ME BRO
-      </div>,
+      </circle>,
     ));
+
+    return (
+      <g>
+        {DraggableThing}
+      </g>
+    );
   }
 }
