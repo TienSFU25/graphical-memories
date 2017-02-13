@@ -3,7 +3,8 @@
         "outDir": "./build/",
         "target": "es6",
         "module": "commonjs",
-        "moduleResolution": "Node"
+        "moduleResolution": "Node",
+        "experimentalDecorators": true
     },
     "include": [
         "./tools/**/*.ts"

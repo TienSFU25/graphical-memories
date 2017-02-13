@@ -7,7 +7,8 @@
         "module": "commonjs",
         "moduleResolution": "Node",
         "jsx": "preserve",
-        "allowJs": true
+        "allowJs": true,
+        "experimentalDecorators": true
     },
     "include": [
         "./src/**/*"

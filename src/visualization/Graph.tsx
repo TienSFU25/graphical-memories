@@ -85,7 +85,7 @@ class Graph extends React.Component<any, any> {
 
   onClick(node) {
     this.props.actions.selectNode(node);
-    d3.event.stopPropagation();
+    // d3.event.stopPropagation();
   }
 
   onRectClick(graph) {

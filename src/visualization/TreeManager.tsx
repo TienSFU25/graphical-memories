@@ -10,6 +10,7 @@ import { d3Node, TreeType } from '../types';
 import { IMAGE_HEIGHT, IMAGE_WIDTH } from './constants';
 import graphProcessor from './graphProcessor';
 import Link from './Link';
+import Node from './Node';
 
 import '../css/styles.scss';
 
@@ -48,50 +49,80 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
         this.transformContainer.attr('transform', transform.toString());
       });
 
-    this.panZoomContainer.call(zoomBehavior);
+    // this.panZoomContainer.call(zoomBehavior);
 
-    this.update(this.props.graph.updateNode, this.props.graph.treeRoot, this.props.graph.display);
+    // this.update(this.props.graph.updateNode, this.props.graph.treeRoot, this.props.graph.display);
   }
 
   componentWillReceiveProps(nextProps: ITreeManagerProps) {
     if (nextProps.selectedNode) {
-      this.updateSelectedNode(nextProps.selectedNode);
+      // this.updateSelectedNode(nextProps.selectedNode);
     } else if (this.DOMSelectedNode) {
-      this.clearSelectedNode();
+      // this.clearSelectedNode();
     }
 
     const shouldUpdate = this.props.graph.updateNode !== nextProps.graph.updateNode;
 
     if (shouldUpdate) {
-      this.update(nextProps.graph.updateNode, nextProps.graph.treeRoot, nextProps.graph.display);
+      // this.update(nextProps.graph.updateNode, nextProps.graph.treeRoot, nextProps.graph.display);
     }
   }
 
   onRectClick() {
     this.props.onRectClick(this.props.graph);
-    // console.log(this.props.)
+    console.log(`clicked the rect`);
+  }
+
+  onDragStart() {
+    console.log(`starting to drag CIRC`);
+  }
+
+  onDragEnd() {
+    console.log(`ending drag on CIRC`);
+  }
+
+  onDragOver() {
+    console.log('dragging over CIRC');
+  }
+
+  onMouseDown() {
+    console.log('mouse downy');
+  }
+
+  onMouseUp() {
+    console.log('mouse upy');
   }
 
   render() {
     const { graph } = this.props;
     let links = <g />;
+    let nodes = <g />;
 
     if (graph) {
       const {treeRoot, updateNode} = graph;
-      const data = treeRoot.descendants().slice(1);
-      console.log(`updating with ${data.length} links...`);
+      const all = treeRoot.descendants();
+      const allButRoot = treeRoot.descendants().slice(1);
+      // console.log(`updating with ${data.length} links...`);
 
-      links = data.map((d) => {
+      links = allButRoot.map((d) => {
         return <Link data={d} source={updateNode} key={`link-${d.data.id}`}/>
+      });
+
+      nodes = all.map((d) => {
+        return <Node display={graph.display} node={d} onNodeClick={this.props.onClick} onTextClick={this.props.onTextClick} key={`node-${d.data.id}`} />
       });
     }
 
     return (
       <g transform={`translate(${graph.dx}, ${graph.dy})`}>
+        <circle r={40} draggable onDragStart={this.onDragStart.bind(this)} onDragEnd={this.onDragEnd.bind(this)} onDragOver={this.onDragOver.bind(this)} onMouseDown={this.onMouseDown.bind(this)} onMouseUp={this.onMouseUp.bind(this)} />
         <rect style={{fill: graph.color, 'pointer-events': "all"}} width={960} height={1200} ref={(rect) => this.panZoomContainer = d3.select(rect)} onClick={this.onRectClick.bind(this)} />
         <g transform={`translate(${graph.treeRoot.dx2}, ${graph.treeRoot.dy2})`} ref={(element) => this.transformContainer = d3.select(element)}>
           <TransitionGroup component="g">
             {links}
+          </TransitionGroup>
+          <TransitionGroup component="g">
+            {nodes}
           </TransitionGroup>
         </g>
       </g>
