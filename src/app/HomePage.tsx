@@ -1,8 +1,8 @@
 import * as React from 'react';
-// import { Col, Row, Jumbotron } from 'react-bootstrap';
 
 import Header from './Header';
 import Visualizer from '../visualization/Graph';
+import Collapsible from './Collapsible';
 import { InputWrapper } from '../popups';
 
 import '../css/app.scss';
@@ -12,6 +12,7 @@ class HomePage extends React.Component<any, any> {
   render() {
     return (
       <div>
+        <Collapsible />
         <Header />
         <InputWrapper />
         <Visualizer />

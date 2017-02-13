@@ -122,10 +122,10 @@ export default function mainGraphReducer(state = initialState.main, action: Grap
       return Object.assign({}, state);
     }
     case ActionTypes.TOGGLE_TREE_DISPLAY: {
-      const { graphRid } = action;
+      const { graphRid, displayType } = action;
 
       const oldState = state.subStates[graphRid];
-      const nextSubState = forwardActionToReducer(oldState, ActionTypes.TOGGLE_TREE_DISPLAY);
+      const nextSubState = forwardActionToReducer(oldState, ActionTypes.TOGGLE_TREE_DISPLAY, { displayType });
 
       // to be able to trace a node to corresponding substate
       const oldType = oldState.type;

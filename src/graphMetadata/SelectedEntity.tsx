@@ -38,9 +38,8 @@ class SelectedEntity extends React.Component<any, any> {
   }
 
   onGraphTypeChange(eventKey) {
-    // console.log(eventKey);
     const graphRid = this.props.selectedEntity.graph.rid;
-    this.props.actions.toggleGraphType(graphRid);
+    this.props.actions.toggleGraphType(graphRid, eventKey);
   }
 
   render() {

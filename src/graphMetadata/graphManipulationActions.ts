@@ -67,10 +67,11 @@ export function attachImageToNode(imageHref, node) {
   }
 }
 
-export function toggleGraphType(graphRid) {
+export function toggleGraphType(graphRid, displayType) {
   return {
     type: ActionTypes.TOGGLE_TREE_DISPLAY,
-    graphRid
+    graphRid,
+    displayType
   }
 }
 

@@ -6,6 +6,7 @@ import { ActionTypes } from '../app/actionTypes';
 import { emptyTree } from '../app/initialState';
 import { d3Node, d3RootNode, EntityType, SelectedEntity, TreeReducerState, TreeType } from '../types';
 import { attachIds, getNextId, findNode, project, translate } from './treeManipulator';
+import graphProcessor from './graphProcessor';
 
 function _sortTree(root) {
   const sorter = (a, b) => a.data.name.toLowerCase().localeCompare(b.data.name.toLowerCase());
@@ -15,35 +16,16 @@ function _sortTree(root) {
 function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerState<string>, toggleIds?: Set<number>, display = previousState.display) {
   // pull view size data from previous state
   const { name, maxHeight, maxWidth, dx, dy, color } = previousState;
+  const processor = graphProcessor[display];
 
   const newRoot: d3RootNode = d3.hierarchy(treeData);
-  let tree;
 
-  if (display == TreeType.Radial) {
-    // 360 500 worked
-     tree = d3.tree().size([maxHeight / 3.33, maxWidth / 1.2]).separation(function(a, b) { return (a.parent == b.parent ? 1 : 2) / a.depth; });
-  } else {
-     tree = d3.tree().size([maxHeight, maxWidth]);
-  }
+  const tree = processor.getTree(maxHeight, maxWidth);
 
   _sortTree(newRoot);
   tree(newRoot);
 
-  if (display == TreeType.Radial) {
-    newRoot.each((node: d3Node) => {
-      // stash original coordinates. this is used for links
-      node.x0 = node.x;
-      node.y0 = node.y;
-
-      [node.x, node.y] = project(node.x, node.y);
-    });
-  } else {
-    newRoot.each((node: d3Node) => {
-      const oldY = node.y;
-      node.y = node.x;
-      node.x = oldY;
-    });
-  }
+  newRoot.each(processor.processNode);
 
   const toggleCopy = toggleIds || new Set(previousState.toggleIds);
   let flat = [];
@@ -77,13 +59,7 @@ function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerSta
   }
 
   // for determining zoom
-  if (display === TreeType.VerticalTree) {
-    newRoot.dx2 = 0;
-    newRoot.dy2 = 0;
-  } else {
-    newRoot.dx2 = RADIAL_X,
-    newRoot.dy2 = RADIAL_Y
-  }
+  processor.setD2(newRoot);
 
   return Object.assign({}, previousState, {
     name,
@@ -198,9 +174,9 @@ export default function graphReducer(state = emptyTree, action): TreeReducerStat
     }
     case ActionTypes.TOGGLE_TREE_DISPLAY: {
       const toggleCopy = new Set(state.toggleIds);
-      const toggleView = state.display === TreeType.Radial ? TreeType.VerticalTree : TreeType.Radial;
+      const displayType = action.displayType;
 
-      return _reconstructTree(dataCopy, null, state, toggleCopy, toggleView);
+      return _reconstructTree(dataCopy, null, state, toggleCopy, displayType);
     }
     default: {
       return state;

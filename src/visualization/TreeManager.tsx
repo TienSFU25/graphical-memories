@@ -1,13 +1,12 @@
 import * as React from 'react';
 import * as d3 from 'd3';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import * as _ from 'lodash';
 
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import { project, translate } from './treeManipulator';
 import { d3Node, TreeType } from '../types';
 import { IMAGE_HEIGHT, IMAGE_WIDTH } from './constants';
+import graphProcessor from './graphProcessor';
 
 import '../css/styles.scss';
 
@@ -35,12 +34,6 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
   constructor(props) {
     super(props);
   }
-
-  // thank you redux
-  // shouldComponentUpdate(nextProps:) {
-  //   const shouldUpdate = this.props.graph.updateNode !== nextProps.updateNode;
-  //   return shouldUpdate;
-  // }
 
   componentDidMount() {
     const self = this;
@@ -209,28 +202,8 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
     // stick in DOM
     const sourceTransform = `translate(${source.x}, ${source.y})`;
-    let nodeDestTransform;
-    let linkDestTransform;
-
-    if (display === TreeType.VerticalTree) {
-      nodeDestTransform = (d: d3Node) => `translate(${d.x}, ${d.y})`;
-      linkDestTransform = (d: d3Node) => {
-        return `M${d.x},${d.y}`
-          + `C${d.parent.x + 100},${d.y}`
-          + ` ${d.parent.x + 100},${d.parent.y}`
-          + ` ${d.parent.x},${d.parent.y}`;
-      };
-    } else if (display === TreeType.Radial) {
-      nodeDestTransform = (d: d3Node) => `translate(${d.x}, ${d.y})`;
-      linkDestTransform = (d: d3Node) => {
-        return "M" + (project(d.x0, d.y0))
-            + "C" + (project(d.x0, (d.y0 + d.parent.y0) / 2))
-            + " " + (project(d.parent.x0, (d.y0 + d.parent.y0) / 2))
-            + " " + (project(d.parent.x0, d.parent.y0));
-      };
-    } else {
-      console.log('wtf display??');
-    }
+    const nodeDestTransform = graphProcessor[display].nodeDestTransform;
+    const linkDestTransform = graphProcessor[display].linkDestTransform;
 
     enterNodes
       .attr('transform', sourceTransform )
