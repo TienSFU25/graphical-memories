@@ -1,12 +1,15 @@
 import * as React from 'react';
 import * as d3 from 'd3';
 import * as _ from 'lodash';
+import * as TransitionGroup from 'react-addons-transition-group';
+import { TweenMax } from 'gsap';
 
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import { project, translate } from './treeManipulator';
 import { d3Node, TreeType } from '../types';
 import { IMAGE_HEIGHT, IMAGE_WIDTH } from './constants';
 import graphProcessor from './graphProcessor';
+import Link from './Link';
 
 import '../css/styles.scss';
 
@@ -60,7 +63,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     const shouldUpdate = this.props.graph.updateNode !== nextProps.graph.updateNode;
 
     if (shouldUpdate) {
-      this.update(nextProps.graph.updateNode, nextProps.graph.treeRoot, nextProps.graph.display);
+      // this.update(nextProps.graph.updateNode, nextProps.graph.treeRoot, nextProps.graph.display);
     }
   }
 
@@ -71,10 +74,26 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
   render() {
     const { graph } = this.props;
+    let links = <g />;
+
+    if (graph) {
+      const {treeRoot, updateNode} = graph;
+      const data = treeRoot.descendants().slice(1);
+      console.log(`updating with ${data.length} links...`);
+
+      links = data.map((d) => {
+        return <Link data={d} source={updateNode} key={`link-${d.data.id}`}/>
+      });
+    }
+
     return (
       <g transform={`translate(${graph.dx}, ${graph.dy})`}>
         <rect style={{fill: graph.color, 'pointer-events': "all"}} width={960} height={1200} ref={(rect) => this.panZoomContainer = d3.select(rect)} onClick={this.onRectClick.bind(this)} />
-        <g transform={`translate(${graph.treeRoot.dx2}, ${graph.treeRoot.dy2})`} ref={(element) => this.transformContainer = d3.select(element)} />
+        <g transform={`translate(${graph.treeRoot.dx2}, ${graph.treeRoot.dy2})`} ref={(element) => this.transformContainer = d3.select(element)}>
+          <TransitionGroup component="g">
+            {links}
+          </TransitionGroup>
+        </g>
       </g>
     );
   }
@@ -224,31 +243,31 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
       .attr('style', 'fill-opacity: 1e-6')
       .remove();
 
-    const links = context.selectAll('.link')
-      .data(root.descendants().slice(1), d => d.data.id);
+    // const links = context.selectAll('.link')
+    //   .data(root.descendants().slice(1), d => d.data.id);
 
-    const enterLinks = links.enter()
-      .insert('path', 'g')
-      .attr('d', (d: d3Node) => {
-          return `M${source.x},${source.y}`
-            + `C${source.x},${source.y}`
-            + ` ${source.x},${source.y}`
-            + ` ${source.x},${source.y}`
-      })
-      .merge(links)
-      .transition(transitionBehavior)
-      .attr('class', 'link')
-      .attr('d', linkDestTransform);
+    // const enterLinks = links.enter()
+    //   .insert('path', 'g')
+    //   .attr('d', (d: d3Node) => {
+    //       return `M${source.x},${source.y}`
+    //         + `C${source.x},${source.y}`
+    //         + ` ${source.x},${source.y}`
+    //         + ` ${source.x},${source.y}`
+    //   })
+    //   .merge(links)
+    //   .transition(transitionBehavior)
+    //   .attr('class', 'link')
+    //   .attr('d', linkDestTransform);
 
-    const exitLinks = links.exit()
-      .transition(transitionBehavior)
-      .attr('d', d => {
-        return `M${source.x},${source.y}`
-          + `C${source.x},${source.y}`
-          + ` ${source.x},${source.y}`
-          + ` ${source.x},${source.y}`
-      })
-      .remove();
+    // const exitLinks = links.exit()
+    //   .transition(transitionBehavior)
+    //   .attr('d', d => {
+    //     return `M${source.x},${source.y}`
+    //       + `C${source.x},${source.y}`
+    //       + ` ${source.x},${source.y}`
+    //       + ` ${source.x},${source.y}`
+    //   })
+    //   .remove();
   }
 }
 
