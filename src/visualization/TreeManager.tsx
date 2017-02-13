@@ -54,7 +54,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
     this.panZoomContainer.call(zoomBehavior);
 
-    this.update(this.props.graph.updateNode, this.props.graph.treeRoot);
+    this.update(this.props.graph.updateNode, this.props.graph.treeRoot, this.props.graph.display);
   }
 
   componentWillReceiveProps(nextProps: ITreeManagerProps) {
@@ -67,7 +67,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     const shouldUpdate = this.props.graph.updateNode !== nextProps.graph.updateNode;
 
     if (shouldUpdate) {
-      this.update(nextProps.graph.updateNode, nextProps.graph.treeRoot);
+      this.update(nextProps.graph.updateNode, nextProps.graph.treeRoot, nextProps.graph.display);
     }
   }
 
@@ -92,7 +92,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
   _getZoomTransform() {
     const transform = d3.zoomTransform(this.panZoomContainer.node());
-    const translatedTransform = transform.translate(this.props.graph.dx2, this.props.graph.dy2);
+    const translatedTransform = transform.translate(this.props.graph.treeRoot.dx2, this.props.graph.treeRoot.dy2);
 
     return translatedTransform;
   }
@@ -120,7 +120,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
       });
   }
 
-  update(source: d3Node, root: d3Node) {
+  update(source: d3Node, root: d3Node, display: TreeType) {
     console.log(`updating tree from ${source.data.name}`);
 
     const self = this;
@@ -212,7 +212,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     let nodeDestTransform;
     let linkDestTransform;
 
-    if (this.props.graph.display === TreeType.VerticalTree) {
+    if (display === TreeType.VerticalTree) {
       nodeDestTransform = (d: d3Node) => `translate(${d.x}, ${d.y})`;
       linkDestTransform = (d: d3Node) => {
         return `M${d.x},${d.y}`
@@ -220,7 +220,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
           + ` ${d.parent.x + 100},${d.parent.y}`
           + ` ${d.parent.x},${d.parent.y}`;
       };
-    } else if (this.props.graph.display === TreeType.Radial) {
+    } else if (display === TreeType.Radial) {
       nodeDestTransform = (d: d3Node) => `translate(${d.x}, ${d.y})`;
       linkDestTransform = (d: d3Node) => {
         return "M" + (project(d.x0, d.y0))

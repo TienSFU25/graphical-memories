@@ -94,7 +94,7 @@ export interface GraphAction extends Action {
   node?: d3Node,
   editData?: any,
   imageHref?: string,
-  graphRid?: string
+  graphRid?: number
 }
 
 export enum EditMode {

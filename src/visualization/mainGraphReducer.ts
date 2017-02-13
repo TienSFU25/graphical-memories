@@ -124,8 +124,15 @@ export default function mainGraphReducer(state = initialState.main, action: Grap
     case ActionTypes.TOGGLE_TREE_DISPLAY: {
       const { graphRid } = action;
 
-      const newSubState = forwardActionToReducer(state.subStates[graphRid], ActionTypes.TOGGLE_TREE_DISPLAY);
-      state.subStates[graphRid] = newSubState;
+      const oldState = state.subStates[graphRid];
+      const nextSubState = forwardActionToReducer(oldState, ActionTypes.TOGGLE_TREE_DISPLAY);
+
+      // to be able to trace a node to corresponding substate
+      const oldType = oldState.type;
+      nextSubState.treeRoot.rid = graphRid;
+      nextSubState.type = oldType;
+
+      state.subStates[graphRid] = nextSubState;
 
       return Object.assign({}, state);
     }
