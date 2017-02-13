@@ -49,7 +49,6 @@ class Graph extends React.Component<any, any> {
       .on('start', d => {
         // d3.selectAll('.ghost.disabled').attr('class', 'ghost');
         d3.event.sourceEvent.stopPropagation();
-        console.log('drag started');
       })
       .on('drag', (d) => {
         const e = d3.event;
@@ -81,13 +80,7 @@ class Graph extends React.Component<any, any> {
         }
 
         self.isDragging = false;
-        // console.log('drag ended');
       });
-  }
-
-  onClick(node) {
-    this.props.actions.selectNode(node);
-    // d3.event.stopPropagation();
   }
 
   onRectClick(graph) {
@@ -125,7 +118,6 @@ class Graph extends React.Component<any, any> {
 
     if (graph.type === GraphType.Tree) {
       return <TreeManager dragBehavior={this.dragBehavior}
-                          onClick={this.onClick.bind(this)}
                           onRectClick={this.onRectClick.bind(this)}
                           onTextClick={this.onTextClick.bind(this)}
                           onMouseOver={this.onMouseOver.bind(this)}

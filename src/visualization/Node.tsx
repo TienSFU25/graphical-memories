@@ -46,11 +46,6 @@ export default class Node extends React.Component<any, any> {
     d3Circle.call(this.props.dragBehavior);
   }
 
-  onCircleClick() {
-    const node = this.props.node;
-    this.props.onClick(node);
-  }
-
   onTextClick() {
     const node = this.props.node;
     this.props.onTextClick(node);

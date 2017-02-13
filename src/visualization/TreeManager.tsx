@@ -25,7 +25,6 @@ interface ITreeManagerProps {
   onRectClick: Function;
   // node specific
   dragBehavior: d3.DragBehavior<any, any, any>;
-  onClick: Function;
   onTextClick: Function;
   onMouseOver: Function;
   onMouseOut: Function;
@@ -159,7 +158,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
       circle.call(self.props.dragBehavior);
       circle.on('click', (node) => {
         console.log('clicked the circle!');
-        self.props.onClick(node);
+        // self.props.onClick(node);
         d3.event.stopPropagation();
       });
 
