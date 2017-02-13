@@ -16,8 +16,6 @@ import '../css/edit.scss';
 
 // doesnt work with SVGS :|
 // @DragDropContext(HTML5Backend)
-@DragDropContext(MouseBackend)
-// @DragDropContext(TouchBackend)
 export default class HomePage extends React.Component<any, any> {
   constructor(props) {
     super(props);

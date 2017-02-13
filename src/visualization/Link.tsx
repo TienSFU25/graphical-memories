@@ -3,118 +3,41 @@ import * as TransitionGroup from 'react-addons-transition-group';
 import { TweenMax } from 'gsap';
 
 import { d3Node } from '../types';
-import graphProcessor from './graphProcessor';
-
-const p = graphProcessor[0];
-// export default class Wrapper extends React.Component<any, any> {
-//   constructor(props) {
-//     super(props);
-//   }
-
-//   calc(d: d3Node) {
-//     const source = this.props.source;
-
-//     return `M${source.x},${source.y}`
-//       + `C${source.x},${source.y}`
-//       + ` ${source.x},${source.y}`
-//       + ` ${source.x},${source.y}`
-//   }
-
-//   render () {
-//     const pathy = <Link key={this.props.data.data.id} {...this.props}/>;
-
-//     return (
-//       <TransitionGroup component="g">
-//         {pathy}
-//       </TransitionGroup>
-//     );
-//   }
-// }
-function calc(d) {
-    // const source = this.props.source;
-
-    return `M${d.parent.x},${d.parent.y}`
-      + `C${d.parent.x},${d.parent.y}`
-      + ` ${d.parent.x},${d.parent.y}`
-      + ` ${d.parent.x},${d.parent.y}`
-  }
+import graphProcessor, { linkSrcTransform } from './graphProcessor';
 
 export default class Link extends React.Component<any, any> {
   private container;
 
-  componentDidAppear() {
-    // console.log("this crap appeared!");
-    // callback();
-  }
+  constructor(props) {
+    super(props);
 
-  componentWillAppear(callback) {
-    // console.log("this crap will appear!");
-    const el = this.container;
-    callback();
-    // console.warn(`from ${calc(this.props.data)} to ${p.linkDestTransform(this.props.data)}`);
-    // TweenMax.fromTo(el, 3, {attr: {d: calc(this.props.data)}}, {attr: {d: p.linkDestTransform(this.props.data)}, onComplete: callback});
+    const {display} = this.props;
+    this.state = {
+      processor: graphProcessor[display]
+    };
   }
-
-  // componentDidEnter() {
-  //   console.log('entered');
-  // }
 
   componentWillUpdate(nextProps) {
-    // console.log(`link ${this.props.data.data.name} updating`);
-    // console.warn(`to ${p.linkDestTransform(nextProps.data)}`);
-    // callback();
+    // this state to next state
     const el = this.container;
-    TweenMax.to(el, 0.75, {attr: {d: p.linkDestTransform(nextProps.data)}});
+    TweenMax.fromTo(el, 0.75, {attr: {d: this.state.processor.linkDestTransform(this.props.node)}}, {attr: {d: this.state.processor.linkDestTransform(nextProps.node)}});
   }
 
   componentWillEnter (callback) {
-    console.log(`link ${this.props.data.data.name} entering`);
-    // callback();
     const el = this.container;
-    TweenMax.fromTo(el, 0.75, {attr: {d: calc(this.props.data)}}, {attr: {d: p.linkDestTransform(this.props.data)}, onComplete: callback});
+    // src to parent
+    TweenMax.to(el, 0.75, {attr: {d: this.state.processor.linkDestTransform(this.props.node)}, onComplete: callback});
   }
 
   componentWillLeave (callback) {
-    console.warn(`link ${this.props.data.data.name} leaving`);
-    console.warn(`from ${p.linkDestTransform(this.props.data)} to ${calc(this.props.data)}`);
-    // callback();
+    // parent to src
     const el = this.container;
-    TweenMax.fromTo(el, 0.75, {attr:{d: p.linkDestTransform(this.props.data)}, opacity: 1}, {attr:{d: calc(this.props.data)}, opacity: 0, onComplete: callback});
+    TweenMax.fromTo(el, 0.75, {attr:{d: this.state.processor.linkDestTransform(this.props.node)}, opacity: 1}, {attr:{d: linkSrcTransform(this.props.node)}, opacity: 0, onComplete: callback});
   }
-
-  // componentDidLeave() {
-  //   console.log('leaving :|');
-  // }
 
   render () {
     return (
-      <path className="link" ref={c => this.container=c} />
+      <path d={linkSrcTransform(this.props.node)} className="link" ref={c => this.container=c} />
     );
   }
 }
-
-    // const links = context.selectAll('.link')
-    //   .data(root.descendants().slice(1), d => d.data.id);
-
-    // const enterLinks = links.enter()
-    //   .insert('path', 'g')
-    //   .attr('d', (d: d3Node) => {
-    //       return `M${source.x},${source.y}`
-    //         + `C${source.x},${source.y}`
-    //         + ` ${source.x},${source.y}`
-    //         + ` ${source.x},${source.y}`
-    //   })
-    //   .merge(links)
-    //   .transition(transitionBehavior)
-    //   .attr('class', 'link')
-    //   .attr('d', linkDestTransform);
-
-    // const exitLinks = links.exit()
-    //   .transition(transitionBehavior)
-    //   .attr('d', d => {
-    //     return `M${source.x},${source.y}`
-    //       + `C${source.x},${source.y}`
-    //       + ` ${source.x},${source.y}`
-    //       + ` ${source.x},${source.y}`
-    //   })
-    //   .remove();

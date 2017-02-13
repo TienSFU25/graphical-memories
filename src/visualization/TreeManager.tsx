@@ -86,11 +86,11 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
       // console.log(`updating with ${data.length} links...`);
 
       links = allButRoot.map((d) => {
-        return <Link data={d} source={updateNode} key={`link-${d.data.id}`}/>
+        return <Link display={graph.display} node={d} source={updateNode} key={`link-${d.data.id}`}/>
       });
 
       nodes = all.map((d) => {
-        return <Node display={graph.display} node={d} key={`node-${d.data.id}`} {...passThroughProps}/>
+        return <Node display={graph.display} node={d} source={updateNode} key={`node-${d.data.id}`} {...passThroughProps}/>
       });
     }
 
@@ -233,7 +233,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     // stick in DOM
     const sourceTransform = `translate(${source.x}, ${source.y})`;
     const nodeDestTransform = graphProcessor[display].nodeDestTransform;
-    const linkDestTransform = graphProcessor[display].linkDestTransform;
+    // const linkDestTransform = graphProcessor[display].linkDestTransform;
 
     enterNodes
       .attr('transform', sourceTransform )

@@ -7,6 +7,17 @@ import { emptyTree } from '../app/initialState';
 import { d3Node, d3RootNode, EntityType, SelectedEntity, TreeReducerState, TreeType } from '../types';
 import { attachIds, getNextId, findNode, project, translate } from './treeManipulator';
 
+export function nodeSrcTransform(source: d3Node) {
+  return `translate(${source.x}, ${source.y})`;
+}
+
+export function linkSrcTransform(d: d3Node) {
+  return `M${d.parent.x},${d.parent.y}`
+    + `C${d.parent.x},${d.parent.y}`
+    + ` ${d.parent.x},${d.parent.y}`
+    + ` ${d.parent.x},${d.parent.y}`;
+}
+
 export default {
   0: {
     getTree(height, width) {
