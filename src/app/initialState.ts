@@ -4,7 +4,7 @@ export const initialState = {
   selectedEntity: {
     type: EntityType.Nothing,
     id: 0,
-    data: null,
+    graph: null,
     node: null,
     htmlCoords: {
       x: 0,
@@ -25,6 +25,8 @@ export default initialState;
 
 /* Custom initial states */
 export const emptyTree = {
+  name: 'default empty tree',
+  color: '',
   type: GraphType.Tree,
   display: TreeType.Radial,
   raw: {
@@ -37,7 +39,5 @@ export const emptyTree = {
   maxWidth: 0,
   dx: 0,
   dy: 0,
-  dx2: 0,
-  dy2: 0,
   flat: []
 };

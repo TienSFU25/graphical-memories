@@ -37,9 +37,15 @@ class SelectedEntity extends React.Component<any, any> {
     this.props.actions.editNode(currNode, { name: editValue });
   }
 
+  onGraphTypeChange(eventKey) {
+    // console.log(eventKey);
+    const graphRid = this.props.selectedEntity.graph.rid;
+    this.props.actions.toggleGraphType(graphRid);
+  }
+
   render() {
     if (this.props.selectedEntity.type === EntityType.Graph) {
-      return <SelectedGraph />;
+      return <SelectedGraph onGraphTypeChange={this.onGraphTypeChange.bind(this)} graphName={this.props.selectedEntity.graph.name}/>;
     } else if (this.props.selectedEntity.type === EntityType.Node) {
       return <SelectedNode node={this.props.selectedEntity.node}
                            onAdd={this.onAdd.bind(this)}

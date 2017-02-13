@@ -19,17 +19,12 @@ window['d3'] = d3;
 interface ITreeManagerProps {
   dragBehavior: d3.DragBehavior<any, any, any>;
   onClick: Function;
+  onRectClick: Function;
   onTextClick: Function;
   onMouseOver: Function;
   onMouseOut: Function;
-  root;
-  updateNode;
+  graph: any;
   selectedNode;
-  display;
-  dx;
-  dy;
-  dx2;
-  dy2;
 }
 
 class TreeManager extends React.Component<ITreeManagerProps, any> {
@@ -42,10 +37,10 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
   }
 
   // thank you redux
-  shouldComponentUpdate(nextProps) {
-    const shouldUpdate = this.props.updateNode !== nextProps.updateNode;
-    return shouldUpdate;
-  }
+  // shouldComponentUpdate(nextProps:) {
+  //   const shouldUpdate = this.props.graph.updateNode !== nextProps.updateNode;
+  //   return shouldUpdate;
+  // }
 
   componentDidMount() {
     const self = this;
@@ -59,28 +54,34 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
     this.panZoomContainer.call(zoomBehavior);
 
-    this.update(this.props.updateNode, this.props.root);
+    this.update(this.props.graph.updateNode, this.props.graph.treeRoot);
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: ITreeManagerProps) {
     if (nextProps.selectedNode) {
       this.updateSelectedNode(nextProps.selectedNode);
     } else if (this.DOMSelectedNode) {
       this.clearSelectedNode();
     }
 
-    const shouldUpdate = this.props.updateNode !== nextProps.updateNode;
+    const shouldUpdate = this.props.graph.updateNode !== nextProps.graph.updateNode;
 
     if (shouldUpdate) {
-      this.update(nextProps.updateNode, nextProps.root);
+      this.update(nextProps.graph.updateNode, nextProps.graph.treeRoot);
     }
   }
 
+  onRectClick() {
+    this.props.onRectClick(this.props.graph);
+    // console.log(this.props.)
+  }
+
   render() {
+    const { graph } = this.props;
     return (
-      <g transform={`translate(${this.props.dx}, ${this.props.dy})`}>
-        <rect style={{fill: "none", 'pointer-events': "all"}} width={960} height={1200} ref={(rect) => this.panZoomContainer = d3.select(rect)} />
-        <g transform={`translate(${this.props.dx2}, ${this.props.dy2})`} ref={(element) => this.transformContainer = d3.select(element)} />
+      <g transform={`translate(${graph.dx}, ${graph.dy})`}>
+        <rect style={{fill: graph.color, 'pointer-events': "all"}} width={960} height={1200} ref={(rect) => this.panZoomContainer = d3.select(rect)} onClick={this.onRectClick.bind(this)} />
+        <g transform={`translate(${graph.treeRoot.dx2}, ${graph.treeRoot.dy2})`} ref={(element) => this.transformContainer = d3.select(element)} />
       </g>
     );
   }
@@ -91,14 +92,14 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
   _getZoomTransform() {
     const transform = d3.zoomTransform(this.panZoomContainer.node());
-    const translatedTransform = transform.translate(this.props.dx2, this.props.dy2);
+    const translatedTransform = transform.translate(this.props.graph.dx2, this.props.graph.dy2);
 
     return translatedTransform;
   }
 
   updateSelectedNode(selectedNode) {
     const context = this.transformContainer;
-    const root = this.props.root;
+    const root = this.props.graph.treeRoot;
     const self = this;
 
     const nodes = context.selectAll('.node')
@@ -120,7 +121,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
   }
 
   update(source: d3Node, root: d3Node) {
-    // console.log(`updating tree from ${source.data.name}`);
+    console.log(`updating tree from ${source.data.name}`);
 
     const self = this;
     const context = this.transformContainer;
@@ -211,7 +212,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     let nodeDestTransform;
     let linkDestTransform;
 
-    if (this.props.display === TreeType.VerticalTree) {
+    if (this.props.graph.display === TreeType.VerticalTree) {
       nodeDestTransform = (d: d3Node) => `translate(${d.x}, ${d.y})`;
       linkDestTransform = (d: d3Node) => {
         return `M${d.x},${d.y}`
@@ -219,7 +220,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
           + ` ${d.parent.x + 100},${d.parent.y}`
           + ` ${d.parent.x},${d.parent.y}`;
       };
-    } else if (this.props.display === TreeType.Radial) {
+    } else if (this.props.graph.display === TreeType.Radial) {
       nodeDestTransform = (d: d3Node) => `translate(${d.x}, ${d.y})`;
       linkDestTransform = (d: d3Node) => {
         return "M" + (project(d.x0, d.y0))

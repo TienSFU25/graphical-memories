@@ -35,9 +35,11 @@ export function selectNode(node: d3Node) {
   };
 }
 
-export function selectGraph(): Action {
+export function selectGraph(graphName, graphRid) {
   return {
-    type: ActionTypes.SELECT_GRAPH
+    type: ActionTypes.SELECT_GRAPH,
+    graphName,
+    graphRid
   };
 }
 
@@ -65,6 +67,13 @@ export function attachImageToNode(imageHref, node) {
   }
 }
 
+export function toggleGraphType(graphRid) {
+  return {
+    type: ActionTypes.TOGGLE_TREE_DISPLAY,
+    graphRid
+  }
+}
+
 const GraphManipulationCreatorsMap: ActionCreatorsMapObject = {
   addNode,
   toggleNode,
@@ -73,7 +82,8 @@ const GraphManipulationCreatorsMap: ActionCreatorsMapObject = {
   editNode,
   deleteNode,
   selectGraph,
-  attachImageToNode
+  attachImageToNode,
+  toggleGraphType
 }
 
 export default GraphManipulationCreatorsMap;

@@ -31,13 +31,6 @@ class Graph extends React.Component<any, any> {
   private destDragNode;
   private container;
 
-  svgPoint(element, x, y) {
-    var pt = this.svg.node().createSVGPoint();
-    pt.x = x;
-    pt.y = y;
-    return pt.matrixTransform(element.getScreenCTM().inverse());
-  }
-
   componentDidMount() {
     // set the dimensions and margins of the graph
     this.margin = {top: 20, right: 20, bottom: 30, left: 50};
@@ -48,22 +41,6 @@ class Graph extends React.Component<any, any> {
 
     // add the svg canvas
     this.svg
-      .on('click', e => {
-          const d3e = d3.event;
-
-          const t = d3e.target;
-          const x = d3e.clientX;
-          const y = d3e.clientY;
-          // const target = (t == this.svg.node() ? this.svg.node() : t.parentNode);
-          const target = this.svg.node();
-          const svgP = this.svgPoint(target, x, y);
-          // console.log(target);
-          console.log(x);
-          console.log(y);
-          console.log(svgP);
-          console.log('--------->');
-          this.props.actions.selectGraph();
-        })
         .attr('width', this.width + margin.left + margin.right)
         .attr('height', this.height + margin.top + margin.bottom);
 
@@ -111,6 +88,12 @@ class Graph extends React.Component<any, any> {
     d3.event.stopPropagation();
   }
 
+  onRectClick(graph) {
+    const { name, treeRoot } = graph;
+
+    this.props.actions.selectGraph(name, treeRoot.rid);
+  }
+
   onTextClick(node) {
     if (!node.x || !node.y) {
       console.error('node does not have coordinates!');
@@ -141,17 +124,12 @@ class Graph extends React.Component<any, any> {
     if (graph.type === GraphType.Tree) {
       return <TreeManager dragBehavior={this.dragBehavior}
                           onClick={this.onClick.bind(this)}
+                          onRectClick={this.onRectClick.bind(this)}
                           onTextClick={this.onTextClick.bind(this)}
                           onMouseOver={this.onMouseOver.bind(this)}
                           onMouseOut={this.onMouseOut.bind(this)}
-                          root={graph.treeRoot}
-                          updateNode={graph.updateNode}
-                          display={graph.display}
                           selectedNode={selectedNode}
-                          dx={graph.dx}
-                          dy={graph.dy}
-                          dx2={graph.dx2}
-                          dy2={graph.dy2} />
+                          graph={graph} />
     }
   }
 

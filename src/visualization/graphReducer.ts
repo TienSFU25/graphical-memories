@@ -14,7 +14,7 @@ function _sortTree(root) {
 
 function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerState<string>, toggleIds?: Set<number>, display = previousState.display) {
   // pull view size data from previous state
-  const { maxHeight, maxWidth, dx, dy, dx2, dy2 } = previousState;
+  const { name, maxHeight, maxWidth, dx, dy, color } = previousState;
 
   const newRoot: d3RootNode = d3.hierarchy(treeData);
   let tree;
@@ -77,10 +77,17 @@ function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerSta
   }
 
   // for determining zoom
-  newRoot.dx2 = dx2;
-  newRoot.dy2 = dy2;
+  if (display === TreeType.VerticalTree) {
+    newRoot.dx2 = 0;
+    newRoot.dy2 = 0;
+  } else {
+    newRoot.dx2 = RADIAL_X,
+    newRoot.dy2 = RADIAL_Y
+  }
 
   return Object.assign({}, previousState, {
+    name,
+    color,
     raw: treeData,
     treeRoot: newRoot,
     toggleIds: toggleCopy,
@@ -100,21 +107,12 @@ export default function graphReducer(state = emptyTree, action): TreeReducerStat
 
       let dx = 0;
       let dy = maxHeight * viewIndex;
-      let dx2 = 0;
-      let dy2 = 0;
-
-      if (state.display === TreeType.Radial) {
-        dx2 = RADIAL_X;
-        dy2 = RADIAL_Y;
-      }
 
       return Object.assign({}, state, {
         maxHeight,
         maxWidth,
         dx,
-        dy,
-        dx2,
-        dy2
+        dy
       });
     }
     case ActionTypes.LOAD_GRAPH_SUCCESS: {

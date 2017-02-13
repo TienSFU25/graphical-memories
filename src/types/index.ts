@@ -1,13 +1,6 @@
 import { Action } from 'redux';
 import * as d3 from 'd3';
 
-// export type d3Node = d3.HierarchyNode<GraphNode<any>>;
-
-export interface d3RootNode extends d3Node {
-  dx2?: number;
-  dy2?: number;
-}
-
 export interface d3Node extends d3.HierarchyNode<GraphNode<any>> {
   parent: d3Node;
   children?: Array<d3Node>;
@@ -18,7 +11,11 @@ export interface d3Node extends d3.HierarchyNode<GraphNode<any>> {
   y0?: number;
   dx?: number;
   dy?: number;
-  // yOffset?: number;
+}
+
+export interface d3RootNode extends d3Node {
+  dx2?: number;
+  dy2?: number;
 }
 
 export enum EntityType {
@@ -30,7 +27,7 @@ export enum EntityType {
 export interface SelectedEntity {
   type: EntityType,
   id: number,
-  data: any,
+  graph: any,
   node: d3Node
 }
 
@@ -45,6 +42,8 @@ export enum TreeType {
 
 /* Reducer states */
 export interface TreeReducerState<T> {
+  name: string;
+  color: string;
   type: GraphType;
   value?: TreeNode<T>;
   raw: TreeNode<T>;
@@ -56,8 +55,6 @@ export interface TreeReducerState<T> {
   maxWidth: number;
   dx: number;
   dy: number;
-  dx2: number;
-  dy2: number;
   flat: Array<TreeNode<T>>;
 }
 
@@ -96,9 +93,9 @@ export interface GraphAction extends Action {
   destNode?: d3Node,
   node?: d3Node,
   editData?: any,
-  imageHref?: string
+  imageHref?: string,
+  graphRid?: string
 }
-
 
 export enum EditMode {
   Standard,

@@ -5,6 +5,8 @@ export default [
     type: GraphType.Tree,
     toggleIds: new Set([37]),
     display: TreeType.VerticalTree,
+    name: "first tree",
+    color: "aliceblue",
     value: {
     "name": "flare",
     "children": [{
@@ -393,6 +395,8 @@ export default [
 {
   type: GraphType.Tree,
   toggleIds: new Set(),
+  name: "second tree",
+  color: "lightgoldenrodyellow",
   display: TreeType.VerticalTree,
   value: {
     "name": "flare",

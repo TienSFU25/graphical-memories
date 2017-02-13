@@ -12,11 +12,17 @@ export default function selectedEntityReducer(state: SelectedEntity = initialSta
         });
     }
     case ActionTypes.SELECT_GRAPH: {
+      const { graphRid, graphName } = action
+
       return Object.assign({}, state,
         {
           type: EntityType.Graph,
           id: 1,
-          node: null
+          node: null,
+          graph: {
+            name: graphName,
+            rid: graphRid
+          }
         });
     }
     case ActionTypes.SELECT_NODE: {

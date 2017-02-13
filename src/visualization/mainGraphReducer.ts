@@ -121,6 +121,14 @@ export default function mainGraphReducer(state = initialState.main, action: Grap
       executeActionOnNode(state.subStates, ActionTypes.ATTACH_IMAGE, node, { node, imageHref });
       return Object.assign({}, state);
     }
+    case ActionTypes.TOGGLE_TREE_DISPLAY: {
+      const { graphRid } = action;
+
+      const newSubState = forwardActionToReducer(state.subStates[graphRid], ActionTypes.TOGGLE_TREE_DISPLAY);
+      state.subStates[graphRid] = newSubState;
+
+      return Object.assign({}, state);
+    }
     default: {
       return state;
     }
