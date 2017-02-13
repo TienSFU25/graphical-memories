@@ -20,14 +20,13 @@ export default class Board extends Component<any, any> {
 
   render() {
     const squares = [];
-    // for (let i = 0; i < 10; i += 1) {
-    //   squares.push(this.renderSquare(i));
-    // }
+    for (let i = 0; i < 10; i += 1) {
+      squares.push(this.renderSquare(i));
+    }
 
     return (
       <div className="Board">
-        <Source />
-        <Square x={0} y={0} />
+        {squares}
       </div>
     );
   }

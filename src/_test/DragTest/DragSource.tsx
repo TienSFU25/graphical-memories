@@ -30,7 +30,7 @@ export default class Source extends Component<any, any> {
     return connectDragSource(
       <div width={30} height={30} style={{backgroundColor: "aliceblue", display: "inline"}}>
         DRAG SOURCE
-      </div>,
+      </div>
     );
   }
 }

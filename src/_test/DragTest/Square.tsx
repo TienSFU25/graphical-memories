@@ -12,7 +12,7 @@ const squareTarget = {
   },
 
   drop(props) {
-    console.log('dropped!');
+    console.log(`dropped into ${props.x}, ${props.y}`);
   },
 };
 
@@ -25,33 +25,37 @@ function collect(connect, monitor) {
 }
 
 // drag source shit
-// function collect2(connect, monitor) {
-//   return {
-//     connectDragSource: connect.dragSource(),
-//     connectDragPreview: connect.dragPreview(),
-//     isDragging: monitor.isDragging(),
-//   };
-// }
+function collect2(connect, monitor) {
+  return {
+    connectDragSource: connect.dragSource(),
+    connectDragPreview: connect.dragPreview(),
+    isDragging: monitor.isDragging(),
+  };
+}
 
-// const knightSource = {
-//   beginDrag() {
-//     console.log('begun dragging!');
-//     return {};
-//   },
-// };
+const knightSource = {
+  beginDrag(props) {
+    console.log(`begun dragging ${props.x}, ${props.y}`);
+    return {
+      foo: "BAR",
+      wtf: "does this do"
+    };
+  },
+};
 
-// @DragSource(ItemTypes.KNIGHT, knightSource, collect2)
+@DragSource(ItemTypes.KNIGHT, knightSource, collect2)
 @DropTarget(ItemTypes.KNIGHT, squareTarget, collect)
 export default class Square extends Component<any, any> {
   render() {
-    const { x, y, connectDropTarget, isOver, canDrop, children } = this.props;
+    const { x, y, connectDropTarget, isOver, canDrop, connectDragSource } = this.props;
     const black = (x + y) % 2 === 1;
-    const fill = black ? "white" : "black";
+    let fill = black ? "white" : "black";
+    fill = isOver ? "lightsalmon" : fill;
 
-    return connectDropTarget(
+    return connectDragSource(connectDropTarget(
       <div width={30} height={30} style={{backgroundColor: fill, display: "inline"}}>
         DRAG ME BRO
       </div>,
-    );
+    ));
   }
 }
