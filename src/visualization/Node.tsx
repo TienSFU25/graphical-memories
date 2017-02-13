@@ -62,16 +62,17 @@ export default class Node extends React.Component<any, any> {
   }
 
   render () {
-    const { node, source } = this.props;
+    const { node, source, isSelectedNode } = this.props;
     const x = node.children ? - 8 : 8;
-    const nodeClassName = node.children ? 'internal' : 'leaf';
     const nodeName = node.data.name;
     const { nodeDestTransform } = this.state.processor;
+    const nodeClassName = node.children ? 'internal' : 'leaf';
+    const selectedClassName = isSelectedNode ? 'selected' : '';
 
     return (
       <g id={node.data.id} className={`node ${nodeClassName}`} transform={nodeSrcTransform(source)} ref={g => this.container = g}>
         <circle r={20} className="ghost disabled" onMouseOver={this.onMouseOver.bind(this)} onMouseOut={this.onMouseOut.bind(this)} ref={c => this.ghostCirc = c}/>
-        <circle r={7.5} className="inner" ref={c => this.circ = c} />
+        <circle r={7.5} className={`inner ${selectedClassName}`} ref={c => this.circ = c} />
         <text dy={3} x={x} className={nodeClassName} onClick={this.onTextClick.bind(this)}>{nodeName}</text>
       </g>
     );

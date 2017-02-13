@@ -31,7 +31,6 @@ interface ITreeManagerProps {
 }
 
 class TreeManager extends React.Component<ITreeManagerProps, any> {
-  private DOMSelectedNode;
   private transformContainer;
   private panZoomContainer;
 
@@ -55,12 +54,6 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
   }
 
   componentWillReceiveProps(nextProps: ITreeManagerProps) {
-    if (nextProps.selectedNode) {
-      // this.updateSelectedNode(nextProps.selectedNode);
-    } else if (this.DOMSelectedNode) {
-      // this.clearSelectedNode();
-    }
-
     const shouldUpdate = this.props.graph.updateNode !== nextProps.graph.updateNode;
 
     if (shouldUpdate) {
@@ -89,7 +82,9 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
       });
 
       nodes = all.map((d) => {
-        return <Node display={graph.display} node={d} source={updateNode} key={`node-${d.data.id}`} {...passThroughProps}/>
+        const isSelectedNode = selectedNode && d.data.id === selectedNode.data.id;
+
+        return <Node display={graph.display} node={d} source={updateNode} key={`node-${d.data.id}`} isSelectedNode={isSelectedNode} {...passThroughProps}/>
       });
     }
 
@@ -108,38 +103,11 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
     );
   }
 
-  clearSelectedNode() {
-    this.DOMSelectedNode.attr('class', 'inner');
-  }
-
   _getZoomTransform() {
     const transform = d3.zoomTransform(this.panZoomContainer.node());
     const translatedTransform = transform.translate(this.props.graph.treeRoot.dx2, this.props.graph.treeRoot.dy2);
 
     return translatedTransform;
-  }
-
-  updateSelectedNode(selectedNode) {
-    const context = this.transformContainer;
-    const root = this.props.graph.treeRoot;
-    const self = this;
-
-    const nodes = context.selectAll('.node')
-      .data(root.descendants(), d => d.data.id);
-
-    // update selected node
-    nodes.selectAll('circle.inner')
-      .attr('class', function(d: d3Node) {
-        let className = 'inner';
-
-        if (selectedNode && d.data.id == selectedNode.data.id) {
-          // save node to deselect when updating
-          self.DOMSelectedNode = d3.select(this);
-          className += ' selected';
-        }
-
-        return `${className}`;
-      });
   }
 
   update(source: d3Node, root: d3Node, display: TreeType) {
