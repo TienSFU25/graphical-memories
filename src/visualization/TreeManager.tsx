@@ -23,6 +23,7 @@ interface ITreeManagerProps {
   graph: any;
   selectedNode: any;
   onRectClick: Function;
+  zoomEnabled: boolean;
   // node specific
   dragBehavior: d3.DragBehavior<any, any, any>;
   onTextClick: Function;
@@ -33,31 +34,35 @@ interface ITreeManagerProps {
 class TreeManager extends React.Component<ITreeManagerProps, any> {
   private transformContainer;
   private panZoomContainer;
+  private zoomBehavior;
 
   constructor(props) {
     super(props);
-  }
-
-  componentDidMount() {
     const self = this;
-
-    const zoomBehavior = d3.zoom()
+    this.zoomBehavior = d3.zoom()
       .on('zoom', (d) => {
         console.log('THIS IS THE G ZOOM');
         const transform = self._getZoomTransform();
         this.transformContainer.attr('transform', transform.toString());
       });
+  }
 
-    this.panZoomContainer.call(zoomBehavior);
-
+  componentDidMount() {
+    // this.panZoomContainer.call(zoomBehavior);
+    // this.panZoomContainer.on('.zoom', null);
     // this.update(this.props.graph.updateNode, this.props.graph.treeRoot, this.props.graph.display);
   }
 
   componentWillReceiveProps(nextProps: ITreeManagerProps) {
-    const shouldUpdate = this.props.graph.updateNode !== nextProps.graph.updateNode;
+    const { zoomEnabled } = nextProps;
+    const prevZoomEnabled = this.props.zoomEnabled;
 
-    if (shouldUpdate) {
-      // this.update(nextProps.graph.updateNode, nextProps.graph.treeRoot, nextProps.graph.display);
+    if (prevZoomEnabled !== zoomEnabled) {
+      if (zoomEnabled) {
+        this.panZoomContainer.call(this.zoomBehavior);
+      } else {
+        this.panZoomContainer.on('.zoom', null);
+      }
     }
   }
 
@@ -90,7 +95,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
 
     return (
       <g transform={`translate(${graph.dx}, ${graph.dy})`}>
-        <rect style={{fill: graph.color, 'pointer-events': "all"}} width={960} height={1200} ref={(rect) => this.panZoomContainer = d3.select(rect)} onClick={this.onRectClick.bind(this)} />
+        <rect style={{fill: graph.color, 'pointer-events': "all"}} width={960} height={1200} ref={(rect) => this.panZoomContainer = d3.select(rect)} onClick={this.onRectClick.bind(this)}/>
         <g transform={`translate(${graph.treeRoot.dx2}, ${graph.treeRoot.dy2})`} ref={(element) => this.transformContainer = d3.select(element)}>
           <TransitionGroup component="g">
             {links}
@@ -99,6 +104,7 @@ class TreeManager extends React.Component<ITreeManagerProps, any> {
             {nodes}
           </TransitionGroup>
         </g>
+        <path d="M0 0v1h8v-1h-8zm0 2.97v1h8v-1h-8zm0 3v1h8v-1h-8z" transform="translate(800,20),scale(2)" onClick={this.onRectClick.bind(this)}/>
       </g>
     );
   }

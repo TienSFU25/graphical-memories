@@ -19,6 +19,7 @@ export const initialState = {
     editMode: EditMode.Standard
   },
   carouselImages: [],
+  zoomEnabled: false
 };
 
 export default initialState;

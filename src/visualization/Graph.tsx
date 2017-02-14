@@ -123,7 +123,8 @@ class Graph extends React.Component<any, any> {
                           onMouseOver={this.onMouseOver.bind(this)}
                           onMouseOut={this.onMouseOut.bind(this)}
                           selectedNode={selectedNode}
-                          graph={graph} />
+                          graph={graph}
+                          zoomEnabled={this.props.zoomEnabled} />
     }
   }
 
@@ -158,10 +159,11 @@ class Graph extends React.Component<any, any> {
   }
 }
 
-function mapStateToProps({ selectedEntity, graph }) {
+function mapStateToProps({ selectedEntity, graph, zoomEnabled }) {
   return {
     selectedEntity,
-    graph
+    graph,
+    zoomEnabled
   };
 }
 

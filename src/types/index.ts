@@ -102,3 +102,8 @@ export enum EditMode {
   Standard,
   Quick
 }
+
+export enum ZoomMode {
+  Normal,
+  None
+}

@@ -14,6 +14,9 @@ import DragTest from '../_test/DragTest/index';
 import '../css/app.scss';
 import '../css/edit.scss';
 
+// const Icons = require('babel!svg-react!./test.svg?name=Icon');
+// const theImage = require('../images/office.jpg');
+
 // doesnt work with SVGS :|
 // @DragDropContext(HTML5Backend)
 export default class HomePage extends React.Component<any, any> {
