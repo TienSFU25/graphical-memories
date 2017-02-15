@@ -37,7 +37,8 @@ export interface ReduxStore {
 
 export enum TreeType {
   VerticalTree,
-  Radial
+  Radial,
+  Collapsible
 }
 
 /* Reducer states */

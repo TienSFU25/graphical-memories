@@ -6,3 +6,5 @@ export const DRAG_THRESHOLD = 10;
 
 export const RADIAL_X = 520;
 export const RADIAL_Y = 670;
+
+export const COLLAPSIBLE_OFFSET = 20;

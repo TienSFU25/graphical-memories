@@ -6,13 +6,14 @@ import { bindActionCreators } from 'redux';
 import * as _ from 'lodash';
 
 import { DRAG_THRESHOLD } from './constants';
-import { d3Node, GraphType, TreeReducerState } from '../types';
+import { d3Node, GraphType, TreeReducerState, TreeType } from '../types';
 import { toHtmlCoords } from '../shared/svgHelper';
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import { popupActions } from '../popups';
 
 import Carousel from '../carousel';
 import CircularNodeTree from './CircularNodeTree';
+import RectangularNodeTree from './RectangularNodeTree';
 import ViewWrapper from './ViewWrapper';
 import QuickKeys from '../QuickKeys';
 import SelectedEntity from '../graphMetadata/SelectedEntity';
@@ -123,7 +124,11 @@ class Graph extends React.Component<any, any> {
       Wrapped = this.wrappers[index];
 
       if (!Wrapped) {
-        Wrapped = ViewWrapper(CircularNodeTree);
+        if (graph.display === TreeType.Collapsible) {
+          Wrapped = ViewWrapper(RectangularNodeTree);
+        } else {
+          Wrapped = ViewWrapper(CircularNodeTree);
+        }
         this.wrappers[index] = Wrapped;
       }
 

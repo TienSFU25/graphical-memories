@@ -25,8 +25,6 @@ function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerSta
   _sortTree(newRoot);
   tree(newRoot);
 
-  newRoot.each(processor.processNode);
-
   const toggleCopy = toggleIds || new Set(previousState.toggleIds);
   let flat = [];
 
@@ -44,6 +42,8 @@ function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerSta
     // node.each is BFS
     flat.push(node);
   });
+
+  processor.processRoot(newRoot);
 
   // also find the node that needs rerendering
   let updateNode = null;

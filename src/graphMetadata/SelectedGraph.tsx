@@ -27,6 +27,7 @@ const SelectedGraph = ({graphName, onGraphTypeChange}) => {
                 <DropdownButton title="Graphmode" onSelect={onGraphTypeChange} id="graph-mode">
                   <MenuItem eventKey={TreeType.VerticalTree}>Vertical</MenuItem>
                   <MenuItem eventKey={TreeType.Radial}>Radial</MenuItem>
+                  <MenuItem eventKey={TreeType.Collapsible}>Collapsible</MenuItem>
                 </DropdownButton>
               </Col>
             </FormGroup>
