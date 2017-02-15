@@ -12,7 +12,8 @@ import graphManipulationActions from '../graphMetadata/graphManipulationActions'
 import { popupActions } from '../popups';
 
 import Carousel from '../carousel';
-import TreeManager from './TreeManager';
+import CircularNodeTree from './CircularNodeTree';
+import ViewWrapper from './ViewWrapper';
 import QuickKeys from '../QuickKeys';
 import SelectedEntity from '../graphMetadata/SelectedEntity';
 
@@ -30,6 +31,7 @@ class Graph extends React.Component<any, any> {
   private dragBehavior: d3.DragBehavior<any, any, any>;
   private destDragNode;
   private container;
+  private wrappers = {};
 
   componentDidMount() {
     // set the dimensions and margins of the graph
@@ -113,18 +115,27 @@ class Graph extends React.Component<any, any> {
     }
   }
 
-  _graphToReactElement(graph: TreeReducerState<string>) {
+  _graphToReactElement(graph: TreeReducerState<string>, index) {
     const selectedNode = this.props.selectedEntity.node;
 
     if (graph.type === GraphType.Tree) {
-      return <TreeManager dragBehavior={this.dragBehavior}
-                          onRectClick={this.onRectClick.bind(this)}
-                          onTextClick={this.onTextClick.bind(this)}
-                          onMouseOver={this.onMouseOver.bind(this)}
-                          onMouseOut={this.onMouseOut.bind(this)}
-                          selectedNode={selectedNode}
-                          graph={graph}
-                          zoomEnabled={this.props.zoomEnabled} />
+      let Wrapped;
+      Wrapped = this.wrappers[index];
+
+      if (!Wrapped) {
+        Wrapped = ViewWrapper(CircularNodeTree);
+        this.wrappers[index] = Wrapped;
+      }
+
+      return <Wrapped dragBehavior={this.dragBehavior}
+                      onRectClick={this.onRectClick.bind(this)}
+                      onTextClick={this.onTextClick.bind(this)}
+                      onMouseOver={this.onMouseOver.bind(this)}
+                      onMouseOut={this.onMouseOut.bind(this)}
+                      selectedNode={selectedNode}
+                      graph={graph}
+                      zoomEnabled={this.props.zoomEnabled}
+                      key={`graph-${graph.treeRoot.data.id}`} />;
     }
   }
 
