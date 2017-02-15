@@ -21,6 +21,7 @@ interface ITreeManagerProps {
   zoomEnabled: boolean;
   // node specific
   dragBehavior: d3.DragBehavior<any, any, any>;
+  onNodeClick: Function;
   onTextClick: Function;
   onMouseOver: Function;
   onMouseOut: Function;

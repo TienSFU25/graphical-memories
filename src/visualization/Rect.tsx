@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as d3 from 'd3';
 import * as TransitionGroup from 'react-addons-transition-group';
 import { TweenMax } from 'gsap';
 
@@ -13,52 +14,69 @@ export default class Rect extends React.Component<any, any> {
 
     const {display} = this.props;
     this.state = {
-      processor: graphProcessor[display]
+      processor: graphProcessor[display],
+      transitionBehavior: d3.transition('myT').duration(750)
     };
   }
 
-  // componentWillUpdate(nextProps) {
-  //   // this state to next state
-  //   const el = this.container;
-  //   TweenMax.fromTo(el, 0.75, {attr: {d: this.state.processor.linkDestTransform(this.props.node)}}, {attr: {d: this.state.processor.linkDestTransform(nextProps.node)}});
-  // }
+  componentWillUpdate(nextProps) {
+    // this state to next state
+    const el = this.container;
 
-  // componentWillEnter (callback) {
-  //   const el = this.container;
-  //   // src to parent
-  //   TweenMax.to(el, 0.75, {attr: {d: this.state.processor.linkDestTransform(this.props.node)}, onComplete: callback});
-  // }
+    const { transitionBehavior, processor } = this.state;
 
-  // componentWillLeave (callback) {
-  //   // parent to src
-  //   const el = this.container;
-  //   TweenMax.fromTo(el, 0.75, {attr:{d: this.state.processor.linkDestTransform(this.props.node)}, opacity: 1}, {attr:{d: linkSrcTransform(this.props.node)}, opacity: 0, onComplete: callback});
-  // }
+    el.transition(transitionBehavior)
+      .attr('transform', processor.nodeDestTransform(nextProps.node));
+  }
+
+  componentWillAppear (callback) {
+    const el = this.container;
+    const { transitionBehavior } = this.state;
+
+    el.transition(transitionBehavior)
+      .attr('transform', nodeSrcTransform(this.props.node));
+
+    callback();
+  }
+
+  componentWillEnter (callback) {
+    const el = this.container;
+    const { transitionBehavior } = this.state;
+
+    el.transition(transitionBehavior)
+      .attr('transform', nodeSrcTransform(this.props.node));
+
+    callback();
+  }
+
+  componentWillLeave (callback) {
+    const el = this.container;
+    const { source } = this.props;
+    const { transitionBehavior } = this.state;
+
+    el.transition(transitionBehavior)
+      .attr('transform', nodeSrcTransform(source))
+      .attr('fill-opacity', 0);
+
+    callback();
+  }
+
+  onNodeClick() {
+    const { node } = this.props;
+
+    this.props.onNodeClick(node);
+  }
 
   render () {
     const { node, source, isSelectedNode } = this.props;
-    const x = node.children ? - 8 : 8;
     const nodeName = node.data.name;
-    const { nodeDestTransform } = this.state.processor;
     const nodeClassName = node.children ? 'internal' : 'leaf';
-    const selectedClassName = isSelectedNode ? 'selected' : '';
 
     return (
-      <g id={node.data.id} className={`node ${nodeClassName}`} transform={nodeSrcTransform(node)} ref={g => this.container = g}>
-        <rect y={-10} height={20} width={500} fill="lightsalmon" />
-        <text dx={3.5} dy={5.5}>{node.data.name}</text>
+      <g id={node.data.id} className={`node ${nodeClassName}`} ref={g => this.container = d3.select(g)}>
+        <rect y={-10} height={20} width={500} fill="lightsalmon" onClick={this.onNodeClick.bind(this)} />
+        <text dx={3.5} dy={5.5}>{nodeName}</text>
       </g>
     );
   }
 }
-
-    // enterNodes.append('rect')
-    //   .attr('y', -10)
-    //   .attr('height', 20)
-    //   .attr('width', 500)
-    //   .attr('fill', color);
-
-    // enterNodes.append('text')
-    //   .attr('dx', 3.5)
-    //   .attr('dy', 5.5)
-    //   .text(d => d.data.name);

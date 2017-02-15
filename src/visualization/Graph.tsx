@@ -86,6 +86,10 @@ class Graph extends React.Component<any, any> {
       });
   }
 
+  onNodeClick(node) {
+    this.props.actions.toggleNode(node);
+  }
+
   onRectClick(graph) {
     const { name, treeRoot } = graph;
 
@@ -133,6 +137,7 @@ class Graph extends React.Component<any, any> {
       }
 
       return <Wrapped dragBehavior={this.dragBehavior}
+                      onNodeClick={this.onNodeClick.bind(this)}
                       onRectClick={this.onRectClick.bind(this)}
                       onTextClick={this.onTextClick.bind(this)}
                       onMouseOver={this.onMouseOver.bind(this)}
