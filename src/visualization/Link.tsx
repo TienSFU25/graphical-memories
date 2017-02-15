@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as TransitionGroup from 'react-addons-transition-group';
-import { TweenMax } from 'gsap';
+import * as d3 from 'd3';
 
 import { d3Node } from '../types';
 import graphProcessor, { linkSrcTransform } from './graphProcessor';
@@ -13,31 +13,56 @@ export default class Link extends React.Component<any, any> {
 
     const {display} = this.props;
     this.state = {
-      processor: graphProcessor[display]
+      processor: graphProcessor[display],
+      transitionBehavior: d3.transition('myT').duration(750)
     };
   }
 
   componentWillUpdate(nextProps) {
-    // this state to next state
     const el = this.container;
-    TweenMax.fromTo(el, 0.75, {attr: {d: this.state.processor.linkDestTransform(this.props.node)}}, {attr: {d: this.state.processor.linkDestTransform(nextProps.node)}});
+
+    const { transitionBehavior, processor } = this.state;
+
+    el.transition(transitionBehavior)
+      .attr('d', processor.linkDestTransform(nextProps.node));
+  }
+
+  componentWillAppear (callback) {
+    const el = this.container;
+    const { transitionBehavior, processor } = this.state;
+
+    el.attr('d', linkSrcTransform(this.props.node))
+      .transition(transitionBehavior)
+      .attr('d', processor.linkDestTransform(this.props.node));
+
+    callback();
   }
 
   componentWillEnter (callback) {
     const el = this.container;
-    // src to parent
-    TweenMax.to(el, 0.75, {attr: {d: this.state.processor.linkDestTransform(this.props.node)}, onComplete: callback});
+    const { transitionBehavior, processor } = this.state;
+
+    el.attr('d', linkSrcTransform(this.props.node))
+      .transition(transitionBehavior)
+      .attr('d', processor.linkDestTransform(this.props.node));
+
+    callback();
   }
 
   componentWillLeave (callback) {
-    // parent to src
     const el = this.container;
-    TweenMax.fromTo(el, 0.75, {attr:{d: this.state.processor.linkDestTransform(this.props.node)}, opacity: 1}, {attr:{d: linkSrcTransform(this.props.node)}, opacity: 0, onComplete: callback});
+    const { transitionBehavior, processor } = this.state;
+
+    el.transition(transitionBehavior)
+      .attr('d', linkSrcTransform(this.props.node))
+      .attr('fill-opacity', 0);
+
+    callback();
   }
 
   render () {
     return (
-      <path d={linkSrcTransform(this.props.node)} className="link" ref={c => this.container=c} />
+      <path className="link" ref={c => this.container=d3.select(c)} />
     );
   }
 }

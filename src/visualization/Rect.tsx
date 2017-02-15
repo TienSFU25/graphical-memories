@@ -20,7 +20,6 @@ export default class Rect extends React.Component<any, any> {
   }
 
   componentWillUpdate(nextProps) {
-    // this state to next state
     const el = this.container;
 
     const { transitionBehavior, processor } = this.state;

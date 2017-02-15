@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as d3 from 'd3';
-import { TweenMax } from 'gsap';
 
 import { d3Node } from '../types';
 import graphProcessor, { nodeSrcTransform } from './graphProcessor';
@@ -15,27 +14,54 @@ export default class Node extends React.Component<any, any> {
 
     const {display} = this.props;
     this.state = {
-      processor: graphProcessor[display]
+      processor: graphProcessor[display],
+      transitionBehavior: d3.transition('myT').duration(750)
     };
   }
 
   componentWillUpdate(nextProps) {
-    // this state to next state
     const el = this.container;
-    TweenMax.fromTo(el, 0.75, {attr: {transform: this.state.processor.nodeDestTransform(this.props.node)}}, {attr: {transform: this.state.processor.nodeDestTransform(nextProps.node)}});
+
+    const { transitionBehavior, processor } = this.state;
+
+    el.transition(transitionBehavior)
+      .attr('transform', processor.nodeDestTransform(nextProps.node));
+  }
+
+  componentWillAppear (callback) {
+    const el = this.container;
+    const { transitionBehavior } = this.state;
+
+    el.transition(transitionBehavior)
+      .attr('transform', nodeSrcTransform(this.props.node));
+
+    callback();
   }
 
   componentWillEnter (callback) {
+    console.warn(`node ${this.props.node.data.name} entering`);
+
     const el = this.container;
-    // src to parent
-    TweenMax.to(el, 0.75, {attr: {transform: this.state.processor.nodeDestTransform(this.props.node)}, onComplete: callback});
+    const { transitionBehavior } = this.state;
+
+    el.transition(transitionBehavior)
+      .attr('transform', nodeSrcTransform(this.props.node));
+
+    callback();
   }
 
   componentWillLeave (callback) {
-    // parent to src
+    console.warn(`node ${this.props.node.data.name} leaving`);
+
     const el = this.container;
     const { source } = this.props;
-    TweenMax.fromTo(el, 0.75, {attr:{transform: this.state.processor.nodeDestTransform(this.props.node)}, opacity: 1}, {attr:{transform: nodeSrcTransform(source)}, opacity: 0, onComplete: callback});
+    const { transitionBehavior } = this.state;
+
+    el.transition(transitionBehavior)
+      .attr('transform', nodeSrcTransform(source))
+      .attr('fill-opacity', 0);
+
+    callback();
   }
 
   componentDidMount() {
@@ -70,7 +96,7 @@ export default class Node extends React.Component<any, any> {
     const selectedClassName = isSelectedNode ? 'selected' : '';
 
     return (
-      <g id={node.data.id} className={`node ${nodeClassName}`} transform={nodeSrcTransform(source)} ref={g => this.container = g}>
+      <g id={node.data.id} className={`node ${nodeClassName}`} ref={g => this.container = d3.select(g)}>
         <circle r={20} className="ghost disabled" onMouseOver={this.onMouseOver.bind(this)} onMouseOut={this.onMouseOut.bind(this)} ref={c => this.ghostCirc = c}/>
         <circle r={7.5} className={`inner ${selectedClassName}`} ref={c => this.circ = c} />
         <text dy={3} x={x} className={nodeClassName} onClick={this.onTextClick.bind(this)}>{nodeName}</text>
