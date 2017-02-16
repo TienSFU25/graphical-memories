@@ -3,9 +3,9 @@ import * as d3 from 'd3';
 import * as TransitionGroup from 'react-addons-transition-group';
 
 import { d3Node } from '../types';
-import { IMAGE_HEIGHT, IMAGE_WIDTH } from './constants';
 import Link from './Link';
-import Rect from './Rect';
+import Wrapper from './NodeWrapper';
+import RectangularNode from './RectangularNode';
 
 import '../css/styles.scss';
 
@@ -27,6 +27,8 @@ interface ITreeManagerProps {
 }
 
 export default class RectangularNodeTree extends React.Component<ITreeManagerProps, any> {
+  private wrappers = {};
+
   render() {
     const { graph, selectedNode, onRectClick, ...passThroughProps } = this.props;
     let links = <g />;
@@ -36,17 +38,23 @@ export default class RectangularNodeTree extends React.Component<ITreeManagerPro
       const {treeRoot, updateNode} = graph;
       const all = treeRoot.descendants();
       const allButRoot = treeRoot.descendants().slice(1);
-      // console.log(`updating with ${data.length} links...`);
 
       links = allButRoot.map((d) => {
-        // console.log(d);
         return <Link display={graph.display} node={d} source={updateNode} key={`link-${d.data.id}`}/>
       });
 
-      nodes = all.map((d) => {
-        const isSelectedNode = selectedNode && d.data.id === selectedNode.data.id;
+      nodes = all.map(d => {
+        const nodeId = d.data.id;
+        const isSelectedNode = selectedNode && nodeId === selectedNode.data.id;
 
-        return <Rect display={graph.display} node={d} source={updateNode} key={`node-${d.data.id}`} isSelectedNode={isSelectedNode} {...passThroughProps}/>
+        let WrappedNode = this.wrappers[nodeId];
+
+        if (!WrappedNode) {
+          WrappedNode = Wrapper(RectangularNode);
+          this.wrappers[nodeId] = WrappedNode;
+        }
+
+        return <WrappedNode display={graph.display} node={d} source={updateNode} key={`node-${d.data.id}`} isSelectedNode={isSelectedNode} {...passThroughProps}/>
       });
     }
 
