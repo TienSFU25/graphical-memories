@@ -27,12 +27,12 @@ class Graph extends React.Component<any, any> {
   private margin;
   private width: number;
   private height: number;
-  private svg;
   private isDragging: boolean;
   private dragBehavior: d3.DragBehavior<any, any, any>;
   private destDragNode;
   private container;
   private wrapper;
+  private previousDisplay;
 
   componentDidMount() {
     // set the dimensions and margins of the graph
@@ -127,13 +127,16 @@ class Graph extends React.Component<any, any> {
       let Wrapped;
       Wrapped = this.wrapper;
 
-      if (!Wrapped) {
+      if (!Wrapped || this.previousDisplay == undefined || this.previousDisplay !== graph.display) {
+        // cache Wrapped HOC or React will rerender everything
         if (graph.display === TreeType.Collapsible) {
           Wrapped = ViewWrapper(RectangularNodeTree);
         } else {
           Wrapped = ViewWrapper(CircularNodeTree);
         }
+
         this.wrapper = Wrapped;
+        this.previousDisplay = graph.display;
       }
 
       return <Wrapped dragBehavior={this.dragBehavior}
