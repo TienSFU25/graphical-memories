@@ -3,11 +3,9 @@ import * as d3 from 'd3';
 import { connect } from 'react-redux';
 import { Grid, Col, Row } from 'react-bootstrap';
 import { bindActionCreators } from 'redux';
-import * as _ from 'lodash';
 
 import { DRAG_THRESHOLD } from './constants';
 import { d3Node, GraphType, TreeReducerState, TreeType } from '../types';
-import { toHtmlCoords } from '../shared/svgHelper';
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
 import { popupActions } from '../popups';
 
@@ -18,35 +16,17 @@ import ViewWrapper from './ViewWrapper';
 import QuickKeys from '../QuickKeys';
 import SelectedEntity from '../graphMetadata/SelectedEntity';
 
-const DEBUG = true;
-
 // testing purposes
 window['d3'] = d3;
 
 class Graph extends React.Component<any, any> {
-  private margin;
-  private width: number;
-  private height: number;
   private isDragging: boolean;
   private dragBehavior: d3.DragBehavior<any, any, any>;
   private destDragNode;
-  private container;
   private wrapper;
   private previousDisplay;
 
   componentDidMount() {
-    // set the dimensions and margins of the graph
-    this.margin = {top: 20, right: 20, bottom: 30, left: 50};
-
-    const margin = this.margin;
-    this.width = 960 - margin.left - margin.right,
-    this.height = 2400 - margin.top - margin.bottom;
-
-    // add the svg canvas
-    // this.svg
-    //     .attr('width', this.width + margin.left + margin.right)
-    //     .attr('height', this.height + margin.top + margin.bottom);
-
     const self = this;
     this.dragBehavior = d3.drag()
       .on('start', d => {
@@ -120,7 +100,7 @@ class Graph extends React.Component<any, any> {
     }
   }
 
-  _graphToReactElement(graph: TreeReducerState<string>) {
+  _graphStateToReactElement(graph: TreeReducerState<string>) {
     const selectedNode = this.props.selectedEntity.node;
 
     if (graph.type === GraphType.Tree) {
@@ -157,12 +137,11 @@ class Graph extends React.Component<any, any> {
   }
 
   render() {
-    let graphsElements = null;
+    let GraphElement = null;
     let mainGraph = this.props.graph;
-    let self = this;
 
     if (mainGraph.graphState) {
-      graphsElements = this._graphToReactElement(mainGraph.graphState);
+      GraphElement = this._graphStateToReactElement(mainGraph.graphState);
     }
 
     return (
@@ -173,7 +152,7 @@ class Graph extends React.Component<any, any> {
         <Col xs={7}>
           <QuickKeys selectedNode={this.props.selectedEntity.node} handler={this.handleHotKey.bind(this)}>
             <svg id="main" width={960} height={1600}>
-              {graphsElements}
+              {GraphElement}
             </svg>
           </QuickKeys>
         </Col>
