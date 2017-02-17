@@ -67,7 +67,7 @@ export default function(WrappedComponent) {
         <g ref={(rect) => this.panZoomContainer = d3.select(rect)}
                 onClick={this.onRectClick.bind(this)}
                 style={{'backgroundColor': graph.color}} >
-          <g transform={`translate(${graph.treeRoot.dx2}, ${graph.treeRoot.dy2})`} ref={(element) => this.transformContainer = d3.select(element)}>
+          <g transform={`translate(${graph.treeRoot.dx}, ${graph.treeRoot.dy})`} ref={(element) => this.transformContainer = d3.select(element)}>
               <WrappedComponent {...this.props} />
           </g>
         </g>
@@ -76,7 +76,7 @@ export default function(WrappedComponent) {
 
     _getZoomTransform() {
       const transform = d3.zoomTransform(this.panZoomContainer.node());
-      const translatedTransform = transform.translate(this.props.graph.treeRoot.dx2, this.props.graph.treeRoot.dy2);
+      const translatedTransform = transform.translate(this.props.graph.treeRoot.dx, this.props.graph.treeRoot.dy);
 
       return translatedTransform;
     }

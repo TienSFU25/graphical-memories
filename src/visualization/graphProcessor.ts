@@ -31,9 +31,9 @@ export default {
         node.x = oldY
       });
     },
-    setD2(newRoot: d3RootNode) {
-      newRoot.dx2 = 0;
-      newRoot.dy2 = 0;
+    setDs(newRoot: d3RootNode) {
+      newRoot.dx = 0;
+      newRoot.dy = 0;
     },
     nodeDestTransform(d: d3Node) {
       return `translate(${d.x}, ${d.y})`;
@@ -58,9 +58,9 @@ export default {
         [node.x, node.y] = project(node.x, node.y);
       });
     },
-    setD2(newRoot: d3RootNode) {
-      newRoot.dx2 = RADIAL_X,
-      newRoot.dy2 = RADIAL_Y
+    setDs(newRoot: d3RootNode) {
+      newRoot.dx = RADIAL_X,
+      newRoot.dy = RADIAL_Y
     },
     nodeDestTransform(d: d3Node) {
       return `translate(${d.x}, ${d.y})`;
@@ -93,9 +93,9 @@ export default {
 
       dfs(root);
     },
-    setD2(newRoot: d3RootNode) {
-      newRoot.dx2 = 0,
-      newRoot.dy2 = 0
+    setDs(newRoot: d3RootNode) {
+      newRoot.dx = 0,
+      newRoot.dy = 0
     },
     nodeDestTransform(d: d3Node) {
       return `translate(${d.x}, ${d.y})`;

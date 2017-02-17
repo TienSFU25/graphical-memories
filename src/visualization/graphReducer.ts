@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 
 import { ActionTypes } from '../app/actionTypes';
 import { emptyTree } from '../app/initialState';
+import { TREE_WIDTH, TREE_HEIGHT } from './constants';
 import { d3Node, d3RootNode, EntityType, SelectedEntity, TreeReducerState, TreeType } from '../types';
 import { attachIds, getNextId, findNode, project, translate } from './treeManipulator';
 import graphProcessor from './graphProcessor';
@@ -19,8 +20,7 @@ function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerSta
 
   const newRoot: d3RootNode = d3.hierarchy(treeData);
 
-  // const tree = processor.getTree(maxHeight, maxWidth);
-  const tree = processor.getTree(1000, 600);
+  const tree = processor.getTree(TREE_HEIGHT, TREE_WIDTH);
 
   _sortTree(newRoot);
   tree(newRoot);
@@ -55,7 +55,7 @@ function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerSta
   }
 
   // for determining zoom
-  processor.setD2(newRoot);
+  processor.setDs(newRoot);
 
   return Object.assign({}, previousState, {
     name,

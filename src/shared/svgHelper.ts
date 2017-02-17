@@ -27,13 +27,12 @@ export function toHtmlCoords(nodeData) {
     root = root.parent;
   }
 
-  const { dx2, dy2 } = root;
-
+  const { dx, dy } = root;
 
   // const panZoomContainer = graphDOM.children[0];
   const panZoomContainer = svg;
   const transform = d3.zoomTransform(panZoomContainer);
-  const translatedTransform = transform.translate(dx2, dy2);
+  const translatedTransform = transform.translate(dx, dy);
 
   const [ xt, yt ] = translatedTransform.apply([nodeData.x, nodeData.y]);
   pt.x = xt;

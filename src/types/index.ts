@@ -9,13 +9,11 @@ export interface d3Node extends d3.HierarchyNode<GraphNode<any>> {
   y?: number;
   x0?: number;
   y0?: number;
-  dx?: number;
-  dy?: number;
 }
 
 export interface d3RootNode extends d3Node {
-  dx2?: number;
-  dy2?: number;
+  dx?: number;
+  dy?: number;
 }
 
 export enum EntityType {
@@ -52,10 +50,6 @@ export interface TreeReducerState<T> {
   updateNode: TreeNode<T>;
   toggleIds: Set<number>;
   display: TreeType;
-  maxHeight: number;
-  maxWidth: number;
-  dx: number;
-  dy: number;
   flat: Array<TreeNode<T>>;
 }
 

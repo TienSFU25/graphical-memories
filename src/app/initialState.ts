@@ -37,9 +37,5 @@ export const emptyTree = {
   treeRoot: null,
   toggleIds: new Set(),
   updateNode: null,
-  maxHeight: 0,
-  maxWidth: 0,
-  dx: 0,
-  dy: 0,
   flat: []
 };
