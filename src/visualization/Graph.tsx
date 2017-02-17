@@ -70,10 +70,9 @@ class Graph extends React.Component<any, any> {
     this.props.actions.toggleNode(node);
   }
 
-  onRectClick(graph) {
-    const { name, treeRoot } = graph;
-
-    this.props.actions.selectGraph(name, treeRoot.rid);
+  onRectClick() {
+    const { name } = this.props.graph.graphState;
+    this.props.actions.selectGraph(name);
   }
 
   onTextClick(node) {
@@ -151,9 +150,7 @@ class Graph extends React.Component<any, any> {
         </Col>
         <Col xs={7}>
           <QuickKeys selectedNode={this.props.selectedEntity.node} handler={this.handleHotKey.bind(this)}>
-            <svg id="main" width={960} height={1600}>
-              {GraphElement}
-            </svg>
+            {GraphElement}
           </QuickKeys>
         </Col>
         <Col xs={3}>

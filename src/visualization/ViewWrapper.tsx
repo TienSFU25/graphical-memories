@@ -55,22 +55,22 @@ export default function(WrappedComponent) {
     }
 
     onRectClick() {
-      this.props.onRectClick(this.props.graph);
+      this.props.onRectClick();
       console.log(`clicked the rect`);
     }
-          // <rect style={{fill: graph.color, 'pointer-events': "all"}} width={960} height={1200} ref={(rect) => this.panZoomContainer = d3.select(rect)} onClick={this.onRectClick.bind(this)}/>
 
-          // <path d="M0 0v1h8v-1h-8zm0 2.97v1h8v-1h-8zm0 3v1h8v-1h-8z" transform="translate(800,20),scale(2)" onClick={this.onRectClick.bind(this)}/>
     render() {
       const { graph, selectedNode, onRectClick, ...passThroughProps } = this.props;
       return (
-        <g ref={(rect) => this.panZoomContainer = d3.select(rect)}
+        <svg id="main" width={960} height={1600}
                 onClick={this.onRectClick.bind(this)}
-                style={{'backgroundColor': graph.color}} >
-          <g transform={`translate(${graph.treeRoot.dx}, ${graph.treeRoot.dy})`} ref={(element) => this.transformContainer = d3.select(element)}>
-              <WrappedComponent {...this.props} />
+                style={{'backgroundColor': graph.color}}>
+          <g ref={(rect) => this.panZoomContainer = d3.select(rect)} >
+            <g transform={`translate(${graph.treeRoot.dx}, ${graph.treeRoot.dy})`} ref={(element) => this.transformContainer = d3.select(element)}>
+                <WrappedComponent {...this.props} />
+            </g>
           </g>
-        </g>
+        </svg>
       );
     }
 

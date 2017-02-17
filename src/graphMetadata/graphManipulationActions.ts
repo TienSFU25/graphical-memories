@@ -35,11 +35,10 @@ export function selectNode(node: d3Node) {
   };
 }
 
-export function selectGraph(graphName, graphRid) {
+export function selectGraph(graphName) {
   return {
     type: ActionTypes.SELECT_GRAPH,
-    graphName,
-    graphRid
+    graphName
   };
 }
 
@@ -67,10 +66,9 @@ export function attachImageToNode(imageHref, node) {
   }
 }
 
-export function toggleGraphType(graphRid, displayType) {
+export function toggleGraphType(displayType) {
   return {
     type: ActionTypes.TOGGLE_TREE_DISPLAY,
-    graphRid,
     displayType
   }
 }

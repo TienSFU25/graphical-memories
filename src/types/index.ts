@@ -85,7 +85,6 @@ export interface GraphAction extends Action {
   node?: d3Node,
   editData?: any,
   imageHref?: string,
-  graphRid?: number,
   displayType?: TreeType
 }
 
