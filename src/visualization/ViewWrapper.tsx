@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as d3 from 'd3';
-import * as TransitionGroup from 'react-addons-transition-group';
 
+import { TREE_WIDTH, TREE_HEIGHT } from './constants';
 import { d3Node } from '../types';
 import '../css/styles.scss';
 
@@ -62,13 +62,12 @@ export default function(WrappedComponent) {
     render() {
       const { graph, selectedNode, onRectClick, ...passThroughProps } = this.props;
       return (
-        <svg id="main" width={960} height={1600}
+        <svg id="main" width={TREE_WIDTH} height={TREE_HEIGHT}
                 onClick={this.onRectClick.bind(this)}
-                style={{'backgroundColor': graph.color}}>
-          <g ref={(rect) => this.panZoomContainer = d3.select(rect)} >
-            <g transform={`translate(${graph.treeRoot.dx}, ${graph.treeRoot.dy})`} ref={(element) => this.transformContainer = d3.select(element)}>
-                <WrappedComponent {...this.props} />
-            </g>
+                style={{'backgroundColor': graph.color}}
+                ref={(rect) => this.panZoomContainer = d3.select(rect)}>
+          <g transform={`translate(${graph.treeRoot.dx}, ${graph.treeRoot.dy})`} ref={(element) => this.transformContainer = d3.select(element)}>
+              <WrappedComponent {...this.props} />
           </g>
         </svg>
       );
