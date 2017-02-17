@@ -1,7 +1,6 @@
 import * as d3 from 'd3';
 import * as _ from 'lodash';
 
-import { TREE_WIDTH, TREE_HEIGHT, RADIAL_X, RADIAL_Y } from './constants';
 import { ActionTypes } from '../app/actionTypes';
 import { emptyTree } from '../app/initialState';
 import { d3Node, d3RootNode, EntityType, SelectedEntity, TreeReducerState, TreeType } from '../types';
@@ -15,12 +14,13 @@ function _sortTree(root) {
 
 function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerState<string>, toggleIds?: Set<number>, display = previousState.display) {
   // pull view size data from previous state
-  const { name, maxHeight, maxWidth, dx, dy, color } = previousState;
+  const { name, color } = previousState;
   const processor = graphProcessor[display];
 
   const newRoot: d3RootNode = d3.hierarchy(treeData);
 
-  const tree = processor.getTree(maxHeight, maxWidth);
+  // const tree = processor.getTree(maxHeight, maxWidth);
+  const tree = processor.getTree(1000, 600);
 
   _sortTree(newRoot);
   tree(newRoot);
@@ -34,10 +34,6 @@ function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerSta
       node._children = node.children;
       node.children = null;
     }
-
-    // need this to know absolute position
-    node.dx = dx;
-    node.dy = dy;
 
     // node.each is BFS
     flat.push(node);
@@ -73,44 +69,58 @@ function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerSta
   });
 }
 
+function _addNode(newNode, destNode, dataCopy, state) {
+  const destNodeId = destNode.data.id;
+  const destInData = findNode(dataCopy, destNodeId).node;
+  newNode.id = getNextId();
+
+  const destChildren = destInData.children || destInData._children;
+  if (destChildren) {
+    destChildren.push(newNode);
+  } else {
+    destInData.children = [newNode];
+  }
+
+  return _reconstructTree(dataCopy, destNodeId, state);
+}
+
+function _deleteNode(node, dataCopy, state) {
+  const nodeId = node.data.id;
+  const parent = findNode(dataCopy, nodeId).parent;
+
+  // deleting root
+  if ( parent === null ) {
+    console.log(`deleted the whole damn tree!`);
+    return emptyTree;
+  } else {
+    let childIndex;
+
+    // delete child in parent
+    _.forEach(parent.children, (child, index) => {
+      if (child.id === nodeId) {
+        childIndex = index;
+      }
+    });
+
+    parent.children.splice(childIndex, 1);
+
+    return _reconstructTree(dataCopy, parent.id, state);
+  }
+}
+
 export default function graphReducer(state = emptyTree, action): TreeReducerState<string> {
-  const { graph } = action;
   const dataCopy = Object.assign({}, state.raw);
 
   switch (action.type) {
-    case ActionTypes.SET_VIEWPORT_SIZE: {
-      const { maxHeight, maxWidth, viewIndex } = action;
-
-      let dx = 0;
-      let dy = maxHeight * viewIndex;
-
-      return Object.assign({}, state, {
-        maxHeight,
-        maxWidth,
-        dx,
-        dy
-      });
-    }
     case ActionTypes.LOAD_GRAPH_SUCCESS: {
+      const { graph } = action;
       attachIds(graph);
 
       return _reconstructTree(graph, null, state);
     }
     case ActionTypes.ADD_NODE: {
       const { newNode, destNode } = action;
-
-      const destNodeId = destNode.data.id;
-      const destInData = findNode(dataCopy, destNodeId).node;
-      newNode.id = getNextId();
-
-      const destChildren = destInData.children || destInData._children;
-      if (destChildren) {
-        destChildren.push(newNode);
-      } else {
-        destInData.children = [newNode];
-      }
-
-      return _reconstructTree(dataCopy, destNodeId, state);
+      return _addNode(newNode, destNode, dataCopy, state);
     }
     case ActionTypes.TOGGLE_NODE: {
       const { node, destNode } = action;
@@ -139,28 +149,15 @@ export default function graphReducer(state = emptyTree, action): TreeReducerStat
     }
     case ActionTypes.DELETE_NODE: {
       const { node } = action;
+      return _deleteNode(node, dataCopy, state);
+    }
+    case ActionTypes.MOVE_NODE: {
+      const { src, dest } = action;
+      const srcCopy = Object.assign({}, src.data);
+      const nextState = _addNode(srcCopy, dest, dataCopy, state);
+      const nextNextState = _deleteNode(src, dataCopy, state);
 
-      const nodeId = node.data.id;
-      const parent = findNode(dataCopy, nodeId).parent;
-
-      // deleting root
-      if ( parent === null ) {
-        console.log(`deleted the whole damn tree!`);
-        return emptyTree;
-      } else {
-        let childIndex;
-
-        // delete child in parent
-        _.forEach(parent.children, (child, index) => {
-          if (child.id === nodeId) {
-            childIndex = index;
-          }
-        });
-
-        parent.children.splice(childIndex, 1);
-
-        return _reconstructTree(dataCopy, parent.id, state);
-      }
+      return Object.assign({}, nextNextState);
     }
     case ActionTypes.ATTACH_IMAGE: {
       const { node, imageHref } = action;

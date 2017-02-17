@@ -59,10 +59,6 @@ export interface TreeReducerState<T> {
   flat: Array<TreeNode<T>>;
 }
 
-export interface AllGraphsReducerState {
-  subStates: Array<TreeReducerState<any>>
-}
-
 /* Graph related */
 export enum GraphType {
   Tree

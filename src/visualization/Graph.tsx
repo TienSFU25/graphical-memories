@@ -32,7 +32,7 @@ class Graph extends React.Component<any, any> {
   private dragBehavior: d3.DragBehavior<any, any, any>;
   private destDragNode;
   private container;
-  private wrappers = {};
+  private wrapper;
 
   componentDidMount() {
     // set the dimensions and margins of the graph
@@ -43,9 +43,9 @@ class Graph extends React.Component<any, any> {
     this.height = 2400 - margin.top - margin.bottom;
 
     // add the svg canvas
-    this.svg
-        .attr('width', this.width + margin.left + margin.right)
-        .attr('height', this.height + margin.top + margin.bottom);
+    // this.svg
+    //     .attr('width', this.width + margin.left + margin.right)
+    //     .attr('height', this.height + margin.top + margin.bottom);
 
     const self = this;
     this.dragBehavior = d3.drag()
@@ -120,12 +120,12 @@ class Graph extends React.Component<any, any> {
     }
   }
 
-  _graphToReactElement(graph: TreeReducerState<string>, index) {
+  _graphToReactElement(graph: TreeReducerState<string>) {
     const selectedNode = this.props.selectedEntity.node;
 
     if (graph.type === GraphType.Tree) {
       let Wrapped;
-      Wrapped = this.wrappers[index];
+      Wrapped = this.wrapper;
 
       if (!Wrapped) {
         if (graph.display === TreeType.Collapsible) {
@@ -133,7 +133,7 @@ class Graph extends React.Component<any, any> {
         } else {
           Wrapped = ViewWrapper(CircularNodeTree);
         }
-        this.wrappers[index] = Wrapped;
+        this.wrapper = Wrapped;
       }
 
       return <Wrapped dragBehavior={this.dragBehavior}
@@ -158,8 +158,8 @@ class Graph extends React.Component<any, any> {
     let mainGraph = this.props.graph;
     let self = this;
 
-    if (mainGraph.subStates && mainGraph.subStates.length > 0) {
-      graphsElements = mainGraph.subStates.map(this._graphToReactElement.bind(this));
+    if (mainGraph.graphState) {
+      graphsElements = this._graphToReactElement(mainGraph.graphState);
     }
 
     return (
@@ -167,11 +167,13 @@ class Graph extends React.Component<any, any> {
         <Col xs={2}>
           <Carousel dragBehavior={this.dragBehavior} />
         </Col>
-        <QuickKeys selectedNode={this.props.selectedEntity.node} handler={this.handleHotKey.bind(this)}>
-          <svg id="main" ref={(svg) => this.svg = d3.select(svg)} className="col-xs-7">
-            {graphsElements}
-          </svg>
-        </QuickKeys>
+        <Col xs={7}>
+          <QuickKeys selectedNode={this.props.selectedEntity.node} handler={this.handleHotKey.bind(this)}>
+            <svg id="main" width={960} height={1600}>
+              {graphsElements}
+            </svg>
+          </QuickKeys>
+        </Col>
         <Col xs={3}>
           <SelectedEntity />
         </Col>

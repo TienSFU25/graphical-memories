@@ -1,10 +1,11 @@
 import * as React from 'react';
 
 export default class Rect extends React.Component<any, any> {
-  onNodeClick() {
+  onNodeClick(e) {
     const { node } = this.props;
 
     this.props.onNodeClick(node);
+    e.stopPropagation();
   }
 
   render () {

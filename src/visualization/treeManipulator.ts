@@ -84,7 +84,7 @@ export function translate([x, y], dx, dy) {
 };
 
 // BFS sibling search
-export function findSibling(findNode, subgraphs, younger=true) {
+export function findSibling(findNode, graphState, younger=true) {
   // find which graph this node belongs in
   let root = findNode;
 
@@ -92,8 +92,7 @@ export function findSibling(findNode, subgraphs, younger=true) {
     root = root.parent;
   }
 
-  const subgraph = subgraphs[root.rid];
-  const subflat = subgraph.flat;
+  const subflat = graphState.flat;
 
   // linear search. binary search might not work since sort key (name) can be duplicated
   let nodeIndex = -1;

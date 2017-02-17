@@ -12,7 +12,8 @@ export const initialState = {
     }
   },
   main: {
-    subStates: []
+    graphState: {},
+    graphType: GraphType.Tree
   },
   editBox: {
     show: false,

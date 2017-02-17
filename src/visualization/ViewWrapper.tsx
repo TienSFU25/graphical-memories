@@ -58,16 +58,18 @@ export default function(WrappedComponent) {
       this.props.onRectClick(this.props.graph);
       console.log(`clicked the rect`);
     }
+          // <rect style={{fill: graph.color, 'pointer-events': "all"}} width={960} height={1200} ref={(rect) => this.panZoomContainer = d3.select(rect)} onClick={this.onRectClick.bind(this)}/>
 
+          // <path d="M0 0v1h8v-1h-8zm0 2.97v1h8v-1h-8zm0 3v1h8v-1h-8z" transform="translate(800,20),scale(2)" onClick={this.onRectClick.bind(this)}/>
     render() {
       const { graph, selectedNode, onRectClick, ...passThroughProps } = this.props;
       return (
-        <g transform={`translate(${graph.dx}, ${graph.dy})`}>
-          <rect style={{fill: graph.color, 'pointer-events': "all"}} width={960} height={1200} ref={(rect) => this.panZoomContainer = d3.select(rect)} onClick={this.onRectClick.bind(this)}/>
+        <g ref={(rect) => this.panZoomContainer = d3.select(rect)}
+                onClick={this.onRectClick.bind(this)}
+                style={{'backgroundColor': graph.color}} >
           <g transform={`translate(${graph.treeRoot.dx2}, ${graph.treeRoot.dy2})`} ref={(element) => this.transformContainer = d3.select(element)}>
-            <WrappedComponent {...this.props} />
+              <WrappedComponent {...this.props} />
           </g>
-          <path d="M0 0v1h8v-1h-8zm0 2.97v1h8v-1h-8zm0 3v1h8v-1h-8z" transform="translate(800,20),scale(2)" onClick={this.onRectClick.bind(this)}/>
         </g>
       );
     }

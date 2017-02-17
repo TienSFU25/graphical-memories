@@ -49,7 +49,7 @@ export default class HotkeyWrapper extends React.Component<Props, any> {
         const selectedNode = self.props.selectedNode;
 
         if (selectedNode) {
-          const sibling = findSibling(selectedNode, self.props.graph.subStates);
+          const sibling = findSibling(selectedNode, self.props.graph.graphState);
           propsHandler(sibling);
         }
       },
@@ -60,7 +60,7 @@ export default class HotkeyWrapper extends React.Component<Props, any> {
         const selectedNode = self.props.selectedNode;
 
         if (selectedNode) {
-          const sibling = findSibling(selectedNode, self.props.graph.subStates, false);
+          const sibling = findSibling(selectedNode, self.props.graph.graphState, false);
           propsHandler(sibling);
         }
       },
@@ -71,7 +71,7 @@ export default class HotkeyWrapper extends React.Component<Props, any> {
         const selectedNode = self.props.selectedNode;
 
         if (selectedNode) {
-          const sibling = findSibling(selectedNode, self.props.graph.subStates, false);
+          const sibling = findSibling(selectedNode, self.props.graph.graphState, false);
           propsHandler(sibling);
         }
       },
@@ -82,7 +82,7 @@ export default class HotkeyWrapper extends React.Component<Props, any> {
         const selectedNode = self.props.selectedNode;
 
         if (selectedNode) {
-          const sibling = findSibling(selectedNode, self.props.graph.subStates);
+          const sibling = findSibling(selectedNode, self.props.graph.graphState);
           propsHandler(sibling);
         }
       }
