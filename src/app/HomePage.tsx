@@ -8,9 +8,7 @@ import Header from './Header';
 import Visualizer from '../visualization/Graph';
 import Collapsible from '../_test/Collapsible';
 import { InputWrapper } from '../popups';
-import TransitionTest from '../_test/TransitionTest';
-import Chessboard from '../_test/Chessboard/index';
-import DragTest from '../_test/DragTest/index';
+import Colorful from '../_test/Colorful';
 import '../css/app.scss';
 import '../css/edit.scss';
 
@@ -27,6 +25,7 @@ export default class HomePage extends React.Component<any, any> {
   render() {
     return (
       <div>
+        <Colorful />
         <Header />
         <InputWrapper />
         <Visualizer />

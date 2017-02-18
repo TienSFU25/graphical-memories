@@ -98,8 +98,8 @@ export default class Collapsible extends React.Component<any, any> {
       })
       .remove();
 
-    window['nodes'] = nodes;
-    window['root'] = newRoot;
+    // window['nodes'] = nodes;
+    // window['root'] = newRoot;
   }
 
   render() {

@@ -28,6 +28,7 @@ const SelectedGraph = ({graphName, onGraphTypeChange}) => {
                   <MenuItem eventKey={TreeType.VerticalTree}>Vertical</MenuItem>
                   <MenuItem eventKey={TreeType.Radial}>Radial</MenuItem>
                   <MenuItem eventKey={TreeType.Collapsible}>Collapsible</MenuItem>
+                  <MenuItem eventKey={TreeType.LinkText}>Colorful!</MenuItem>
                 </DropdownButton>
               </Col>
             </FormGroup>

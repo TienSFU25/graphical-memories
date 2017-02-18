@@ -12,6 +12,7 @@ import { popupActions } from '../popups';
 import Carousel from '../carousel';
 import CircularNodeTree from './CircularNodeTree';
 import RectangularNodeTree from './RectangularNodeTree';
+import LinkAsNodeTree from './LinkAsNodeTree';
 import ViewWrapper from './ViewWrapper';
 import QuickKeys from '../QuickKeys';
 import SelectedEntity from '../graphMetadata/SelectedEntity';
@@ -110,6 +111,8 @@ class Graph extends React.Component<any, any> {
         // cache Wrapped HOC or React will rerender everything
         if (graph.display === TreeType.Collapsible) {
           Wrapped = ViewWrapper(RectangularNodeTree);
+        } else if (graph.display === TreeType.LinkText) {
+          Wrapped = ViewWrapper(LinkAsNodeTree);
         } else {
           Wrapped = ViewWrapper(CircularNodeTree);
         }

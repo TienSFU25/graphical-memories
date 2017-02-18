@@ -11,6 +11,12 @@ export interface d3Node extends d3.HierarchyNode<GraphNode<any>> {
   y0?: number;
 }
 
+export interface d3ColorNode extends d3Node {
+  branch?: number;
+  line?: number;
+  depth: number;
+}
+
 export interface d3RootNode extends d3Node {
   dx?: number;
   dy?: number;
@@ -36,7 +42,8 @@ export interface ReduxStore {
 export enum TreeType {
   VerticalTree,
   Radial,
-  Collapsible
+  Collapsible,
+  LinkText
 }
 
 /* Reducer states */
