@@ -7,7 +7,7 @@ import { emptyTree } from '../app/initialState';
 import { d3Node, d3ColorNode, d3RootNode, EntityType, SelectedEntity, TreeReducerState, TreeType } from '../types';
 import { project } from './treeManipulator';
 
-export function nodeSrcTransform(source: d3Node) {
+export function nodeIdentityTransform(source: d3Node) {
   // console.log(`for ${source.data.name}: ${source.x}`);
   return `translate(${source.x}, ${source.y})`;
 }
@@ -45,9 +45,6 @@ export default {
       newRoot.dx = 0;
       newRoot.dy = 0;
     },
-    nodeDestTransform(d: d3Node) {
-      return `translate(${d.x}, ${d.y})`;
-    },
     linkDestTransform(d: d3Node) {
       return `M${d.x},${d.y}`
         + `C${d.parent.x + 100},${d.y}`
@@ -72,9 +69,7 @@ export default {
       newRoot.dx = RADIAL_X,
       newRoot.dy = RADIAL_Y
     },
-    nodeDestTransform(d: d3Node) {
-      return `translate(${d.x}, ${d.y})`;
-    },
+
     linkDestTransform(d: d3Node) {
       return "M" + (project(d.x0, d.y0))
           + "C" + (project(d.x0, (d.y0 + d.parent.y0) / 2))
@@ -106,9 +101,6 @@ export default {
     setDs(newRoot: d3RootNode) {
       newRoot.dx = 0,
       newRoot.dy = 0
-    },
-    nodeDestTransform(d: d3Node) {
-      return `translate(${d.x}, ${d.y})`;
     },
     linkDestTransform(d: d3Node) {
       return `M${d.x},${d.y}`
@@ -146,9 +138,6 @@ export default {
     setDs(newRoot: d3RootNode) {
       newRoot.dx = 0,
       newRoot.dy = 0
-    },
-    nodeDestTransform(d: d3Node) {
-      return `translate(${d.x - NODE_WIDTH}, ${d.y})`;
     },
     linkSrcTransform(d: d3Node) {
       const x = d.parent.x;

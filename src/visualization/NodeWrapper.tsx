@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as d3 from 'd3';
 
 import { d3Node } from '../types';
-import graphProcessor, { nodeSrcTransform } from './graphProcessor';
+import { nodeIdentityTransform } from './graphProcessor';
 
 export default function(WrappedComponent) {
   return class Wrapper extends React.Component<any, any> {
@@ -13,19 +13,18 @@ export default function(WrappedComponent) {
 
       const {display} = this.props;
       this.state = {
-        processor: graphProcessor[display],
         transitionBehavior: d3.transition('myT').duration(750)
       };
     }
 
     componentWillUpdate(nextProps) {
       // console.log(`UPDATING`);
-      // const el = this.container;
+      const el = this.container;
 
-      // const { transitionBehavior, processor } = this.state;
+      const { transitionBehavior } = this.state;
 
-      // el.transition(transitionBehavior)
-      //   .attr('transform', processor.nodeDestTransform(nextProps.node));
+      el.transition(transitionBehavior)
+        .attr('transform', nodeIdentityTransform(nextProps.node));
     }
 
     _transitionSrcToDest() {
@@ -34,10 +33,9 @@ export default function(WrappedComponent) {
       const { transitionBehavior, processor } = this.state;
       const { source, node } = this.props;
 
-      // el.attr('transform', nodeSrcTransform(source))
-      el.attr('transform', 'translate(0,0)')
+      el.attr('transform', nodeIdentityTransform(source))
         .transition(transitionBehavior)
-        .attr('transform', processor.nodeDestTransform(node));
+        .attr('transform', nodeIdentityTransform(node));
     }
 
     componentDidMount () {
@@ -50,27 +48,17 @@ export default function(WrappedComponent) {
       callback();
     }
 
-    componentWillUnmount(callback) {
-      // console.log(`${this.props.node.data.name} leaving`);
-      console.log('LEAVING');
+    componentWillLeave(callback) {
+      console.log(`${this.props.node.data.name} leaving`);
+      // console.log('LEAVING');
       const el = this.container;
       const { source, node } = this.props;
-      const { transitionBehavior, processor } = this.state;
 
-      window['ndt'] = (processor.nodeDestTransform(node));
-      window['el'] = el;
-      window['nst'] = (nodeSrcTransform(source));
-      window['t'] = transitionBehavior;
-
-      el.transition(d3.transition('myT').duration(5000))
-        .attr('transform', `translate(0, 0)`);
-      // el.attr('transform', processor.nodeDestTransform(node))
-      // el.transition(transitionBehavior)
-      //   .attr('transform', nodeSrcTransform(source))
-        // .attr('fill-opacity', 0)
-        // .on('end', () => { console.log('ended!')});
-
-      // callback();
+      const transition = d3.transition('').duration(750);
+      el.transition(transition)
+        .attr('transform', nodeIdentityTransform(source))
+        .attr('fill-opacity', 0)
+        .on('end', callback);
     }
 
     onNodeClick() {

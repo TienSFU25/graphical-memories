@@ -1,7 +1,6 @@
 import * as React from 'react';
 import * as d3 from 'd3';
 import { NODE_WIDTH, NODE_HEIGHT, SPACE_VERTICAL, SPACE_HORIZONTAL } from './constants';
-import graphProcessor, { nodeSrcTransform } from './graphProcessor';
 
 function linkWidth(d) {
   var depth = d.depth;
@@ -34,10 +33,9 @@ export default class LinkNode extends React.Component<any, any> {
     const width = NODE_WIDTH + 2;
     const height = linkWidth(node);
     const fill = color(node.branch);
-    // const translate = graphProcessor[3].nodeDestTransform(node);
 
     return (
-      <g>
+      <g transform={`translate(-${NODE_WIDTH}, 0)`}>
         <rect y={y} x={-1} height={height} width={width} fill={fill} onClick={this.onNodeClick.bind(this)} />
         <circle r={4.5} cx={NODE_WIDTH} stroke={fill} />
         <text x={10} textAnchor="start" dy={-5}>{nodeName}</text>
