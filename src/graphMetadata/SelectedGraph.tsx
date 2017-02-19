@@ -21,6 +21,7 @@ const SelectedGraph = ({onGraphTypeChange, onEditChange, onZoomChange}) => {
                   <MenuItem eventKey={TreeType.Radial}>Radial</MenuItem>
                   <MenuItem eventKey={TreeType.Collapsible}>Collapsible</MenuItem>
                   <MenuItem eventKey={TreeType.LinkText}>Colorful!</MenuItem>
+                  <MenuItem eventKey={TreeType.Pack}>Bubbles</MenuItem>
                 </DropdownButton>
               </Col>
             </FormGroup>

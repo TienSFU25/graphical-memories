@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import * as d3Colors from 'd3-scale-chromatic';
 import * as _ from 'lodash';
 
 import { TREE_WIDTH, TREE_HEIGHT, RADIAL_X, RADIAL_Y, COLLAPSIBLE_OFFSET, NODE_WIDTH, NODE_HEIGHT, SPACE_VERTICAL, SPACE_HORIZONTAL } from './constants';
@@ -133,6 +134,60 @@ export default {
 
       root.children.forEach((d, i) => {
         traverseBranchId(d, i);
+      });
+    },
+    setDs(newRoot: d3RootNode) {
+      newRoot.dx = 0,
+      newRoot.dy = 0
+    },
+    linkSrcTransform(d: d3Node) {
+      const x = d.parent.x;
+      const y = d.parent.y;
+
+      return `M${x},${y}`
+        + `C${x},${y}`
+        + ` ${x},${y}`
+        + ` ${x},${y}`;
+    },
+    linkDestTransform(d: d3Node) {
+      var s = {x: d.x - NODE_WIDTH, y: d.y};
+      var t = {x: d.parent.x, y: d.parent.y};
+
+      var midx = (s.x + t.x) / 2;
+
+      return `M${s.x},${s.y}`
+        + `C${midx},${s.y}`
+        + ` ${midx},${t.y}`
+        + ` ${t.x},${t.y}`
+    }
+  },
+  4: {
+    getTree(height, width) {
+      return d3.pack().size([800, 800]);
+    },
+    preProcess(root: d3RootNode) {
+      root.sum(d => d.size);
+    },
+    processRoot(root: d3RootNode) {
+      root.each((node: d3Node) => {
+        // swap x and y
+        const oldY = node.y;
+        node.y = node.x;
+        node.x = oldY
+      });
+
+      // stick in colors
+      function colorNode(node, branch) {
+        node.color = d3Colors.schemeSet3[branch];
+        if (node.children) {
+          node.children.forEach(function(d) {
+            colorNode(d, branch);
+          });
+        }
+      }
+
+      root.children.forEach((d, i) => {
+        colorNode(d, i);
       });
     },
     setDs(newRoot: d3RootNode) {

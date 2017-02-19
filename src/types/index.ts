@@ -42,7 +42,8 @@ export enum TreeType {
   VerticalTree,
   Radial,
   Collapsible,
-  LinkText
+  LinkText,
+  Pack
 }
 
 /* Reducer states */
@@ -65,9 +66,10 @@ export enum GraphType {
 }
 
 export interface GraphNode<T> {
-  id?: number,
-  name: T,
-  image?: string
+  id?: number;
+  name: T;
+  image?: string;
+  size?: number;
 }
 
 export interface TreeNode<T> extends GraphNode<T> {

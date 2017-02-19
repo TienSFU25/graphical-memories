@@ -14,6 +14,7 @@ import Carousel from '../carousel';
 import CircularNodeTree from './CircularNodeTree';
 import RectangularNodeTree from './RectangularNodeTree';
 import LinkAsNodeTree from './LinkAsNodeTree';
+import PackTree from './PackTree';
 import ViewWrapper from './ViewWrapper';
 import QuickKeys from '../QuickKeys';
 import SelectedEntity from '../graphMetadata/SelectedEntity';
@@ -117,6 +118,8 @@ class Graph extends React.Component<any, any> {
           Wrapped = ViewWrapper(RectangularNodeTree);
         } else if (graph.display === TreeType.LinkText) {
           Wrapped = ViewWrapper(LinkAsNodeTree);
+        } else if (graph.display === TreeType.Pack) {
+          Wrapped = ViewWrapper(PackTree);
         } else {
           Wrapped = ViewWrapper(CircularNodeTree);
         }

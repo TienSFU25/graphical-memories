@@ -70,6 +70,14 @@ export default class SelectedNode extends React.Component<any, any> {
                     <InputField autoFocus={this.props.shouldFocus} id='edit' value={this.state.editValue} className='form-control' onChange={this.onChange.bind(this)} />
                   </Col>
                 </FormGroup>
+                <FormGroup controlId='value'>
+                  <Col componentClass={ControlLabel} sm={2}>
+                    value
+                  </Col>
+                  <Col sm={10}>
+                    <InputField id='value' value={currNode.data.size} className='form-control' onChange={this.onChange.bind(this)} />
+                  </Col>
+                </FormGroup>
               </div>
               <div className="panel-action">
                   <button type="button" onClick={this.props.onAdd.bind(this)} className="btn btn-default"><span className="glyphicon glyphicon-plus"></span> Add</button>

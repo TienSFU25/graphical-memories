@@ -22,6 +22,9 @@ function _reconstructTree(treeData, changedNodeId, previousState: TreeReducerSta
 
   const tree = processor.getTree(TREE_HEIGHT, TREE_WIDTH);
 
+  if (processor.preProcess)
+    processor.preProcess(newRoot);
+
   _sortTree(newRoot);
   tree(newRoot);
 

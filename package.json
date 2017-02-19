@@ -16,6 +16,7 @@
   "author": "Tien Vu",
   "license": "MIT",
   "dependencies": {
+    "@types/d3-scale-chromatic": "^1.0.1",
     "@types/react-router": "^2.0.41",
     "@types/redux-thunk": "^2.1.0",
     "@types/snapsvg": "^0.4.27",
@@ -24,6 +25,7 @@
     "bootstrap": "3.3.6",
     "colors": "^1.1.2",
     "d3": "^4.4.0",
+    "d3-scale-chromatic": "^1.1.1",
     "gsap": "^1.19.1",
     "jquery": "2.2.3",
     "lodash": "^4.17.4",
