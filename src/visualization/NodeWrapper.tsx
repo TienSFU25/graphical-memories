@@ -19,23 +19,25 @@ export default function(WrappedComponent) {
     }
 
     componentWillUpdate(nextProps) {
-      const el = this.container;
+      // console.log(`UPDATING`);
+      // const el = this.container;
 
-      const { transitionBehavior, processor } = this.state;
+      // const { transitionBehavior, processor } = this.state;
 
-      el.transition(transitionBehavior)
-        .attr('transform', processor.nodeDestTransform(nextProps.node));
+      // el.transition(transitionBehavior)
+      //   .attr('transform', processor.nodeDestTransform(nextProps.node));
     }
 
     _transitionSrcToDest() {
       const el = this.container;
 
       const { transitionBehavior, processor } = this.state;
-      const { source } = this.props;
+      const { source, node } = this.props;
 
-      el.attr('transform', nodeSrcTransform(source))
+      // el.attr('transform', nodeSrcTransform(source))
+      el.attr('transform', 'translate(0,0)')
         .transition(transitionBehavior)
-        .attr('transform', processor.nodeDestTransform(this.props.node));
+        .attr('transform', processor.nodeDestTransform(node));
     }
 
     componentDidMount () {
@@ -43,21 +45,32 @@ export default function(WrappedComponent) {
     }
 
     componentWillEnter (callback) {
-      // console.log(`${this.props.node.data.name} entering`);
+      console.log(`${this.props.node.data.name} entering`);
       this._transitionSrcToDest();
       callback();
     }
 
-    componentWillLeave (callback) {
+    componentWillUnmount(callback) {
+      // console.log(`${this.props.node.data.name} leaving`);
+      console.log('LEAVING');
       const el = this.container;
-      const { source } = this.props;
-      const { transitionBehavior } = this.state;
+      const { source, node } = this.props;
+      const { transitionBehavior, processor } = this.state;
 
-      el.transition(transitionBehavior)
-        .attr('transform', nodeSrcTransform(source))
-        .attr('fill-opacity', 0);
+      window['ndt'] = (processor.nodeDestTransform(node));
+      window['el'] = el;
+      window['nst'] = (nodeSrcTransform(source));
+      window['t'] = transitionBehavior;
 
-      callback();
+      el.transition(d3.transition('myT').duration(5000))
+        .attr('transform', `translate(0, 0)`);
+      // el.attr('transform', processor.nodeDestTransform(node))
+      // el.transition(transitionBehavior)
+      //   .attr('transform', nodeSrcTransform(source))
+        // .attr('fill-opacity', 0)
+        // .on('end', () => { console.log('ended!')});
+
+      // callback();
     }
 
     onNodeClick() {
