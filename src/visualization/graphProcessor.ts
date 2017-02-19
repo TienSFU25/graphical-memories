@@ -8,6 +8,7 @@ import { d3Node, d3ColorNode, d3RootNode, EntityType, SelectedEntity, TreeReduce
 import { project } from './treeManipulator';
 
 export function nodeSrcTransform(source: d3Node) {
+  // console.log(`for ${source.data.name}: ${source.x}`);
   return `translate(${source.x}, ${source.y})`;
 }
 
@@ -16,38 +17,6 @@ export function linkSrcTransform(d: d3Node) {
     + `C${d.parent.x},${d.parent.y}`
     + ` ${d.parent.x},${d.parent.y}`
     + ` ${d.parent.x},${d.parent.y}`;
-}
-
-function traverseMinDistance(node) {
-  var val = Infinity;
-  if (node.children) {
-    val = Math.min.apply(null, node.children.map(traverseMinDistance));
-    if (node.children.length > 1) {
-      console.log(`for ${node.data.name}: ${Math.abs(node.children[0].x - node.children[1].x)}`);
-      val = Math.min(val, Math.abs(node.children[0].x - node.children[1].x));
-    }
-  }
-  // val = Math.min(val, Math.abs(node.children[0].x - node.children[1].x));
-  return val;
-}
-
-function getLabelWidth(d) {
-  // constant ratio for now, needs to be measured based on font
-  return d.name.length * 5;
-}
-
-function traverseLabelWidth(d, offset) {
-  d.y += offset;
-  if (d.name !== '' && d.children && d.children.length === 1 && d.children[0].name === '') {
-    var child = d.children[0];
-    offset += d.y + getLabelWidth(d) - child.y;
-    child.y += offset;
-    if (child.children) {
-      child.children.forEach(function(c) {
-        traverseLabelWidth(c, offset);
-      });
-    }
-  }
 }
 
 function traverseBranchId(node, branch) {
@@ -150,27 +119,15 @@ export default {
   },
   3: {
     getTree(height, width) {
-      return d3.tree();
-      // return d3.tree().size([height, width]);
+      return d3.tree().size([height, width]);
     },
     processRoot(root: d3ColorNode) {
-      let offset = 800 / 2;
-
-      // Normalize
-      var ratio = (NODE_HEIGHT + SPACE_VERTICAL) / traverseMinDistance(root);
-      offset -= root.x * ratio;
-
-      root.eachBefore(function(d: d3ColorNode) {
-        d.y = d.x * ratio + offset;
-        d.x = d.depth * (NODE_WIDTH + SPACE_HORIZONTAL);
+      root.each((node: d3Node) => {
+        // swap x and y
+        const oldY = node.y;
+        node.y = node.x;
+        node.x = oldY + NODE_WIDTH
       });
-
-      // root.each((node: d3Node) => {
-      //   // swap x and y
-      //   const oldY = node.y;
-      //   node.y = node.x;
-      //   node.x = oldY
-      // });
 
       // stick in some branch numbers
       function traverseBranchId(node, branch) {
@@ -191,7 +148,7 @@ export default {
       newRoot.dy = 0
     },
     nodeDestTransform(d: d3Node) {
-      return `translate(${d.x}, ${d.y})`;
+      return `translate(${d.x - NODE_WIDTH}, ${d.y})`;
     },
     linkSrcTransform(d: d3Node) {
       const x = d.parent.x;
@@ -203,69 +160,16 @@ export default {
         + ` ${x},${y}`;
     },
     linkDestTransform(d: d3Node) {
-          var s = {x: d.x, y: d.y};
-          var t = {x: d.parent['x'] + NODE_WIDTH, y: d.parent['y']};
+      var s = {x: d.x - NODE_WIDTH, y: d.y};
+      var t = {x: d.parent.x, y: d.parent.y};
 
-          var midx = (s.x + t.x) / 2;
+      var midx = (s.x + t.x) / 2;
 
-          return `M${s.x},${s.y}`
-            + `C${midx},${s.y}`
-            + ` ${midx},${t.y}`
-            + ` ${t.x},${t.y}`
-
-      // return `M${d.x + NODE_WIDTH},${d.y}`
-      //   + `C${midX},${d.y}`
-      //   + ` ${midX},${d.parent.y}`
-      //   + ` ${d.parent.x},${d.parent.y}`;
+      return `M${s.x},${s.y}`
+        + `C${midx},${s.y}`
+        + ` ${midx},${t.y}`
+        + ` ${t.x},${t.y}`
     }
   }
 }
-
-    // let offset = HEIGHT / 2;
-
-    // const nodes = d3.hierarchy(dataSet);
-    // const root:d3ColorNode = nodes;
-
-    // // console.log(nodes);
-    // layout(nodes);
-    // const links = nodes.links();
-
-    // // Normalize
-    // var ratio = (state.nodeHeight + state.spacingVertical) / traverseMinDistance(root);
-    // offset -= root.x * ratio;
-
-    // console.log(state.nodeHeight + state.spacingVertical);
-    // console.log(traverseMinDistance(root));
-    // console.log(ratio);
-    // console.log(offset);
-
-    // nodes.eachBefore(function(d: d3ColorNode) {
-    //   // console.log(d.x);
-    //   d.y = d.depth * (state.nodeWidth + state.spacingHorizontal);
-    //   d.x = d.x * ratio + offset;
-    // });
-
-
-    // // stick in some branch numbers
-    // function traverseBranchId(node, branch) {
-    //   node.branch = branch;
-    //   if (node.children) {
-    //     node.children.forEach(function(d) {
-    //       traverseBranchId(d, branch);
-    //     });
-    //   }
-    // }
-
-    // nodes.children.forEach((d, i) => {
-    //   traverseBranchId(d, i);
-    // });
-
-    // const source = root;
-    // function linkWidth(d) {
-    //   var depth = d.depth;
-    //   if (d.name !== '' && d.children && d.children.length === 1 && d.children[0].name === '') {
-    //     depth += 1;
-    //   }
-    //   return Math.max(6 - 2*depth, 1.5);
-    // }
 

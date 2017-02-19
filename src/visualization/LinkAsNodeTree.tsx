@@ -42,14 +42,14 @@ export default class LinkAsNodeTree extends React.Component<ITreeManagerProps, a
         const nodeId = d.data.id;
         const isSelectedNode = selectedNode && d.data.id === selectedNode.data.id;
 
-        // let WrappedNode = this.wrappers[nodeId];
+        let WrappedNode = this.wrappers[nodeId];
 
-        // if (!WrappedNode) {
-        //   WrappedNode = Wrapper(LinkNode);
-        //   this.wrappers[nodeId] = WrappedNode;
-        // }
+        if (!WrappedNode) {
+          WrappedNode = Wrapper(LinkNode);
+          this.wrappers[nodeId] = WrappedNode;
+        }
 
-        return <LinkNode display={graph.display} node={d} source={updateNode} key={`node-${d.data.id}`} isSelectedNode={isSelectedNode} {...passThroughProps}/>
+        return <WrappedNode display={graph.display} node={d} source={updateNode} key={`node-${d.data.id}`} isSelectedNode={isSelectedNode} {...passThroughProps}/>
       });
     }
 

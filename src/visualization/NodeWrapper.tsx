@@ -27,23 +27,24 @@ export default function(WrappedComponent) {
         .attr('transform', processor.nodeDestTransform(nextProps.node));
     }
 
-    componentDidMount () {
+    _transitionSrcToDest() {
       const el = this.container;
 
-      const { transitionBehavior } = this.state;
+      const { transitionBehavior, processor } = this.state;
+      const { source } = this.props;
 
-      el.transition(transitionBehavior)
-        .attr('transform', nodeSrcTransform(this.props.node));
+      el.attr('transform', nodeSrcTransform(source))
+        .transition(transitionBehavior)
+        .attr('transform', processor.nodeDestTransform(this.props.node));
+    }
+
+    componentDidMount () {
+      this._transitionSrcToDest();
     }
 
     componentWillEnter (callback) {
-      const el = this.container;
-
-      const { transitionBehavior } = this.state;
-
-      el.transition(transitionBehavior)
-        .attr('transform', nodeSrcTransform(this.props.node));
-
+      // console.log(`${this.props.node.data.name} entering`);
+      this._transitionSrcToDest();
       callback();
     }
 

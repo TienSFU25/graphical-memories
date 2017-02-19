@@ -9,7 +9,7 @@ export const RADIAL_Y = 670;
 
 export const COLLAPSIBLE_OFFSET = 20;
 
-export const NODE_HEIGHT = 5;
+export const NODE_HEIGHT = 10;
 export const NODE_WIDTH = 140;
 export const SPACE_VERTICAL = 5;
 export const SPACE_HORIZONTAL = 100;
