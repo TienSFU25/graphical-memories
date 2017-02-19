@@ -35,10 +35,9 @@ export function selectNode(node: d3Node) {
   };
 }
 
-export function selectGraph(graphName) {
+export function selectGraph() {
   return {
-    type: ActionTypes.SELECT_GRAPH,
-    graphName
+    type: ActionTypes.SELECT_GRAPH
   };
 }
 

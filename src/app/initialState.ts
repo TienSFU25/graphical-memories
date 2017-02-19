@@ -4,7 +4,6 @@ export const initialState = {
   selectedEntity: {
     type: EntityType.Nothing,
     id: 0,
-    graph: null,
     node: null,
     htmlCoords: {
       x: 0,

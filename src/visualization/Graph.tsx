@@ -73,8 +73,7 @@ class Graph extends React.Component<any, any> {
   }
 
   onRectClick() {
-    const { name } = this.props.graph.graphState;
-    this.props.actions.selectGraph(name);
+    this.props.actions.selectGraph();
   }
 
   onTextClick(node) {

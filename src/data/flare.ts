@@ -4,7 +4,7 @@ export default [
   {
     type: GraphType.Tree,
     toggleIds: new Set([37]),
-    display: TreeType.VerticalTree,
+    display: TreeType.Radial,
     name: "first tree",
     color: "aliceblue",
     value: {

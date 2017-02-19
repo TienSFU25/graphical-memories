@@ -31,7 +31,6 @@ export enum EntityType {
 export interface SelectedEntity {
   type: EntityType,
   id: number,
-  graph: any,
   node: d3Node
 }
 

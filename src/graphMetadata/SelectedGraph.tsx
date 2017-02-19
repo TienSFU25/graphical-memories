@@ -3,7 +3,7 @@ import { ControlLabel, Col, Form, FormControl, FormGroup, DropdownButton, MenuIt
 
 import { EditMode, ZoomMode, TreeType } from '../types';
 
-const SelectedGraph = ({graphName, onGraphTypeChange, onEditChange, onZoomChange}) => {
+const SelectedGraph = ({onGraphTypeChange, onEditChange, onZoomChange}) => {
   return (
     <Form horizontal>
       <div className="details panel panel-info">
@@ -11,14 +11,6 @@ const SelectedGraph = ({graphName, onGraphTypeChange, onEditChange, onZoomChange
               <div>Graph options</div>
           </div>
           <div className="panel-body">
-            <FormGroup controlId='graph-name'>
-              <Col componentClass={ControlLabel} sm={2}>
-                Name
-              </Col>
-              <Col sm={10}>
-                <FormControl type="text" value={graphName} />
-              </Col>
-            </FormGroup>
             <FormGroup controlId='graph-mode'>
               <Col componentClass={ControlLabel} sm={2}>
                 Type

@@ -50,16 +50,20 @@ class SelectedEntity extends React.Component<any, any> {
     this.props.actions.toggleZoom(eventKey);
   }
 
+  onCancel() {
+    this.props.actions.selectGraph();
+  }
+
   render() {
     if (this.props.selectedEntity.type === EntityType.Graph) {
       return <SelectedGraph onGraphTypeChange={this.onGraphTypeChange.bind(this)}
                             onEditChange={this.onEditChange.bind(this)}
-                            onZoomChange={this.onZoomChange.bind(this)}
-                            graphName={this.props.selectedEntity.graph.name}/>;
+                            onZoomChange={this.onZoomChange.bind(this)} />;
     } else if (this.props.selectedEntity.type === EntityType.Node) {
       return <SelectedNode node={this.props.selectedEntity.node}
                            onAdd={this.onAdd.bind(this)}
                            onSave={this.onSave.bind(this)}
+                           onCancel={this.onCancel.bind(this)}
                            onCollapse={this.onCollapse.bind(this)}
                            onDelete={this.onDelete.bind(this)}
                            shouldFocus={!this.props.editBox.show} />;

@@ -54,7 +54,7 @@ export default {
   },
   1: {
     getTree(height, width) {
-      return d3.tree().size([height / 3.33, width / 1.2]).separation(function(a, b) { return (a.parent == b.parent ? 1 : 2) / a.depth; });
+      return d3.tree().size([340, 470]).separation(function(a, b) { return (a.parent == b.parent ? 1 : 2) / a.depth; });
     },
     processRoot(root: d3RootNode) {
       root.each((node: d3Node) => {
