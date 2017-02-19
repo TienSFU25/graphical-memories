@@ -11,7 +11,6 @@ export default class Rect extends React.Component<any, any> {
   render () {
     const { node, source, isSelectedNode } = this.props;
     const nodeName = node.data.name;
-    const nodeClassName = node.children ? 'internal' : 'leaf';
 
     return (
       <g>

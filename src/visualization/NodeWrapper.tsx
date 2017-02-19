@@ -18,7 +18,7 @@ export default function(WrappedComponent) {
     }
 
     shouldComponentUpdate(nextProps) {
-      return (this.props.node !== nextProps.node);
+      return (this.props.node !== nextProps.node) || this.props.isSelectedNode !== nextProps.isSelectedNode;
     }
 
     componentWillUpdate(nextProps) {
@@ -66,7 +66,7 @@ export default function(WrappedComponent) {
     }
 
     render () {
-      const { node, source, isSelectedNode } = this.props;
+      const { node } = this.props;
       const nodeClassName = node.children ? 'internal' : 'leaf';
 
       const {...props} = this.props;
