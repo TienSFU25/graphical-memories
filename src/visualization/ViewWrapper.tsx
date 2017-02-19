@@ -62,7 +62,7 @@ export default function(WrappedComponent) {
     render() {
       const { graph, selectedNode, onRectClick, ...passThroughProps } = this.props;
       return (
-        <svg id="main" width={TREE_WIDTH} height={TREE_HEIGHT}
+        <svg id="main" width={TREE_WIDTH + 400} height={TREE_HEIGHT}
                 onClick={this.onRectClick.bind(this)}
                 style={{'backgroundColor': graph.color}}
                 ref={(rect) => this.panZoomContainer = d3.select(rect)}>

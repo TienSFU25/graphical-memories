@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 
 import { EntityType } from '../types';
 import graphManipulationActions from './graphManipulationActions';
+import { popupActions } from '../popups';
 import SelectedGraph from './SelectedGraph';
 import SelectedNode from './SelectedNode';
 
@@ -41,9 +42,20 @@ class SelectedEntity extends React.Component<any, any> {
     this.props.actions.toggleGraphType(eventKey);
   }
 
+  onEditChange(eventKey) {
+    this.props.popupActions.toggleEdit(eventKey);
+  }
+
+  onZoomChange(eventKey) {
+    this.props.actions.toggleZoom(eventKey);
+  }
+
   render() {
     if (this.props.selectedEntity.type === EntityType.Graph) {
-      return <SelectedGraph onGraphTypeChange={this.onGraphTypeChange.bind(this)} graphName={this.props.selectedEntity.graph.name}/>;
+      return <SelectedGraph onGraphTypeChange={this.onGraphTypeChange.bind(this)}
+                            onEditChange={this.onEditChange.bind(this)}
+                            onZoomChange={this.onZoomChange.bind(this)}
+                            graphName={this.props.selectedEntity.graph.name}/>;
     } else if (this.props.selectedEntity.type === EntityType.Node) {
       return <SelectedNode node={this.props.selectedEntity.node}
                            onAdd={this.onAdd.bind(this)}
@@ -68,7 +80,8 @@ function mapStateToProps({ selectedEntity, editBox }) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(graphManipulationActions, dispatch)
+    actions: bindActionCreators(graphManipulationActions, dispatch),
+    popupActions: bindActionCreators(popupActions, dispatch)
   };
 }
 

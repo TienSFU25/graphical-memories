@@ -26,7 +26,6 @@ export default class HomePage extends React.Component<any, any> {
     return (
       <div>
         <Tooltip />
-        <Header />
         <InputWrapper />
         <Visualizer />
       </div>

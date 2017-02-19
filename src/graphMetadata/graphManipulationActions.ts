@@ -73,6 +73,13 @@ export function toggleGraphType(displayType) {
   }
 }
 
+export function toggleZoom(zoomMode) {
+  return {
+    type: ActionTypes.TOGGLE_ZOOM,
+    zoomMode
+  };
+}
+
 const GraphManipulationCreatorsMap: ActionCreatorsMapObject = {
   addNode,
   toggleNode,
@@ -82,7 +89,8 @@ const GraphManipulationCreatorsMap: ActionCreatorsMapObject = {
   deleteNode,
   selectGraph,
   attachImageToNode,
-  toggleGraphType
+  toggleGraphType,
+  toggleZoom
 }
 
 export default GraphManipulationCreatorsMap;

@@ -2,7 +2,6 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 
 import { ActionTypes } from '../app/actionTypes';
-import EditDropdownComponent from './EditDropdown';
 import InputWrapperComponent from './InputWrapper';
 import { toHtmlCoords } from '../shared/svgHelper';
 
@@ -55,14 +54,9 @@ function mapActionsToProps (dispatch: Dispatch<{}>, props: PropsPassedIn): Props
   return bindActionCreators(actionCreators, dispatch)
 }
 
-const EditDropdown = connect(
-  mapStateToProps,
-  mapActionsToProps
-)(EditDropdownComponent);
-
 const InputWrapper = connect(
   mapStateToProps,
   mapActionsToProps
 )(InputWrapperComponent);
 
-export { actionCreators as popupActions, EditDropdown, InputWrapper };
+export { actionCreators as popupActions,  InputWrapper };
