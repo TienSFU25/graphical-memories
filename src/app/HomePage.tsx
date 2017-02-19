@@ -8,7 +8,7 @@ import Header from './Header';
 import Visualizer from '../visualization/Graph';
 import Collapsible from '../_test/Collapsible';
 import { InputWrapper } from '../popups';
-import Colorful from '../_test/Colorful';
+import Tooltip from '../tooltip';
 import '../css/app.scss';
 import '../css/edit.scss';
 
@@ -25,6 +25,7 @@ export default class HomePage extends React.Component<any, any> {
   render() {
     return (
       <div>
+        <Tooltip />
         <Header />
         <InputWrapper />
         <Visualizer />

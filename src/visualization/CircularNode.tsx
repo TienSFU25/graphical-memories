@@ -41,7 +41,7 @@ export default class Node extends React.Component<any, any> {
     return (
       <g>
         <circle r={20} className="ghost disabled" onMouseOver={this.onMouseOver.bind(this)} onMouseOut={this.onMouseOut.bind(this)} ref={c => this.ghostCirc = c}/>
-        <circle r={7.5} className={`inner ${selectedClassName}`} ref={c => this.circ = c} />
+        <circle r={7.5} className={`inner ${selectedClassName}`} onMouseOver={this.onMouseOver.bind(this)} onMouseOut={this.onMouseOut.bind(this)} ref={c => this.circ = c} />
         <text dy={3} x={x} className={nodeClassName} onClick={this.onTextClick.bind(this)}>{nodeName}</text>
       </g>
     );

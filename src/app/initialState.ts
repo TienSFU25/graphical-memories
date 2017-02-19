@@ -20,7 +20,16 @@ export const initialState = {
     editMode: EditMode.Standard
   },
   carouselImages: [],
-  zoomEnabled: false
+  zoomEnabled: false,
+  toolTip: {
+    show: false,
+    htmlCoords: {
+      x: 0,
+      y: 0
+    },
+    // readonly data
+    node: null
+  }
 };
 
 export default initialState;

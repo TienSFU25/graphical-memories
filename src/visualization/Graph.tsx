@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux';
 import { DRAG_THRESHOLD } from './constants';
 import { d3Node, GraphType, TreeReducerState, TreeType } from '../types';
 import graphManipulationActions from '../graphMetadata/graphManipulationActions';
+import { tooltipActions } from '../tooltip';
 import { popupActions } from '../popups';
 
 import Carousel from '../carousel';
@@ -86,18 +87,22 @@ class Graph extends React.Component<any, any> {
   }
 
   onMouseOver(node, context) {
-    if (this.isDragging) {
-      this.destDragNode = node;
+    this.props.tooltipActions.showTooltip(node);
 
-      d3.select(context).attr('class', 'ghost hover');
-    }
+    // if (this.isDragging) {
+    //   this.destDragNode = node;
+
+    //   d3.select(context).attr('class', 'ghost hover');
+    // }
   }
 
   onMouseOut(node, context) {
-    if (this.isDragging) {
-      this.destDragNode = null;
-      d3.select(context).attr('class', 'ghost');
-    }
+    this.props.tooltipActions.hideTooltip();
+
+    // if (this.isDragging) {
+    //   this.destDragNode = null;
+    //   d3.select(context).attr('class', 'ghost');
+    // }
   }
 
   _graphStateToReactElement(graph: TreeReducerState<string>) {
@@ -175,7 +180,8 @@ function mapStateToProps({ selectedEntity, graph, zoomEnabled }) {
 function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(graphManipulationActions, dispatch),
-    popupActions: bindActionCreators(popupActions, dispatch)
+    popupActions: bindActionCreators(popupActions, dispatch),
+    tooltipActions: bindActionCreators(tooltipActions, dispatch)
   };
 }
 

@@ -1,0 +1,16 @@
+div.tooltip {
+  top: -1000px;
+  position: absolute;
+  padding: 10px;
+  background: rgba(255, 255, 255, .90);
+  border: 1px solid lightgray;
+  pointer-events: none;
+  width: 300px;
+  font-family: monospace;
+  font-family: 10px;
+  opacity: 1;
+}
+
+div.tooltip-hidden{
+  opacity: 0;
+}

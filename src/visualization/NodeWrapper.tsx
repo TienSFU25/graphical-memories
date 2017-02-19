@@ -17,6 +17,10 @@ export default function(WrappedComponent) {
       };
     }
 
+    shouldComponentUpdate(nextProps) {
+      return (this.props.node !== nextProps.node);
+    }
+
     componentWillUpdate(nextProps) {
       // console.log(`UPDATING`);
       const el = this.container;
@@ -59,12 +63,6 @@ export default function(WrappedComponent) {
         .attr('transform', nodeIdentityTransform(source))
         .attr('fill-opacity', 0)
         .on('end', callback);
-    }
-
-    onNodeClick() {
-      const { node } = this.props;
-
-      this.props.onNodeClick(node);
     }
 
     render () {

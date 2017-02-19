@@ -29,5 +29,8 @@ export enum ActionTypes {
   LOAD_IMAGES_ERROR,
 
   TOGGLE_EDIT,
-  TOGGLE_ZOOM
+  TOGGLE_ZOOM,
+
+  SHOW_TOOLTIP,
+  HIDE_TOOLTIP
 }

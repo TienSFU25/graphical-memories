@@ -18,6 +18,10 @@ export default class Link extends React.Component<any, any> {
     };
   }
 
+  shouldComponentUpdate(nextProps) {
+    return (this.props.node !== nextProps.node);
+  }
+
   componentWillUpdate(nextProps) {
     const el = this.container;
 
