@@ -87,22 +87,24 @@ class Graph extends React.Component<any, any> {
   }
 
   onMouseOver(node, context) {
-    this.props.tooltipActions.showTooltip(node);
+    if (this.isDragging) {
+      this.destDragNode = node;
 
-    // if (this.isDragging) {
-    //   this.destDragNode = node;
+      d3.select(context).attr('class', 'ghost hover');
+    }
+  }
 
-    //   d3.select(context).attr('class', 'ghost hover');
-    // }
+  onMouseMove(node, coords) {
+    this.props.tooltipActions.showTooltip(node, coords);
   }
 
   onMouseOut(node, context) {
     this.props.tooltipActions.hideTooltip();
 
-    // if (this.isDragging) {
-    //   this.destDragNode = null;
-    //   d3.select(context).attr('class', 'ghost');
-    // }
+    if (this.isDragging) {
+      this.destDragNode = null;
+      d3.select(context).attr('class', 'ghost');
+    }
   }
 
   _graphStateToReactElement(graph: TreeReducerState<string>) {
@@ -133,6 +135,7 @@ class Graph extends React.Component<any, any> {
                       onRectClick={this.onRectClick.bind(this)}
                       onTextClick={this.onTextClick.bind(this)}
                       onMouseOver={this.onMouseOver.bind(this)}
+                      onMouseMove={this.onMouseMove.bind(this)}
                       onMouseOut={this.onMouseOut.bind(this)}
                       selectedNode={selectedNode}
                       graph={graph}

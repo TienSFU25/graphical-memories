@@ -30,13 +30,6 @@ export default class LinkAsNodeTree extends React.Component<ITreeManagerProps, a
     if (graph) {
       const {treeRoot, updateNode} = graph;
       const all = treeRoot.descendants();
-      const allButRoot = treeRoot.descendants().slice(1);
-      // console.log(`updating with ${data.length} links...`);
-
-      links = allButRoot.map((d: d3Node) => {
-        // console.log(d);
-        return <FatLink display={graph.display} node={d} source={updateNode} key={`link-${d.data.id}`}/>
-      });
 
       nodes = all.map((d: d3Node) => {
         const nodeId = d.data.id;

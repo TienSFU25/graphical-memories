@@ -21,9 +21,15 @@ export default class Node extends React.Component<any, any> {
     e.stopPropagation();
   }
 
-  onMouseOver() {
+  onMouseOver(e: MouseEvent) {
     const node = this.props.node;
     this.props.onMouseOver(node, this.ghostCirc);
+  }
+
+  onMouseMove(e: MouseEvent) {
+    const node = this.props.node;
+    const coords = {x: e.clientX, y: e.clientY};
+    this.props.onMouseMove(node, coords);
   }
 
   onMouseOut() {
@@ -35,14 +41,13 @@ export default class Node extends React.Component<any, any> {
     const { node, source, isSelectedNode } = this.props;
     const x = node.children ? - 8 : 8;
     const nodeName = node.data.name;
-    const nodeClassName = node.children ? 'internal' : 'leaf';
     const selectedClassName = isSelectedNode ? 'selected' : '';
 
     return (
       <g>
         <circle r={20} className="ghost disabled" onMouseOver={this.onMouseOver.bind(this)} onMouseOut={this.onMouseOut.bind(this)} ref={c => this.ghostCirc = c}/>
-        <circle r={7.5} className={`inner ${selectedClassName}`} onMouseOver={this.onMouseOver.bind(this)} onMouseOut={this.onMouseOut.bind(this)} ref={c => this.circ = c} />
-        <text dy={3} x={x} className={nodeClassName} onClick={this.onTextClick.bind(this)}>{nodeName}</text>
+        <circle r={7.5} className={`${selectedClassName}`} onMouseMove={this.onMouseMove.bind(this)} onMouseOut={this.onMouseOut.bind(this)} ref={c => this.circ = c} />
+        <text dy={3} x={x} onClick={this.onTextClick.bind(this)}>{nodeName}</text>
       </g>
     );
   }

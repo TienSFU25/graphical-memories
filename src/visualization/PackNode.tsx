@@ -16,9 +16,11 @@ export default class PackNode extends React.Component<any, any> {
     e.stopPropagation();
   }
 
-  onMouseOver() {
+  onMouseMove(e: MouseEvent) {
+    // console.log('mousy!');
     const node = this.props.node;
-    this.props.onMouseOver(node);
+    const coords = {x: e.clientX, y: e.clientY};
+    this.props.onMouseMove(node, coords);
   }
 
   onMouseOut() {
@@ -29,22 +31,22 @@ export default class PackNode extends React.Component<any, any> {
   render () {
     const { node, source, isSelectedNode } = this.props;
     const nodeName = node.data.name.substring(0, node.r / 3);
-    const nodeClassName = 'pack-node';
     const selectedClassName = isSelectedNode ? 'selected' : '';
 
     let circStyle = {};
     let TextArea;
 
     if (!node.children) {
-      TextArea = <text dy={3} className={nodeClassName} onClick={this.onTextClick.bind(this)}>{nodeName}</text>;
+      TextArea = <text dy={3} onClick={this.onTextClick.bind(this)}>{nodeName}</text>;
       circStyle = {
-        fill: node.color
+        fill: node.color,
+        fillOpacity: 1
       };
     }
 
     return (
-      <g>
-        <circle r={node.r} className={`pack ${selectedClassName}`} onMouseOver={this.onMouseOver.bind(this)} onMouseOut={this.onMouseOut.bind(this)} style={circStyle} />
+      <g className="pack">
+        <circle r={node.r} className={`${selectedClassName}`} onMouseMove={this.onMouseMove.bind(this)} onMouseOut={this.onMouseOut.bind(this)} style={circStyle} />
         {TextArea}
       </g>
     );

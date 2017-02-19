@@ -9,10 +9,10 @@ import { PropsFromState, PropsFromActions, PropsPassedIn } from './props';
 import './style.scss';
 
 const actionCreators: PropsFromActions = {
-  showTooltip(node) {
+  showTooltip(node, coords) {
     return {
       type: ActionTypes.SHOW_TOOLTIP,
-      htmlCoords: toHtmlCoords(node),
+      htmlCoords: coords,
       node
     };
   },
