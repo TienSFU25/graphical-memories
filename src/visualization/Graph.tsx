@@ -33,31 +33,16 @@ class Graph extends React.Component<any, any> {
     const self = this;
     this.dragBehavior = d3.drag()
       .on('start', d => {
-        // d3.selectAll('.ghost.disabled').attr('class', 'ghost');
-        d3.event.sourceEvent.stopPropagation();
+        self.isDragging = true;
+        d3.selectAll('.ghost.disabled').attr('class', 'ghost');
       })
-      .on('drag', (d) => {
-        const e = d3.event;
-        if (e.x - d['x']  > DRAG_THRESHOLD || e.y - d['y'] > DRAG_THRESHOLD || d['type'] === 'IMAGE') {
-          self.isDragging = true;
-          d3.selectAll('.ghost.disabled').attr('class', 'ghost');
-        }
-      })
-      .on('end', d => {
-        if (self.isDragging) {
+      .on('end', (d: d3Node) => {
           console.log('drag ended');
-
           d3.selectAll('.ghost').attr('class', 'ghost disabled');
 
-          // fix this yolo code plz
-          if (d['type'] == 'IMAGE') {
-            this.props.actions.attachImageToNode(d['href'], self.destDragNode);
-          }
-          else if (self.destDragNode && d['data'].id !== self.destDragNode.data.id) {
-            console.log(`moving ${d['data'].id} to ${self.destDragNode.data.id}`)
+        if (self.isDragging && self.destDragNode && d.data.id !== self.destDragNode.data.id) {
+            console.log(`moving ${d['data'].name} (${d['data'].id}) to ${self.destDragNode.data.name} (${self.destDragNode.data.id})`)
             self.props.actions.moveNode(d, self.destDragNode);
-          }
-
           self.destDragNode = null;
         } else {
           // assume a click event
@@ -158,10 +143,7 @@ class Graph extends React.Component<any, any> {
 
     return (
       <Row>
-        <Col xs={2}>
-          <Carousel dragBehavior={this.dragBehavior} />
-        </Col>
-        <Col xs={7}>
+        <Col xs={9}>
           <QuickKeys selectedNode={this.props.selectedEntity.node} handler={this.handleHotKey.bind(this)}>
             {GraphElement}
           </QuickKeys>

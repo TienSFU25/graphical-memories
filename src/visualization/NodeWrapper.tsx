@@ -47,13 +47,13 @@ export default function(WrappedComponent) {
     }
 
     componentWillEnter (callback) {
-      console.log(`${this.props.node.data.name} entering`);
+      // console.log(`${this.props.node.data.name} entering`);
       this._transitionSrcToDest();
       callback();
     }
 
     componentWillLeave(callback) {
-      console.log(`${this.props.node.data.name} leaving`);
+      // console.log(`${this.props.node.data.name} leaving`);
       // console.log('LEAVING');
       const el = this.container;
       const { source, node } = this.props;

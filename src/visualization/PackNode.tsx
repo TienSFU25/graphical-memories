@@ -1,7 +1,17 @@
 import * as React from 'react';
+import * as d3 from 'd3';
 
 export default class PackNode extends React.Component<any, any> {
-  private container;
+  private ghostCirc;
+  private circ;
+
+  componentDidMount() {
+    // YOLO
+    this.circ.__data__ = this.props.node;
+
+    const d3Circle = d3.select(this.circ);
+    d3Circle.call(this.props.dragBehavior);
+  }
 
   onTextClick(e) {
     const node = this.props.node;
@@ -16,8 +26,12 @@ export default class PackNode extends React.Component<any, any> {
     e.stopPropagation();
   }
 
+  onMouseOver(e: MouseEvent) {
+    const node = this.props.node;
+    this.props.onMouseOver(node, this.ghostCirc);
+  }
+
   onMouseMove(e: MouseEvent) {
-    // console.log('mousy!');
     const node = this.props.node;
     const coords = {x: e.clientX, y: e.clientY};
     this.props.onMouseMove(node, coords);
@@ -25,7 +39,7 @@ export default class PackNode extends React.Component<any, any> {
 
   onMouseOut() {
     const node = this.props.node;
-    this.props.onMouseOut(node);
+    this.props.onMouseOut(node, this.ghostCirc);
   }
 
   render () {
@@ -37,7 +51,7 @@ export default class PackNode extends React.Component<any, any> {
     let TextArea;
 
     if (!node.children) {
-      TextArea = <text dy={3} onClick={this.onTextClick.bind(this)}>{nodeName}</text>;
+      TextArea = <text dy={3}>{nodeName}</text>;
       circStyle = {
         fill: node.color,
         fillOpacity: 1
@@ -45,8 +59,9 @@ export default class PackNode extends React.Component<any, any> {
     }
 
     return (
-      <g className="pack">
-        <circle r={node.r} className={`${selectedClassName}`} onMouseMove={this.onMouseMove.bind(this)} onMouseOut={this.onMouseOut.bind(this)} style={circStyle} />
+      <g className="pack" onClick={this.onTextClick.bind(this)} onMouseMove={this.onMouseMove.bind(this)} onMouseOut={this.onMouseOut.bind(this)} ref={c => this.circ = c}>
+        <circle r={node.r} className={`${selectedClassName}`}style={circStyle} />
+        <circle r={node.r} className="ghost disabled" onMouseOver={this.onMouseOver.bind(this)} onMouseOut={this.onMouseOut.bind(this)} ref={c => this.ghostCirc = c}/>
         {TextArea}
       </g>
     );
